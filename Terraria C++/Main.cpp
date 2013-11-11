@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-#include "Miner.h"
+#include "Menu.h"
 #include "Utensilio.h"
 
 #define NUM_UTENSILIOS 19
@@ -28,122 +28,28 @@ void LoadUtensilios(Utensilio Utensilios[])
 	}
 }
 
-void EscreverMainMenu(Consola Console)
-{
-	Console.gotoxy(14, 2);
-	std::cout << "Bem vindo ao Terraria";
-	Console.gotoxy(10, 8);
-	std::cout << "** Escolhe uma opcao **";
-	Console.gotoxy(10, 10);
-	std::cout << "Novo Jogo";
-	Console.gotoxy(10, 12);
-	std::cout << "Carregar Jogo";
-	Console.gotoxy(10, 14);
-	std::cout << "Sair";
-}
-
-void NovoJogo(Consola Console)
-{
-	Console.clrscr();
-	Console.gotoxy(14, 2);
-	std::cout << "Criacao Novo Jogo";
-	std::cout << std::endl;
-	std::cout << "<Gemas> : " << std::endl;
-}
-
-void CarregarJogo(Consola Console)
-{
-	Console.clrscr();
-	Console.gotoxy(14, 2);
-	std::cout << "Carregar Jogo";
-}
-
-int LoadMainMenu(Consola Console)
-{
-	char tecla;
-
-	Console.setScreenSize(50, 80);
-	Console.clrscr();
-
-	EscreverMainMenu(Console);
-
-	int x = 8, y = 10;
-	Console.gotoxy(x, y);
-	std::cout << '>';
-	while (1) {
-		tecla = Console.getch();
-		if (tecla == Console.ESCAPE) break;
-		if (tecla == Console.ENTER && y == 10) break;
-		if (tecla == Console.ENTER && y == 12) break;
-		if (tecla == Console.ENTER && y == 14) break;
-		if (tecla != Console.CIMA && tecla != Console.BAIXO) continue;
-
-		Console.gotoxy(x, y);
-		std::cout << ' ';
-
-		if (tecla == Console.CIMA) y -= 2;
-		if (tecla == Console.BAIXO) y += 2;
-		if (y < 10) y = 10;
-		if (y > 14) y = 14;
-		Console.gotoxy(x, y);
-		std::cout << '>';
-		// TPC: validar os limites da consola
-	}
-	return y;
-}
-
-void ModoComandos(Consola Console)
-{
-	std::string command;
-
-	Console.clrscr();
-	Console.gotoxy(10, 40);
-	std::cout << "Entraste no modo de comandos oh mano!";
-
-	while (command != "j") {
-		Console.gotoxy(10, 46);
-		std::cout << "Comando : _____________________________";
-		Console.gotoxy(19, 46);
-		std::cin >> command;
-
-		/*
-		ACABA ESTA MERDA OH CEPO 
-		 if( command exist)
-		 {
-		 }
-		 else
-		 {
-		 Console.gotoxy(10, 48);
-		 std::cout << "[GAME] -> " << command << " not found.";
-		 }
-		*/
-
-		
-	}
-	Console.clrscr();
-	return;
-}
-
 void main()
 {
 	Consola Console;
+	Menu Menu;
 	Miner Mineiro;
 	Utensilio Utensilios[NUM_UTENSILIOS];
 	int userChoice;
 	char tecla;
 	int x = 15, y = 20;
 
+	/* Loads utensilios data into array of objects*/
 	LoadUtensilios(Utensilios);
 
-	userChoice = LoadMainMenu(Console);
+	userChoice = Menu.LoadMainMenu(Console);
 
 	switch (userChoice)
 	{
 	case NEW_GAME:
-		NovoJogo(Console);
+		Menu.NewGame(Console);
 		break;
 	case LOAD_GAME:
-		CarregarJogo(Console);
+		Menu.LoadGame(Console);
 		break;
 	case EXIT_GAME:
 		exit(0);
@@ -152,11 +58,12 @@ void main()
 
 	system("CLS");
 		
+	/* Game Running */
 	while (1){
 		tecla = Console.getch();
 		if (tecla == Console.C)
 		{
-			ModoComandos(Console);
+			Menu.CommandMode(Console);
 		}
 		if (tecla == Console.CIMA) y--;
 		if (tecla == Console.BAIXO) y++;
@@ -164,12 +71,6 @@ void main()
 		if (tecla == Console.ESQUERDA) x--;
 		Mineiro.move(Console, x, y);
 	}
-
-	
-	
-
-	Console.getch();
-	exit(0);
 	
 	// RGB -> macro. valores entre 0 e 255 
 	Console.drawLine(0, 0, 300, 200, RGB(255, 0, 0));
