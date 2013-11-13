@@ -133,6 +133,8 @@ void Menu::CommandMode(Consola Console)
 			std::cout << "[GAME] -> '" << command << "' existe.";
 			switch (action)
 			{
+			case 0:
+				break;
 			case 1:
 				break;
 			case 2:
@@ -148,17 +150,15 @@ void Menu::CommandMode(Consola Console)
 			case 7:
 				break;
 			case 8:
-				break;
-			case 9:
 				Console.clrscr();
 				exit(0);
 				break;
-			case 10:
+			case 9:
 				Console.clrscr();
 				return;
 				break;
 			}
-			//command = strtok(command, " ");
+			//command = strtok(command, " "); stringstream
 		}
 	}
 	Console.clrscr();

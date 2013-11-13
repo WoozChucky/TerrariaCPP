@@ -36,7 +36,10 @@ void main()
 	Utensilio Utensilios[NUM_UTENSILIOS];
 	int userChoice;
 	char tecla;
-	int x = 15, y = 20;
+	int x = 30, y = 8;
+
+	Console.setTextColor(Console.PRETO);
+	Console.setBackgroundColor(Console.BRANCO_CLARO);
 
 	/* Loads utensilios data into array of objects*/
 	LoadUtensilios(Utensilios);
@@ -59,18 +62,45 @@ void main()
 	system("CLS");
 		
 	/* Game Running */
-	while (1){
+	while (Mineiro.hasLifes()){
+		Mineiro.isAlive(Console);
+
 		tecla = Console.getch();
 		if (tecla == Console.C)
 		{
 			Menu.CommandMode(Console);
 		}
-		if (tecla == Console.CIMA) y--;
-		if (tecla == Console.BAIXO) y++;
-		if (tecla == Console.DIREITA) x++;
-		if (tecla == Console.ESQUERDA) x--;
-		Mineiro.move(Console, x, y);
+		if (tecla == Console.CIMA)
+		{
+			y--;
+			Mineiro.move(Console, x, y);
+		}
+		if (tecla == Console.BAIXO)
+		{
+			y++;
+			Mineiro.move(Console, x, y);
+		}
+		if (tecla == Console.DIREITA)
+		{
+			x++;
+			Mineiro.move(Console, x, y);
+		}
+		if (tecla == Console.ESQUERDA)
+		{
+			x--;
+			Mineiro.move(Console, x, y);
+		}
+		
+
 	}
+
+	Console.clrscr();
+	Console.gotoxy(10, 18);
+	Console.setTextSize(30, 30);
+	std::cout << "Game Over";
+
+	Console.getch();
+	exit(0);
 	
 	// RGB -> macro. valores entre 0 e 255 
 	Console.drawLine(0, 0, 300, 200, RGB(255, 0, 0));
