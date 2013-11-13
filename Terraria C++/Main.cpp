@@ -64,34 +64,30 @@ void main()
 	/* Game Running */
 	while (Mineiro.hasLifes()){
 		Mineiro.isAlive(Console);
-
 		tecla = Console.getch();
-		if (tecla == Console.C)
+
+		switch (tecla)
 		{
+		case Console.C:
 			Menu.CommandMode(Console);
-		}
-		if (tecla == Console.CIMA)
-		{
+			break;
+		case Console.CIMA:
 			y--;
 			Mineiro.move(Console, x, y);
-		}
-		if (tecla == Console.BAIXO)
-		{
+			break;
+		case Console.BAIXO:
 			y++;
 			Mineiro.move(Console, x, y);
-		}
-		if (tecla == Console.DIREITA)
-		{
+			break;
+		case Console.DIREITA:
 			x++;
 			Mineiro.move(Console, x, y);
-		}
-		if (tecla == Console.ESQUERDA)
-		{
+			break;
+		case Console.ESQUERDA:
 			x--;
 			Mineiro.move(Console, x, y);
+			break;
 		}
-		
-
 	}
 
 	Console.clrscr();
