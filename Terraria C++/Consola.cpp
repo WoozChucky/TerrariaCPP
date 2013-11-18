@@ -64,6 +64,9 @@ void Consola::setScreenSize(int nLinhas, int nCols) {
 	COORD tam;
 	SMALL_RECT DisplayArea;
 
+	this->setColunas(nCols);
+	this->setLinhas(nLinhas);
+
 	tam.X = nCols;
 	tam.Y = nLinhas;
 	SetConsoleScreenBufferSize(hconsola, tam);   // isto muda o tamanho da matriz de caracteres
@@ -196,4 +199,22 @@ void Consola::drawCircle(int X, int Y, int R, int Pen, int Fill){
 	ReleaseDC(hwnd, DrawHDC);  // torna-se lento
 }
 
-//Consola Console;
+void Consola::setColunas(int S)
+{
+	colunas = S;
+}
+
+void Consola::setLinhas(int S)
+{
+	linhas = S;
+}
+
+int Consola::getColunas()
+{
+	return colunas;
+}
+
+int Consola::getLinhas()
+{
+	return linhas;
+}

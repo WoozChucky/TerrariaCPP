@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-#include "Menu.h"
+#include "Block.h"
 #include "Utensilio.h"
 
 #define NUM_UTENSILIOS 19
@@ -32,24 +32,35 @@ void main()
 {
 	Consola Console;
 	Menu Menu;
-	Miner Mineiro;
+	Miner Mineiro(27, 19);
 	Utensilio Utensilios[NUM_UTENSILIOS];
+	BlockTypes TiposBlocos(
+		{ "Pedra", "Terreno duro", "Terreno mole", "Ouro", "Lava" }, 
+		{ 0, 1, 2, 3, 4 }, 
+		{ false, true, true, true, false }
+	);
+
+	Block pedra1(Console, TiposBlocos.getName(0), 0, TiposBlocos.isBrekeable(0), 3, 12);
+	Block pedra2(Console, TiposBlocos.getName(0), 0, TiposBlocos.isBrekeable(0), 3, 16);
+	Block pedra3(Console, TiposBlocos.getName(0), 0, TiposBlocos.isBrekeable(0), 8, 12);
+
 	int userChoice;
 	char tecla;
-	int x = 30, y = 8;
+	
 
 	Console.setTextColor(Console.PRETO);
 	Console.setBackgroundColor(Console.BRANCO_CLARO);
 
 	/* Loads utensilios data into array of objects*/
 	LoadUtensilios(Utensilios);
-
+	
 	userChoice = Menu.LoadMainMenu(Console);
 
 	switch (userChoice)
 	{
 	case NEW_GAME:
 		Menu.NewGame(Console);
+		
 		break;
 	case LOAD_GAME:
 		Menu.LoadGame(Console);
@@ -59,33 +70,67 @@ void main()
 		break;
 	}
 
-	system("CLS");
-		
+	int x = (Console.getLinhas() / 2), y = (Console.getColunas() / 2), vX = (Console.getLinhas() / 2), vY = (Console.getColunas() / 2);
+	Console.clrscr();
+	pedra1.Draw(Console);
+	pedra2.Draw(Console);
+	pedra3.Draw(Console);
+
 	/* Game Running */
-	while (Mineiro.hasLifes()){
+	while (Mineiro.hasLifes()){		
+
 		Mineiro.isAlive(Console);
+		Mineiro.showStats(Console);
+		Mineiro.Show(Console, x, y);
+
+		Console.gotoxy(vX, vY);
+
 		tecla = Console.getch();
 
 		switch (tecla)
 		{
 		case Console.C:
 			Menu.CommandMode(Console);
+			Mineiro.Show(Console, x, y);
 			break;
 		case Console.CIMA:
-			y--;
-			Mineiro.move(Console, x, y);
+			Mineiro.Move(Console, x, y);
+			y -= 4;
+			if (y <= 5)
+				y = Mineiro.getY();
+
+			vX = x;
+			vY = y - ((Console.getLinhas() /2 ) * 4) - 4;
 			break;
 		case Console.BAIXO:
-			y++;
-			Mineiro.move(Console, x, y);
+			Mineiro.Move(Console, x, y);
+			y += 4;
+
+			vX = x;
+			vY = y + ((Console.getLinhas() / 2) * 4) + 4;
 			break;
 		case Console.DIREITA:
-			x++;
-			Mineiro.move(Console, x, y);
+			Mineiro.Move(Console, x, y);
+			x += 5;
+			
+			vY = y;
+			vX = x + 11;
 			break;
 		case Console.ESQUERDA:
-			x--;
-			Mineiro.move(Console, x, y);
+			Mineiro.Move(Console, x, y);
+			x -= 5;
+			if (x <= 1)
+			{
+				x = Mineiro.getX();
+			}
+
+			if (vX <= 1)
+			{
+				vX = 1;
+			}
+
+			vY = y;
+			vX = x - 11;
 			break;
 		}
 	}

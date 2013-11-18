@@ -13,10 +13,12 @@ class Miner {
 	bool lanterna;
 	bool escadas;
 public:
-	Miner();
-	void move(Consola Console, int X, int Y);
-	void show(Consola Console, int X=10, int Y=10);
+	Miner(int X, int Y);
+	void Move(Consola Console, int X, int Y);
+	void Show(Consola Console, int X = 10, int Y = 10);
+	void Remove(Consola Console);
 	void showStats(Consola Console);
+	void isAlive(Consola Console);
 	void setPosition(int x, int y);
 	void setLife(int S);
 	void setEnergy(int S);
@@ -24,9 +26,11 @@ public:
 	int getEnergy();
 	int getCoins();
 	int getLife();
+	int getX();
+	int getY();
 
 	bool hasLifes();
-	bool isAlive(Consola Console);
+	
 };
 
 #endif

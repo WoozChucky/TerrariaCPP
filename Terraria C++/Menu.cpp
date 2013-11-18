@@ -67,13 +67,22 @@ void Menu::EscreverMainMenu(Consola Console)
 	std::cout << "Sair";
 }
 
-void Menu::NewGame(Consola Console)
+void Menu::NewGame(Consola& Console)
 {
+	int nLinhas, nColunas;
+
 	Console.clrscr();
 	Console.gotoxy(14, 2);
 	std::cout << "Criacao Novo Jogo";
+	std::cout << std::endl << "Tamanho da Mina:" << std::endl;
+
+	std::cout << "Linhas: ";
+	std::cin >> nLinhas; 
 	std::cout << std::endl;
-	std::cout << "<Gemas> : " << std::endl;
+	std::cout << "Colunas: ";
+	std::cin >> nColunas;
+	std::cout << std::endl;
+	Console.setScreenSize((nLinhas * 4) + 6, (nColunas * 5) + 3);
 }
 
 void Menu::LoadGame(Consola Console)

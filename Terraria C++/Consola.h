@@ -13,6 +13,7 @@ class Consola {
 	HANDLE hconsola;
 	HANDLE hStdin;
 	HWND hwnd;
+	int colunas, linhas;
 
 public:
 
@@ -54,6 +55,10 @@ public:
 	char getch(void);
 	void drawLine(int x1, int y1, int x2, int y2, int cor);
 	void drawCircle(int X, int Y, int R, int Pen, int Fill);
+	void setLinhas(int S);
+	void setColunas(int S);
+	int getLinhas();
+	int getColunas();
 };
 
 #endif

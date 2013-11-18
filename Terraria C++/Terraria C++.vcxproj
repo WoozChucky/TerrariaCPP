@@ -78,6 +78,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="BlockTypes.h" />
     <ClInclude Include="Consola.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Miner.h" />
@@ -85,6 +87,7 @@
     <ClInclude Include="Utensilio.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Consola.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menu.cpp" />
