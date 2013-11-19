@@ -18,6 +18,7 @@ public:
 	void Show(Consola Console, int X = 10, int Y = 10);
 	void Remove(Consola Console);
 	void showStats(Consola Console);
+	void DeleteStats(Consola Console, int X);
 	void isAlive(Consola Console);
 	void setPosition(int x, int y);
 	void setLife(int S);

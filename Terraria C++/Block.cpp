@@ -2,14 +2,13 @@
 
 
 
-Block::Block(Consola Console, std::string Name, int ID, bool Breakable, int X, int Y)
+Block::Block(std::string Name, int ID, bool Breakable, int X, int Y)
 {
 	name = Name;
 	id = ID;
 	breakable = Breakable;
 	x = X;
 	y = Y;
-	this->Draw(Console);
 }
 
 void Block::Draw(Consola Console)

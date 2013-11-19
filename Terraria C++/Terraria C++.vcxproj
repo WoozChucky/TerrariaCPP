@@ -79,20 +79,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
-    <ClInclude Include="BlockTypes.h" />
     <ClInclude Include="Consola.h" />
-    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Mine.h" />
     <ClInclude Include="Miner.h" />
     <ClInclude Include="Ponto.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Utensilio.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Consola.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Mine.cpp" />
     <ClCompile Include="Miner.cpp" />
     <ClCompile Include="Utensilio.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Terraria C++.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Pictures\PhotoScan.jpg" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

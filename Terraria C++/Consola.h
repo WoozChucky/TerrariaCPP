@@ -7,6 +7,12 @@
 #define __CONSOLA_H__
 
 #include <windows.h>
+#include "mmsystem.h"
+#include <dshow.h>
+#include <cstdio>
+
+#pragma comment(lib, "strmiids.lib") 
+#pragma comment(lib, "winmm.lib") 
 
 class Consola {
 
@@ -50,6 +56,7 @@ public:
 	void setTextColor(WORD color);
 	void setBackgroundColor(WORD color);
 	void setScreenSize(int nLinhas, int nCols);
+	void setScreenBufferSize(int Linhas, int Colunas);
 	void setTextSize(int x, int y);
 	void setTextSizeXP(int x, int y);
 	char getch(void);

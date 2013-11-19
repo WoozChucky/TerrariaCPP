@@ -199,6 +199,15 @@ void Consola::drawCircle(int X, int Y, int R, int Pen, int Fill){
 	ReleaseDC(hwnd, DrawHDC);  // torna-se lento
 }
 
+void Consola::setScreenBufferSize(int Linhas, int Colunas)
+{
+	SMALL_RECT rect = { 0, 0, Colunas - 1, Linhas - 1 };
+	COORD c = { Colunas, Linhas };
+
+	SetConsoleWindowInfo(hconsola, TRUE, &rect);
+	SetConsoleScreenBufferSize(hconsola, c);
+}
+
 void Consola::setColunas(int S)
 {
 	colunas = S;
