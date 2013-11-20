@@ -1,6 +1,8 @@
 #include "Mine.h"
 
 #define NEW_GAME 10
+#define RESUME_GAME 10
+#define SOUND_OPTIONS 12
 #define LOAD_GAME 12
 #define EXIT_GAME 14
 
@@ -25,7 +27,7 @@ class Game {
 	int linhas, colunas;
 	int _currentStatus;
 	
-	void WriteMainMenu();
+	
 
 public:
 
@@ -38,8 +40,11 @@ public:
 	void NewGame();
 	void LoadGame();
 	void Play();
+	void Pause();
 	void CommandMode();
 	void Write(std::string input);
+	void WriteMainMenu();
+	void WritePauseMenu();
 	void PlayIntro();
 	void PlayTheme();
 	void StopMusic();

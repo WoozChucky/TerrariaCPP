@@ -11,4 +11,5 @@ public:
 	Mine();
 	void Initialize(int Rows, int Cols);
 	void Draw(Consola Console);
+	bool isColliding(Miner myMiner, Block myBlock);
 };

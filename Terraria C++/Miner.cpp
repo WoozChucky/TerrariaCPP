@@ -55,9 +55,9 @@ void Miner::Show(Consola Console, int X, int Y)
 
 void Miner::Move(Consola Console, int X, int Y)
 {
-	this->setPosition(X, Y);
-	this->energy--;
-	this->Remove(Console);
+	setPosition(X, Y);
+	energy--;
+	Remove(Console);
 }
 
 void Miner::Remove(Consola Console)

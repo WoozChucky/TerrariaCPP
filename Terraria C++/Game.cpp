@@ -37,6 +37,20 @@ void Game::WriteMainMenu()
 	std::cout << "Sair";
 }
 
+void Game::WritePauseMenu()
+{
+	myConsole->gotoxy(14, 2);
+	std::cout << " -----Pausa-----";
+	myConsole->gotoxy(10, 8);
+	std::cout << "** Escolhe uma opcao **";
+	myConsole->gotoxy(10, 10);
+	std::cout << "Continuar";
+	myConsole->gotoxy(10, 12);
+	std::cout << "Som";
+	myConsole->gotoxy(10, 14);
+	std::cout << "Sair do Jogo";
+}
+
 void Game::Start()
 {
 	PlayIntro();
@@ -149,6 +163,9 @@ void Game::Play()
 
 		switch (tecla)
 		{
+		case ESCAPE:
+			Pause();
+			break;
 		case C:
 			CommandMode();
 			myMiner->Show(*myConsole, x, y);
@@ -201,6 +218,49 @@ void Game::Play()
 		}
 	}
 	_currentStatus = END;
+}
+
+void Game::Pause()
+{
+	char tecla;
+	myConsole->clrscr();
+	WritePauseMenu();
+
+	int x = 8, y = 10;
+	myConsole->gotoxy(x, y);
+	std::cout << '>';
+	while (1) {
+		tecla = myConsole->getch();
+		if (tecla == ESCAPE) break;
+		if (tecla == ENTER && y == 10) break;
+		if (tecla == ENTER && y == 12) break;
+		if (tecla == ENTER && y == 14) break;
+		if (tecla != UP && tecla != DOWN) continue;
+
+		myConsole->gotoxy(x, y);
+		std::cout << ' ';
+
+		if (tecla == myConsole->CIMA) y -= 2;
+		if (tecla == myConsole->BAIXO) y += 2;
+		if (y < 10) y = 10;
+		if (y > 14) y = 14;
+		myConsole->gotoxy(x, y);
+		std::cout << '>';
+	}
+	switch (y)
+	{
+	case RESUME_GAME:
+		return;
+		//Resume();
+		break;
+	case SOUND_OPTIONS:
+		//SoundMenu();
+		break;
+	case EXIT_GAME:
+		exit(0);
+		break;
+	}
+
 }
 
 void Game::PlayIntro()

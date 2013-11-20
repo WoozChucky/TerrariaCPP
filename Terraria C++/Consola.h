@@ -10,6 +10,7 @@
 #include "mmsystem.h"
 #include <dshow.h>
 #include <cstdio>
+#include <vector>
 
 #pragma comment(lib, "strmiids.lib") 
 #pragma comment(lib, "winmm.lib") 
