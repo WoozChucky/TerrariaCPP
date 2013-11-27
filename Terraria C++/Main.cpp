@@ -27,6 +27,7 @@ void LoadUtensilios(Utensilio Utensilios[])
 
 void main()
 {
+
 	Game *myGame = new Game();
 	Utensilio Utensilios[NUM_UTENSILIOS];
 

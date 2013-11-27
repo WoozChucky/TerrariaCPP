@@ -15,9 +15,10 @@ class Miner {
 	bool lanterna;
 	bool escadas;
 public:
-	Miner(int X, int Y);
+	Miner(int Life, int Energy, int Coins);
 
 	void Move(Consola Console, int X, int Y);
+	void ResetStats();
 	
 	//Draws
 	void Show(Consola Console, int X = 10, int Y = 10);

@@ -1,15 +1,21 @@
 #include <iostream>
 #include "Miner.h"
 
-Miner::Miner(int X, int Y)
+Miner::Miner(int Life, int Energy, int Coins)
 {
-	this->setPosition(X, Y);
-	this->energy = 100;
-	this->coins = 0;
-	this->life = 3;
+	this->energy = Energy;
+	this->coins = Coins;
+	this->life = Life;
 	this->escadas = false;
 	this->picareta = false;
 	this->lanterna = false;
+}
+
+void Miner::ResetStats()
+{
+	energy = 100;
+	coins = 0;
+	life = 3;
 }
 
 bool Miner::hasLifes()
@@ -39,16 +45,19 @@ void Miner::setPosition(int X, int Y)
 
 void Miner::Show(Consola Console, int X, int Y)
 {
-	Console.gotoxy(X-1, Y-1);
-	std::cout << (char)255 << (char)255 << (char)220 << (char)255 << (char)255;
+	Console.gotoxy(X, Y);
+	std::cout << (char)255 << (char)255 << (char)2 << (char)255 << (char)255;
 
-	Console.gotoxy(X - 1, Y);
+	Console.gotoxy(X, Y + 1);
 	std::cout << (char)255 << (char)205 << (char)203 << (char)205 << (char)255;
 
-	Console.gotoxy(X-1, Y+1);
+	Console.gotoxy(X, Y + 2);
+	std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
+
+	Console.gotoxy(X, Y + 3);
 	std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
 
-	Console.gotoxy(X - 1, Y + 2);
+	Console.gotoxy(X, Y + 4);
 	std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
 
 }
@@ -64,20 +73,21 @@ void Miner::Remove(Consola Console)
 {
 	int X = this->getX();
 	int Y = this->getY();
-	Console.gotoxy(X, Y - 1);
-	std::cout << (char)255 << (char)255 << (char)255;
-	Console.gotoxy(X + 1, Y);
-	std::cout << (char)255 << (char)255;
+
 	Console.gotoxy(X, Y);
-	std::cout << (char)255 << (char)255;
-	Console.gotoxy(X - 1, Y);
-	std::cout << (char)255 << (char)255 << (char)255;
+	std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
+
 	Console.gotoxy(X, Y + 1);
-	std::cout << (char)255 << (char)255 << (char)255;
-	Console.gotoxy(X - 1, Y + 2);
-	std::cout << (char)255 << (char)255;
-	Console.gotoxy(X + 1, Y + 2);
-	std::cout << (char)255 << (char)255 << (char)255;
+	std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
+
+	Console.gotoxy(X, Y + 2);
+	std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
+
+	Console.gotoxy(X, Y + 3);
+	std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
+
+	Console.gotoxy(X, Y + 4);
+	std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 }
 
 void Miner::DeleteStats(Consola Console, int X)

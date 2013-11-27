@@ -11,6 +11,9 @@
 #include <dshow.h>
 #include <cstdio>
 #include <vector>
+#include <fstream>
+#include <ctime>
+#include <time.h>
 
 #pragma comment(lib, "strmiids.lib") 
 #pragma comment(lib, "winmm.lib") 
@@ -67,6 +70,8 @@ public:
 	void setColunas(int S);
 	int getLinhas();
 	int getColunas();
+
+	HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int int_Height);
 };
 
 #endif

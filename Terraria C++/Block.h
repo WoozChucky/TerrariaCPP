@@ -22,12 +22,10 @@ public:
 };
 
 class Block {
-	std::string name;
-	int id;
-	bool breakable;
-	int x, y;
-public:
-	Block(std::string Name, int ID, bool Breakable, int X, int Y);
-	void Draw(Consola Console);
+	int _id;
+	int _ticks;
+	bool _breakable;
 
+public:
+	Block(int ID, bool Breakable, int Ticks);
 };
