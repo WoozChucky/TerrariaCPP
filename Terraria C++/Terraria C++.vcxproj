@@ -83,7 +83,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Mine.h" />
     <ClInclude Include="Miner.h" />
-    <ClInclude Include="Ponto.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Utensilio.h" />
   </ItemGroup>

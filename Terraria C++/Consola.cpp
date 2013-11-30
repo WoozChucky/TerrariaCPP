@@ -3,117 +3,125 @@
 
 /* Pequenas correcoes. Nov. 2013 */
 
-#include "Consola.h"                      
+#include "Consola.h"
 #include <windows.h>
 #include <stdio.h>
 
-Consola::Consola() {
-	hconsola = GetStdHandle(STD_OUTPUT_HANDLE);
-	hStdin = GetStdHandle(STD_INPUT_HANDLE);
-	hwnd = GetConsoleWindow(); // NT upwards. Nem queiram saber como seria para 95 e 98
+Consola::Consola()
+{
+    hconsola = GetStdHandle(STD_OUTPUT_HANDLE);
+    hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    hwnd = GetConsoleWindow(); // NT upwards. Nem queiram saber como seria para 95 e 98
 }
 
-void Consola::gotoxy(int x, int y) {
-	COORD coord;
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(hconsola, coord);
+void Consola::gotoxy(int x, int y)
+{
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(hconsola, coord);
 }
 
-void Consola::clrscr() {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	const COORD startCoords = { 0, 0 };
-	DWORD dummy;
+void Consola::clrscr()
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    const COORD startCoords = { 0, 0 };
+    DWORD dummy;
 
-	GetConsoleScreenBufferInfo(hconsola, &csbi);
-	FillConsoleOutputCharacter(hconsola,
-		' ',
-		csbi.dwSize.X * csbi.dwSize.Y,
-		startCoords,
-		&dummy);
-	FillConsoleOutputAttribute(hconsola,
-		csbi.wAttributes,
-		csbi.dwSize.X * csbi.dwSize.Y,
-		startCoords,
-		&dummy);
-	gotoxy(0, 0);
+    GetConsoleScreenBufferInfo(hconsola, &csbi);
+    FillConsoleOutputCharacter(hconsola,
+                               ' ',
+                               csbi.dwSize.X * csbi.dwSize.Y,
+                               startCoords,
+                               &dummy);
+    FillConsoleOutputAttribute(hconsola,
+                               csbi.wAttributes,
+                               csbi.dwSize.X * csbi.dwSize.Y,
+                               startCoords,
+                               &dummy);
+    gotoxy(0, 0);
 }
 
-void Consola::setTextColor(WORD color) {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(hconsola, &csbi);
-	WORD cor = csbi.wAttributes;
-	cor &= 0xFFF0;
-	cor |= color;
-	// duvidas acerca destas duas linhas -> TI ou TAC
-	SetConsoleTextAttribute(hconsola, cor);
-	return;
+void Consola::setTextColor(WORD color)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hconsola, &csbi);
+    WORD cor = csbi.wAttributes;
+    cor &= 0xFFF0;
+    cor |= color;
+    // duvidas acerca destas duas linhas -> TI ou TAC
+    SetConsoleTextAttribute(hconsola, cor);
+    return;
 }
 
-void Consola::setBackgroundColor(WORD color) {
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	GetConsoleScreenBufferInfo(hconsola, &csbi);
-	WORD cor = csbi.wAttributes;
-	cor &= 0xFF0F;
-	cor |= (color << 4);
-	// duvidas acerca destas duas linhas -> TI ou TAC
-	SetConsoleTextAttribute(hconsola, cor);
+void Consola::setBackgroundColor(WORD color)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hconsola, &csbi);
+    WORD cor = csbi.wAttributes;
+    cor &= 0xFF0F;
+    cor |= (color << 4);
+    // duvidas acerca destas duas linhas -> TI ou TAC
+    SetConsoleTextAttribute(hconsola, cor);
 }
 
-void Consola::setScreenSize(int nLinhas, int nCols) {
-	COORD tam;
-	SMALL_RECT DisplayArea;
+void Consola::setScreenSize(int nLinhas, int nCols)
+{
+    COORD tam;
+    SMALL_RECT DisplayArea;
 
-	this->setColunas(nCols);
-	this->setLinhas(nLinhas);
+    this->setColunas(nCols);
+    this->setLinhas(nLinhas);
 
-	tam.X = nCols;
-	tam.Y = nLinhas;
-	SetConsoleScreenBufferSize(hconsola, tam);   // isto muda o tamanho da matriz de caracteres
+    tam.X = nCols;
+    tam.Y = nLinhas;
+    SetConsoleScreenBufferSize(hconsola, tam);   // isto muda o tamanho da matriz de caracteres
 
-	DisplayArea.Top = 0;
-	DisplayArea.Left = 0;
-	DisplayArea.Bottom = nLinhas - 1;
-	DisplayArea.Right = nCols - 1;
-	SetConsoleWindowInfo(hconsola, TRUE, &DisplayArea);  // isto muda o tamanho da area da janela em caracteres
+    DisplayArea.Top = 0;
+    DisplayArea.Left = 0;
+    DisplayArea.Bottom = nLinhas - 1;
+    DisplayArea.Right = nCols - 1;
+    SetConsoleWindowInfo(hconsola, TRUE, &DisplayArea);  // isto muda o tamanho da area da janela em caracteres
 }
 
 // usar esta de preferência a não ser que se esteja no XP ou anterior
-void Consola::setTextSize(int x, int y) {
-	CONSOLE_FONT_INFOEX cfont;
+void Consola::setTextSize(int x, int y)
+{
+    CONSOLE_FONT_INFOEX cfont;
 
-	cfont.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    cfont.cbSize = sizeof(CONSOLE_FONT_INFOEX);
 
-	GetCurrentConsoleFontEx(hconsola, false, &cfont);
-	cfont.dwFontSize.X = x;
-	cfont.dwFontSize.Y = y;
-	SetCurrentConsoleFontEx(hconsola, false, &cfont);
+    GetCurrentConsoleFontEx(hconsola, false, &cfont);
+    cfont.dwFontSize.X = x;
+    cfont.dwFontSize.Y = y;
+    SetCurrentConsoleFontEx(hconsola, false, &cfont);
 }
 
 
-char Consola::getch(void) {
-	INPUT_RECORD irInputRecord;
-	DWORD dwEventsRead;
-	CHAR cChar;
+char Consola::getch(void)
+{
+    INPUT_RECORD irInputRecord;
+    DWORD dwEventsRead;
+    CHAR cChar;
 
-	while (ReadConsoleInputA(hStdin, &irInputRecord, 1, &dwEventsRead)) /* Read key press */
-	if (irInputRecord.EventType == KEY_EVENT
-		&& irInputRecord.Event.KeyEvent.wVirtualKeyCode != VK_SHIFT
-		&& irInputRecord.Event.KeyEvent.wVirtualKeyCode != VK_MENU
-		&& irInputRecord.Event.KeyEvent.wVirtualKeyCode != VK_CONTROL)
-	{
+    while (ReadConsoleInputA(hStdin, &irInputRecord, 1, &dwEventsRead)) /* Read key press */
+        if (irInputRecord.EventType == KEY_EVENT
+                && irInputRecord.Event.KeyEvent.wVirtualKeyCode != VK_SHIFT
+                && irInputRecord.Event.KeyEvent.wVirtualKeyCode != VK_MENU
+                && irInputRecord.Event.KeyEvent.wVirtualKeyCode != VK_CONTROL)
+            {
 
-		cChar = irInputRecord.Event.KeyEvent.uChar.AsciiChar;
-		ReadConsoleInputA(hStdin, &irInputRecord, 1, &dwEventsRead); /* Read key release */
+                cChar = irInputRecord.Event.KeyEvent.uChar.AsciiChar;
+                ReadConsoleInputA(hStdin, &irInputRecord, 1, &dwEventsRead); /* Read key release */
 
-		if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_LEFT) return ESQUERDA;
-		if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_RIGHT) return DIREITA;
-		if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_UP) return CIMA;
-		if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_DOWN) return BAIXO;
+                if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_LEFT) return ESQUERDA;
+                if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_RIGHT) return DIREITA;
+                if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_UP) return CIMA;
+                if (irInputRecord.Event.KeyEvent.wVirtualKeyCode == VK_DOWN) return BAIXO;
 
-		return cChar;
-	}
-	return EOF;
+                return cChar;
+            }
+    return EOF;
 }
 
 
@@ -128,130 +136,137 @@ typedef BOOL(WINAPI * GetConsoleFontInfo_)(HANDLE ConsoleOutput, BOOL Unknown1, 
 typedef DWORD(WINAPI * GetNumberOfConsoleFonts_)(); // kernel32!GetNumberOfConsoleFonts
 
 
-void Consola::setTextSizeXP(int x, int y){
-	// Configura acesso às funções "secretas" do Windows
-	SetConsoleFont_ SetConsoleFont = reinterpret_cast<SetConsoleFont_>(GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetConsoleFont"));
-	GetConsoleFontInfo_ GetConsoleFontInfo = reinterpret_cast<GetConsoleFontInfo_>(GetProcAddress(GetModuleHandle(L"kernel32.dll"), "GetConsoleFontInfo"));
-	GetNumberOfConsoleFonts_ GetNumberOfConsoleFonts = reinterpret_cast<GetNumberOfConsoleFonts_>(GetProcAddress(GetModuleHandle(L"kernel32.dll"), "GetNumberOfConsoleFonts"));
+void Consola::setTextSizeXP(int x, int y)
+{
+    // Configura acesso às funções "secretas" do Windows
+    SetConsoleFont_ SetConsoleFont = reinterpret_cast<SetConsoleFont_>(GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetConsoleFont"));
+    GetConsoleFontInfo_ GetConsoleFontInfo = reinterpret_cast<GetConsoleFontInfo_>(GetProcAddress(GetModuleHandle(L"kernel32.dll"), "GetConsoleFontInfo"));
+    GetNumberOfConsoleFonts_ GetNumberOfConsoleFonts = reinterpret_cast<GetNumberOfConsoleFonts_>(GetProcAddress(GetModuleHandle(L"kernel32.dll"), "GetNumberOfConsoleFonts"));
 
-	// Num de fontes
-	DWORD NumFonts = GetNumberOfConsoleFonts();
+    // Num de fontes
+    DWORD NumFonts = GetNumberOfConsoleFonts();
 
-	// alloca matriz de cont infos
-	CONSOLE_FONT_INFO* ConsoleInfo = new CONSOLE_FONT_INFO[sizeof(CONSOLE_FONT_INFO)* NumFonts];
+    // alloca matriz de cont infos
+    CONSOLE_FONT_INFO* ConsoleInfo = new CONSOLE_FONT_INFO[sizeof(CONSOLE_FONT_INFO)* NumFonts];
 
-	// obtem info das fontes todas
-	GetConsoleFontInfo(hconsola, FALSE, NumFonts, ConsoleInfo);
+    // obtem info das fontes todas
+    GetConsoleFontInfo(hconsola, FALSE, NumFonts, ConsoleInfo);
 
-	// percorre-as todas. O melhor é não chamar isto muitas vezes
-	for (size_t i = 0; i < NumFonts; ++i) {
-		// Indaga o tamanho (suportado) da fonte. Pode não haver nenhuma para esse tamanho
-		ConsoleInfo[i].dwFontSize = GetConsoleFontSize(GetStdHandle(STD_OUTPUT_HANDLE), ConsoleInfo[i].nFont);
+    // percorre-as todas. O melhor é não chamar isto muitas vezes
+    for (size_t i = 0; i < NumFonts; ++i)
+        {
+            // Indaga o tamanho (suportado) da fonte. Pode não haver nenhuma para esse tamanho
+            ConsoleInfo[i].dwFontSize = GetConsoleFontSize(GetStdHandle(STD_OUTPUT_HANDLE), ConsoleInfo[i].nFont);
 
-		// Encontrou uma. muda para essa e já está (mesmo que haja outras)
-		if (ConsoleInfo[i].dwFontSize.X == x && ConsoleInfo[i].dwFontSize.Y == y) {
-			// x,y = tamanho desejado (se houver)
-			// muda para essa fonte e sai
-			SetConsoleFont(GetStdHandle(STD_OUTPUT_HANDLE), ConsoleInfo[i].nFont);
-			break;
-		}
-	}
+            // Encontrou uma. muda para essa e já está (mesmo que haja outras)
+            if (ConsoleInfo[i].dwFontSize.X == x && ConsoleInfo[i].dwFontSize.Y == y)
+                {
+                    // x,y = tamanho desejado (se houver)
+                    // muda para essa fonte e sai
+                    SetConsoleFont(GetStdHandle(STD_OUTPUT_HANDLE), ConsoleInfo[i].nFont);
+                    break;
+                }
+        }
 
-	// devolve a matriz de INFO
-	delete[] ConsoleInfo;
+    // devolve a matriz de INFO
+    delete[] ConsoleInfo;
 }
 
 
 // estas funcoes servem para pouco a nao ser que nao se tape/destape a janela
 // o refresh da janela da consola não reactualiza isto
 // por esse motivo nao achei que valesse apena optimizar certos aspectos delas
-void Consola::drawLine(int x1, int y1, int x2, int y2, int cor){
-	HDC DrawHDC;
-	HPEN hOPen;  // penstyle, width, color
-	HPEN hNPen = CreatePen(PS_SOLID, 2, cor);
-	DrawHDC = GetDC(hwnd);
-	hOPen = (HPEN)SelectObject(DrawHDC, hNPen);  // inicio da linha
-	MoveToEx(DrawHDC, x1, y1, NULL);  // fim da linha
-	LineTo(DrawHDC, x2, y2);
-	DeleteObject(SelectObject(DrawHDC, hOPen));
-	ReleaseDC(hwnd, DrawHDC);
+void Consola::drawLine(int x1, int y1, int x2, int y2, int cor)
+{
+    HDC DrawHDC;
+    HPEN hOPen;  // penstyle, width, color
+    HPEN hNPen = CreatePen(PS_SOLID, 2, cor);
+    DrawHDC = GetDC(hwnd);
+    hOPen = (HPEN)SelectObject(DrawHDC, hNPen);  // inicio da linha
+    MoveToEx(DrawHDC, x1, y1, NULL);  // fim da linha
+    LineTo(DrawHDC, x2, y2);
+    DeleteObject(SelectObject(DrawHDC, hOPen));
+    ReleaseDC(hwnd, DrawHDC);
 }
 
 // converte circle(centerX,centerY,radius,pen) para a WinApi
-void Consola::drawCircle(int X, int Y, int R, int Pen, int Fill){
-	HDC DrawHDC;
-	DrawHDC = GetDC(hwnd);  // penstyle, width, color
-	HPEN   hNPen = CreatePen(PS_SOLID, 2, Pen);
-	HPEN   hOPen = (HPEN)SelectObject(DrawHDC, hNPen);
-	HBRUSH hOldBrush;
-	HBRUSH hNewBrush;  // true  preenche o circulo com a cor
-	if (Fill) {
-		hNewBrush = CreateSolidBrush(Pen);
-		hOldBrush = (HBRUSH)SelectObject(DrawHDC, hNewBrush);
-	}
-	else {
-		hNewBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
-		hOldBrush = (HBRUSH)SelectObject(DrawHDC, hNewBrush);
-	}
-	Ellipse(DrawHDC, X - R, Y + R, X + R, Y - R);
-	DeleteObject(SelectObject(DrawHDC, hOPen));
-	DeleteObject(SelectObject(DrawHDC, hOldBrush));
-	ReleaseDC(hwnd, DrawHDC);  // torna-se lento
+void Consola::drawCircle(int X, int Y, int R, int Pen, int Fill)
+{
+    HDC DrawHDC;
+    DrawHDC = GetDC(hwnd);  // penstyle, width, color
+    HPEN   hNPen = CreatePen(PS_SOLID, 2, Pen);
+    HPEN   hOPen = (HPEN)SelectObject(DrawHDC, hNPen);
+    HBRUSH hOldBrush;
+    HBRUSH hNewBrush;  // true  preenche o circulo com a cor
+    if (Fill)
+        {
+            hNewBrush = CreateSolidBrush(Pen);
+            hOldBrush = (HBRUSH)SelectObject(DrawHDC, hNewBrush);
+        }
+    else
+        {
+            hNewBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+            hOldBrush = (HBRUSH)SelectObject(DrawHDC, hNewBrush);
+        }
+    Ellipse(DrawHDC, X - R, Y + R, X + R, Y - R);
+    DeleteObject(SelectObject(DrawHDC, hOPen));
+    DeleteObject(SelectObject(DrawHDC, hOldBrush));
+    ReleaseDC(hwnd, DrawHDC);  // torna-se lento
 }
 
 void Consola::setScreenBufferSize(int Linhas, int Colunas)
 {
-	SMALL_RECT rect = { 0, 0, Colunas - 1, Linhas - 1 };
-	COORD c = { Colunas, Linhas };
+    SMALL_RECT rect = { 0, 0, Colunas - 1, Linhas - 1 };
+    COORD c = { Colunas, Linhas };
 
-	SetConsoleWindowInfo(hconsola, TRUE, &rect);
-	SetConsoleScreenBufferSize(hconsola, c);
+    SetConsoleWindowInfo(hconsola, TRUE, &rect);
+    SetConsoleScreenBufferSize(hconsola, c);
 }
 
 void Consola::setColunas(int S)
 {
-	colunas = S;
+    colunas = S;
 }
 
 void Consola::setLinhas(int S)
 {
-	linhas = S;
+    linhas = S;
 }
 
 int Consola::getColunas()
 {
-	return colunas;
+    return colunas;
 }
 
 int Consola::getLinhas()
 {
-	return linhas;
+    return linhas;
 }
 
 static LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM parameter1, LPARAM parameter2)
 {
-	return DefWindowProc(han_Wind, uint_Message, parameter1, parameter2);
+    return DefWindowProc(han_Wind, uint_Message, parameter1, parameter2);
 }
 
 HWND Consola::NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int int_Height)
 {
-	WNDCLASSEX wnd_Structure;
+    WNDCLASSEX wnd_Structure;
 
-	wnd_Structure.cbSize = sizeof(WNDCLASSEX);
-	wnd_Structure.style = CS_HREDRAW | CS_VREDRAW;
+    wnd_Structure.cbSize = sizeof(WNDCLASSEX);
+    wnd_Structure.style = CS_HREDRAW | CS_VREDRAW;
 
-	wnd_Structure.lpfnWndProc = OurWindowProcedure;
-	wnd_Structure.cbClsExtra = 0;
-	wnd_Structure.cbWndExtra = 0;
-	wnd_Structure.hInstance = GetModuleHandle(NULL);
-	wnd_Structure.hIcon = NULL;
-	wnd_Structure.hCursor = NULL;
-	wnd_Structure.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
-	wnd_Structure.lpszMenuName = NULL;
-	wnd_Structure.lpszClassName = L"WindowClassName";
-	wnd_Structure.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+    wnd_Structure.lpfnWndProc = OurWindowProcedure;
+    wnd_Structure.cbClsExtra = 0;
+    wnd_Structure.cbWndExtra = 0;
+    wnd_Structure.hInstance = GetModuleHandle(NULL);
+    wnd_Structure.hIcon = NULL;
+    wnd_Structure.hCursor = NULL;
+    wnd_Structure.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
+    wnd_Structure.lpszMenuName = NULL;
+    wnd_Structure.lpszClassName = L"WindowClassName";
+    wnd_Structure.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
-	RegisterClassEx(&wnd_Structure);
+    RegisterClassEx(&wnd_Structure);
 
-	return CreateWindowEx(WS_EX_CONTROLPARENT, L"WindowClassName", str_Title, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, int_XPos, int_YPos, int_Width, int_Height, NULL, NULL, GetModuleHandle(NULL), NULL);
+    return CreateWindowEx(WS_EX_CONTROLPARENT, L"WindowClassName", str_Title, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE, int_XPos, int_YPos, int_Width, int_Height, NULL, NULL, GetModuleHandle(NULL), NULL);
 }

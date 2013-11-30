@@ -21,9 +21,6 @@
     <ClInclude Include="Miner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ponto.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utensilio.h">
       <Filter>Header Files</Filter>
     </ClInclude>

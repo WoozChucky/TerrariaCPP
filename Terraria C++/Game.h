@@ -19,52 +19,51 @@
 #define DOWN 4
 #define ENTER 13
 
-class Game {
+class Game
+{
 
-	Game *myGame;
-	Miner *myMiner;
-	BlockTypes *myBlockTypes;
-	//Block* myBlocks[10000];
-	Consola *myConsole;
-	Mine *myMine;
-	int linhas, colunas;
-	int _currentStatus;
-	
-	
+    Game *myGame;
+    Miner *myMiner;
+    BlockTypes *myBlockTypes;
+    //Block* myBlocks[10000];
+    Consola *myConsole;
+    Mine *myMine;
+    int linhas, colunas;
+    int _currentStatus;
 
 public:
 
-	const static int ACTIVE = 1;
-	const static int END = 0;
+    const static int ACTIVE = 1;
+    const static int END = 0;
 
-	Game();
+    Game();
 
-	//Sound
-	void SoundOptions();
-	void PlayIntro();
-	void PlayTheme();
-	void StopMusic();
+    //Sound
+    void SoundOptions();
+    void PlayIntro();
+    void PlayTheme();
+    void StopMusic();
 
-	//Write
-	void Write(std::string input);
-	void WriteMainMenu();
-	void WritePauseMenu();
+    //Write
+    void Write(std::string input);
+    void WriteMainMenu();
+    void WritePauseMenu();
 
-	void Start();
-	void NewGame();
-	void SaveGame();
-	void LoadGame();
-	void Play(int playerX = 0, int playerY = 0);
-	void Pause();
-	void Resume();
+    void Start();
+    void NewGame();
+    void SaveGame();
+    void LoadGame();
+    void Play(int playerX = 0, int playerY = 0);
+    void Pause();
+    void Resume();
 
-	Game Load(Game SavedGame);
+    Game Load(Game SavedGame);
 
-	std::string GetLoadFilename(int Index);
-	
-	void CommandMode();
-	
-	
-	const std::string Game::currentDate();
-	int Status() const;
+    std::string GetLoadFilename(int Index);
+
+    void CommandMode();
+
+
+    const std::string Game::currentDate();
+    int Status() const;
 };
