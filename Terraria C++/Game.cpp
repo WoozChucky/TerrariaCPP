@@ -1,17 +1,33 @@
 #include "Game.h"
 
-std::string validCommands[NUM_COMMANDS] =
+std::string validCommands[NUM_COMMANDS][2] =
 {
-    "u", //u nome-utensilio
-    "b", //b ID x y
-    "t", //t x y
-    "g", //g value
-    "e", //e value
-    "c", //c new_name
-    "f", //f name
-    "a", //a source destination
-    "x", //x
-    "j"  //j
+    { "u", "2" }, //u nome-utensilio
+    { "b", "4" }, //b ID x y
+    { "t", "3" },//t x y
+    { "g", "2" },//g value
+    { "e", "2" },//e value
+    { "c", "2" },//c new_name
+    { "f", "2" },//f name
+    { "a", "3" },//a source destination
+    { "x", "2" },//x
+    { "j"  "2" }//j
+};
+
+std::string myBlocks[12] =
+{
+    "M", //Mineiro
+    "P", //Pedra
+    "TM", //Terreno Mole
+    "TD", //Terreno Duro
+    "TcA", //Terra c Aluminio
+    "TcC", //Terra c Carvao
+    "TcF", //Terra c Ferro
+    "TcO", //Terra c Ouro
+    "TcD", //Terra c Diamante
+    "TcFAF", //Terra c Frango Assado Fossilizado
+    "E", //Escada
+    "V" //Viga
 };
 
 Game::Game()
@@ -19,23 +35,126 @@ Game::Game()
     _currentStatus = ACTIVE;
     myGame = this;
     myConsole = new Consola();
-    myBlockTypes = new BlockTypes();
-    myMiner = new Miner(3, 100, 0);
-    myMine = new Mine();
+    myMiner = new Miner();
+    myMiner->setEnergy(100);
+    myMiner->setLife(3);
+}
+
+void Game::InitializeMine(int Rows, int Cols, int Vision)
+{
+    _linhas = Rows;
+    _colunas = Cols;
+    _vision = Vision;
+
+    srand(time(NULL));
+
+    /* Create Mine Array Dinamically */
+    myMine = new Block**[_linhas];
+    for (int r = 0; r < _linhas; r++)
+        {
+            myMine[r] = new Block*[_colunas];
+            for (int c = 0; c < _colunas; c++)
+                myMine[r][c] = new Block();
+        }
+
+    /* Populate Mine Array Automatically */
+    for (int r = 0; r < _linhas; r++)
+        {
+            for (int c = 0; c < _colunas; c++)
+                {
+                    int blockType = rand() % 2 + 2;
+
+
+
+                    /*if (blockType == 1)
+                        {
+                            myMine[r][c]->setID(myBlocks[P]);
+                            myMine[r][c]->setBreakeable(0);
+                            myMine[r][c]->setTicks(0);
+                            myMine[r][c]->setX(c);
+                            myMine[r][c]->setY(r);
+                        }
+                    else if (blockType == 2)
+                        { */
+                    myMine[r][c]->setID(myBlocks[TM]);
+                    myMine[r][c]->setBreakeable(1);
+                    myMine[r][c]->setTicks(2);
+                    myMine[r][c]->setX(c);
+                    myMine[r][c]->setY(r);
+                    //  }
+                    //else if (blockType == 3) //Ouro de teste
+                    //    {
+                    //        if (c > _colunas / 2)
+                    //            {
+                    //                myMine[r][c]->setID(myBlocks[TcO]);
+                    //                myMine[r][c]->setBreakeable(1);
+                    //                myMine[r][c]->setTicks(2);
+                    //                myMine[r][c]->setX(c);
+                    //                myMine[r][c]->setY(r);
+                    //            }
+                    //        else
+                    //            {
+                    //                myMine[r][c]->setID(myBlocks[TM]);
+                    //                myMine[r][c]->setBreakeable(1);
+                    //                myMine[r][c]->setTicks(1);
+                    //                myMine[r][c]->setX(c);
+                    //                myMine[r][c]->setY(r);
+                    //            }
+                    //    }
+
+
+                    if (r == _linhas / 2 && c == _colunas / 2) //Mineiro
+                        {
+                            /*myMine[r][c]->setID(myBlocks[M]);
+                            myMine[r][c]->setX(c);
+                            myMine[r][c]->setY(r);*/
+                        }
+                    // AI da Mine
+                }
+        }
+}
+
+void Game::DrawMine(int startDrawX, int startDrawY)
+{
+    int piX = (myMiner->getX() - _vision > 0) ? myMiner->getX() - _vision : 0; //Initial X
+    int piY = (myMiner->getY() - _vision > 0) ? myMiner->getY() - _vision : 0; //Initial Y
+
+    int pfX = (myMiner->getX() + _vision < _colunas) ? myMiner->getX() + _vision : myMiner->getX() + (_colunas - myMiner->getX()) - 1; //Final X
+    int pfY = (myMiner->getY() + _vision < _linhas) ? myMiner->getY() + _vision : myMiner->getY() + (_linhas - myMiner->getY()) - 1; //Final Y
+
+    for (startDrawX = piY; startDrawX <= pfY; startDrawX++)
+        {
+            for (startDrawY = piX; startDrawY <= pfX; startDrawY++)
+                {
+                    (startDrawX >= piY && startDrawX <= pfY && startDrawY >= piX && startDrawY <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), startDrawY * 5, startDrawX * 5) : 0;
+                }
+        }
+}
+
+void Game::RemoveBlock(Block * &bloco)
+{
+    bloco = new Block();
+    bloco->setID("NULL");
+    bloco->setX(-1);
+    bloco->setY(-1);
 }
 
 void Game::WriteMainMenu()
 {
     myConsole->gotoxy(14, 2);
+    myConsole->setTextColor(VERDE);
     std::cout << "Bem vindo ao Gem Miner";
     myConsole->gotoxy(10, 8);
+    myConsole->setTextColor(AMARELO);
     std::cout << "** Escolhe uma opcao **";
     myConsole->gotoxy(10, 10);
+    myConsole->setTextColor(VERMELHO);
     std::cout << "Novo Jogo";
     myConsole->gotoxy(10, 12);
     std::cout << "Carregar Jogo";
     myConsole->gotoxy(10, 14);
     std::cout << "Sair";
+    myConsole->setTextColor(AZUL_CLARO);
 }
 
 void Game::WritePauseMenu()
@@ -107,23 +226,25 @@ void Game::NewGame()
 {
     int nLinhas, nColunas;
 
-    myConsole->clrscr();
-
-    myConsole->gotoxy(14, 2);
+    clrscr();
+    gotoxy(14, 2);
     std::cout << "Criacao Novo Jogo";
-    std::cout << std::endl << "Dimensao da Mina:" << std::endl;
+    std::cout << std::endl << "Dimensao da Mina" << std::endl;
     std::cout << "Linhas: ";
+    myConsole->setTextColor(VERMELHO_CLARO);
     std::cin >> nLinhas;
+    myConsole->setTextColor(AZUL_CLARO);
     std::cout << "Colunas: ";
+    myConsole->setTextColor(VERMELHO_CLARO);
     std::cin >> nColunas;
     std::cout << std::endl;
 
-    linhas = nLinhas;
-    colunas = nColunas;
+    _linhas = nLinhas;
+    _colunas = nColunas;
 
-    myConsole->clrscr();
+    clrscr();
 
-    myMine->Initialize(linhas, colunas, 2);
+    InitializeMine(_linhas, _colunas, 2);
 
     StopMusic();
     PlayTheme();
@@ -206,7 +327,7 @@ void Game::LoadGame()
     std::cout << myGame->myMiner->getX();
     system("pause");
 
-    Play(myGame->myMiner->getX(), myGame->myMiner->getY());
+    Play();
 
 
 }
@@ -287,40 +408,29 @@ void Game::SaveGame()
     myConsole->getch();
 }
 
-void Game::Play(int playerX, int playerY)
+void Game::Play()
 {
-    if (playerX != 0 && playerY != 0)
-        {
-            myMine->Initialize(linhas, colunas);
-            std::cout << "Mina inicializada pelo savegame" << std::endl;
-            std::cout << playerX, playerY;
-            system("pause");
-        }
-
+    setScreenBufferSize(7 * 5 + 5, 7 * 5);
+    setScreenSize(7 * 5 + 5, 7 * 5);
+    setTextColor(PRETO);
 
     char tecla;
+    int pX = _linhas / 2, pY = _colunas / 2; //Player Start Position
+    int vX = _linhas / 2 - 3, vY = _colunas / 2 - 3; //Mine Start Writing Position
 
-    int x = playerX, y = playerY; //Character Start Position
-    int wX = (7 / 2) * 5, wY = (7 / 2) * 5; //Scroll Boundings
-    int vX = x, vY = y; //Camera Start Position #Virtual Coordinates
 
+    myMiner->setCoordinates(pX, pY);
     //myConsole->NewWindow(L"Gem Miner - Stats", 400, 400, 400, 250);
-    myConsole->setScreenBufferSize(linhas * 5 + 1, colunas);
-    myConsole->setScreenSize(7 * 5, 7 * 5);
 
-
-    if (_currentStatus != ACTIVE)
-        return;
-
+    /* Main cycle of Game */
     while (myMiner->hasLifes())
         {
-            myMiner->isAlive(*myConsole);
-            //myMiner->showStats(*myConsole);
-            myMiner->Show(*myConsole, x, y);
+            clrscr();
+            DrawMine(vX, vY); //Draws Mine
+            myMiner->Show(); //Draws Miner
+            myMiner->showStats(); //Draw Stats
 
-            myConsole->gotoxy(vX, vY);
-
-            tecla = myConsole->getch();
+            tecla = getch();
 
             switch (tecla)
                 {
@@ -329,62 +439,143 @@ void Game::Play(int playerX, int playerY)
                     break;
                 case C:
                     CommandMode();
-                    myMiner->Show(*myConsole, x, y);
                     break;
                 case UP:
-                    //Mineiro.DeleteStats(Console,  x);
-                    if (y > 0)
-                        {
-                            myMiner->Move(*myConsole, x, y);
-                            y -= 5;
 
-                            vX = x;
-                            vY = y - wY;
+                    pY -= 1; //Move 1 posição para cima
+
+                    (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
+
+                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
+                        {
+                            if (myMine[pY][pX]->getBreakeable() == 1)
+                                {
+                                    if (myMine[pY][pX]->getTicks() > 0)
+                                        {
+                                            while (myMine[pY][pX]->getTicks() > 0)
+                                                {
+                                                    if (myMiner->getEnergy() > 0)
+                                                        {
+                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
+                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
+                                                        }
+                                                }
+                                            RemoveBlock(myMine[pX][pY]);
+                                        }
+                                }
+                            else
+                                {
+                                    pY += 1;
+                                }
                         }
+                    myMiner->Move(pX, pY);
                     break;
                 case DOWN:
 
-                    //Mineiro.DeleteStats(Console, x);
-                    if (y < (linhas * 5) - 5)
-                        {
-                            myMiner->Move(*myConsole, x, y);
-                            y += 5;
-                            vX = x;
-                            vY = y + wY;
-                        }
-                    break;
-                case RIGHT:
+                    pY += 1; //Move 1 posição para baixo
 
-                    //Mineiro.DeleteStats(Console, x);
-                    if (x < (colunas * 5) - 5)
+                    (pY >= _linhas - 1 ? pY = _linhas - 1 : pY = pY); //Bottom Bounding
+
+                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
                         {
-                            myMiner->Move(*myConsole, x, y);
-                            x += 5;
-                            vY = y;
-                            vX = x + wX;
+                            if (myMine[pY][pX]->getBreakeable() == 1)
+                                {
+                                    if (myMine[pY][pX]->getTicks() > 0)
+                                        {
+                                            while (myMine[pY][pX]->getTicks() > 0)
+                                                {
+                                                    if (myMiner->getEnergy() > 0)
+                                                        {
+                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
+                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
+                                                        }
+                                                }
+                                            RemoveBlock(myMine[pX][pY]);
+                                        }
+                                }
+                            else
+                                {
+                                    pY -= 1;
+                                }
                         }
+
+                    myMiner->Move(pX, pY);
+
                     break;
                 case LEFT:
+                    pX -= 1; //Move 1 posição para a esquerda
 
-                    //Mineiro.DeleteStats(Console, x);
+                    (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
 
-                    if (x > 0)
+                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
                         {
-                            myMiner->Move(*myConsole, x, y);
-                            x -= 5;
-                            vY = y;
-                            vX = x - wX;
+                            if (myMine[pY][pX]->getBreakeable() == 1)
+                                {
+                                    if (myMine[pY][pX]->getTicks() > 0)
+                                        {
+                                            while (myMine[pY][pX]->getTicks() > 0)
+                                                {
+                                                    if (myMiner->getEnergy() > 0)
+                                                        {
+                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
+                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
+                                                        }
+                                                }
+                                            RemoveBlock(myMine[pX][pY]);
+                                        }
+                                }
+                            else
+                                {
+                                    pX += 1;
+                                }
                         }
+
+                    myMiner->Move(pX, pY);
+                    break;
+
+                case RIGHT:
+
+                    pX += 1; //Moves 1 position to the right
+
+                    (pX >= _colunas - 1 ? pX = _colunas - 1 : pX = pX); //Right Bounding
+
+                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
+                        {
+                            if (myMine[pY][pX]->getBreakeable() == 1)
+                                {
+                                    if (myMine[pY][pX]->getTicks() > 0)
+                                        {
+                                            while (myMine[pY][pX]->getTicks() > 0)
+                                                {
+                                                    if (myMiner->getEnergy() > 0)
+                                                        {
+                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
+                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
+                                                        }
+                                                }
+                                            RemoveBlock(myMine[pX][pY]);
+                                        }
+                                }
+                            else
+                                {
+                                    pX -= 1;
+                                }
+                        }
+
+                    myMiner->Move(pX, pY);
                     break;
                 }
         }
+    Write("Game Over");
+    getch();
     _currentStatus = END;
+    return;
 }
 
 void Game::Pause()
 {
+    setTextColor(PRETO);
     char tecla;
-    myConsole->setScreenSize(20, 50);
     myConsole->clrscr();
     WritePauseMenu();
 
@@ -431,13 +622,8 @@ void Game::Pause()
 
 void Game::Resume()
 {
-    myConsole->clrscr();
-    myConsole->setScreenBufferSize(linhas * 5 + 1, colunas * 5);
-    myConsole->setScreenSize(7 * 5, 7 * 5);
-    myConsole->clrscr();
-
     //TODO: Fazer DrawParcial da mina
-    myMine->Draw();
+    //DrawMine();
 }
 
 void Game::SoundOptions()
@@ -509,26 +695,44 @@ void Game::StopMusic()
 
 void Game::CommandMode()
 {
-    std::string command;
+    std::string read;
     bool valid = false;
     int action = 0;
 
     myConsole->clrscr();
 
 
-    while (command != "j")
+    while (read != "j")
         {
             //Console.clrscr();
-            myConsole->gotoxy(10, 42);
+            myConsole->gotoxy(2, 2);
             std::cout << "[MODO DE COMANDOS]";
-            myConsole->gotoxy(10, 44);
-            std::cout << "Comando : _____________________________";
-            myConsole->gotoxy(20, 44);
-            std::getline(std::cin, command);
+            myConsole->gotoxy(0, 4);
+            std::cout << "Comando : ____________________";
+            myConsole->gotoxy(10, 4);
+            std::getline(std::cin, read);
+
+            std::istringstream iss(read);
+            std::istringstream countstream(read);
+            std::string command;
+
+            int count = 0;
+
+            do
+                {
+                    std::string counter;
+                    countstream >> counter;
+                    count++;
+                }
+            while (countstream);
+            count--;
+
+            iss >> command;
+
 
             for (int i = 0; i< NUM_COMMANDS; i++)
                 {
-                    if (command.compare(validCommands[i]) == 0)
+                    if (command.compare(validCommands[i][0]) == 0)
                         {
                             valid = true;
                             action = i;
@@ -539,40 +743,104 @@ void Game::CommandMode()
             if (valid == false)
                 {
                     myConsole->clrscr();
-                    myConsole->gotoxy(10, 42);
+                    myConsole->gotoxy(2, 2);
                     std::cout << "[MODO DE COMANDOS]";
-                    myConsole->gotoxy(10, 44);
-                    std::cout << "Comando : _____________________________";
-                    myConsole->gotoxy(10, 46);
-                    std::cout << "[GAME] -> '" << command << "' nao encontrado.";
+                    myConsole->gotoxy(0, 4);
+                    std::cout << "Comando : ____________________";
+                    myConsole->gotoxy(0, 6);
+                    std::cout << "[GAME] -> '" << read << "' nao encontrado.";
                 }
             else
                 {
                     valid = false;
                     myConsole->clrscr();
-                    myConsole->gotoxy(10, 42);
+                    myConsole->gotoxy(2, 2);
                     std::cout << "[MODO DE COMANDOS]";
-                    myConsole->gotoxy(10, 44);
-                    std::cout << "Comando : _____________________________";
-                    myConsole->gotoxy(10, 46);
-                    std::cout << "[GAME] -> '" << command << "' existe.";
+                    myConsole->gotoxy(0, 4);
+                    std::cout << "Comando : ____________________";
+                    myConsole->gotoxy(0, 6);
+                    std::cout << "[GAME] -> '" << read << "' existe." << std::endl;
                     switch (action)
                         {
                         case 0:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 1:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 2:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 3:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 4:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 5:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 6:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 7:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            iss >> command;
+                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 8:
                             myConsole->clrscr();
@@ -593,7 +861,7 @@ void Game::CommandMode()
 void Game::Write(std::string input)
 {
     myConsole->clrscr();
-    myConsole->gotoxy(14, 2);
+    myConsole->gotoxy(10, 2);
     std::cout << input << std::endl;
 }
 

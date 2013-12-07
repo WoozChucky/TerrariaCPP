@@ -9,16 +9,13 @@
 void main()
 {
     Game *myGame = new Game();
-    Utensilio Utensilios[NUM_UTENSILIOS];
 
+    //TODO: Insert Utensilios into Game Class
+    Utensilio Utensilios[NUM_UTENSILIOS];
     /* Loads utensilios data into array of objects*/
     LoadUtensilios(Utensilios);
 
-    while (myGame->Status() != myGame->END)
-        {
-            myGame->Start();
-        }
-    myGame->Write("Game Over");
-    system("pause");
+    myGame->Start();
+    delete myGame;
     return;
 }

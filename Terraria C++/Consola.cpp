@@ -70,9 +70,6 @@ void Consola::setScreenSize(int nLinhas, int nCols)
     COORD tam;
     SMALL_RECT DisplayArea;
 
-    this->setColunas(nCols);
-    this->setLinhas(nLinhas);
-
     tam.X = nCols;
     tam.Y = nLinhas;
     SetConsoleScreenBufferSize(hconsola, tam);   // isto muda o tamanho da matriz de caracteres
@@ -221,26 +218,6 @@ void Consola::setScreenBufferSize(int Linhas, int Colunas)
 
     SetConsoleWindowInfo(hconsola, TRUE, &rect);
     SetConsoleScreenBufferSize(hconsola, c);
-}
-
-void Consola::setColunas(int S)
-{
-    colunas = S;
-}
-
-void Consola::setLinhas(int S)
-{
-    linhas = S;
-}
-
-int Consola::getColunas()
-{
-    return colunas;
-}
-
-int Consola::getLinhas()
-{
-    return linhas;
 }
 
 static LRESULT CALLBACK OurWindowProcedure(HWND han_Wind, UINT uint_Message, WPARAM parameter1, LPARAM parameter2)

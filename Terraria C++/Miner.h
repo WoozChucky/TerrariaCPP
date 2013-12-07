@@ -3,52 +3,41 @@
 
 #include "Consola.h"
 
-class Miner
+class Miner : public Consola
 {
-    //std::vector<int, int> X1;
-    //std::vector<int, int> X2;
-    int x, y;
-    int life;
-    int energy;
-    int coins;
-    bool picareta;
-    bool lanterna;
-    bool escadas;
+    int _life;
+    int _energy;
+    int _coins;
+    int _x, _y; //current coordinates
 public:
-    Miner(int Life, int Energy, int Coins);
-
-    void Move(Consola Console, int X, int Y);
+    /* General */
     void ResetStats();
 
-    //Draws
-    void Show(Consola Console, int X = 10, int Y = 10);
-    void Remove(Consola Console);
-    void showStats(Consola Console);
-    void DeleteStats(Consola Console, int X);
-
-    //Verifications
+    /* Verifications */
     bool hasLifes();
-    void isAlive(Consola Console);
+    void isAlive();
 
-    //Sets
-    void setPosition(int x, int y);
+    /* Movement */
+    void Move(int X, int Y);
+    void setCoordinates(int X, int Y);
+
+    /* Draws */
+    void Show();
+    void Remove();
+    void showStats();
+    void DeleteStats();
+
+    /* Sets */
     void setLife(int S);
     void setEnergy(int S);
+    void setCoins(int S);
 
-    //Stats
+    /* Gets */
     int getEnergy();
     int getCoins();
     int getLife();
-
-    //Positioning
     int getX();
     int getY();
-
-    //Bounds
-    int getX1();
-    int getX2();
-    int getY1();
-    int getY2();
 
 };
 

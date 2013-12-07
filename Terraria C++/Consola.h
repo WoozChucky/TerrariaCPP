@@ -6,17 +6,7 @@
 #ifndef __CONSOLA_H__
 #define __CONSOLA_H__
 
-#include <windows.h>
-#include "mmsystem.h"
-#include <dshow.h>
-#include <cstdio>
-#include <vector>
-#include <fstream>
-#include <ctime>
-#include <time.h>
-
-#pragma comment(lib, "strmiids.lib")
-#pragma comment(lib, "winmm.lib")
+#include "Core.h"
 
 class Consola
 {
@@ -24,7 +14,6 @@ class Consola
     HANDLE hconsola;
     HANDLE hStdin;
     HWND hwnd;
-    int colunas, linhas;
 
 public:
 
@@ -51,9 +40,6 @@ public:
     const static char DIREITA = 2;
     const static char CIMA = 3;
     const static char BAIXO = 4;
-    const static char ENTER = 13;
-    const static char ESCAPE = 27;
-    const static char C = 99;
 
     Consola();
     void gotoxy(int x, int y);
@@ -61,18 +47,14 @@ public:
     void setTextColor(WORD color);
     void setBackgroundColor(WORD color);
     void setScreenSize(int nLinhas, int nCols);
-    void setScreenBufferSize(int Linhas, int Colunas);
+    void setScreenBufferSize(int Linhas, int Colunas); //implemented
     void setTextSize(int x, int y);
     void setTextSizeXP(int x, int y);
     char getch(void);
     void drawLine(int x1, int y1, int x2, int y2, int cor);
     void drawCircle(int X, int Y, int R, int Pen, int Fill);
-    void setLinhas(int S);
-    void setColunas(int S);
-    int getLinhas();
-    int getColunas();
 
-    HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int int_Height);
+    HWND NewWindow(LPCTSTR str_Title, int int_XPos, int int_YPos, int int_Width, int int_Height); //implemented
 };
 
 #endif

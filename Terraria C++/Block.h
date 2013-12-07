@@ -1,38 +1,27 @@
-#include <iostream>
-#include <istream>
-#include <fstream>
-#include <string>
-#include <vector>
 #include "Miner.h"
 
-class BlockTypes
+class Block : public Miner
 {
-    std::vector<std::string> Name;
-    std::vector<int> ID;
-    std::vector<bool> Breakable;
-
-public:
-    BlockTypes() :
-        Name({ "Pedra", "Terreno duro", "Terreno mole", "Ouro", "Lava" }),
-         ID({ 0, 1, 2, 3, 4 }),
-    Breakable({ false, true, true, true, false })	{};
-
-    std::string getName(int ID)
-    {
-        return Name[ID];
-    }
-    bool isBrekeable(int ID)
-    {
-        return Breakable[ID];
-    }
-};
-
-class Block
-{
-    int _id;
+    int _x, _y;
+    std::string _id;
     int _ticks;
-    bool _breakable;
+    int _breakeable;
 
 public:
-    Block(int ID, bool Breakable, int Ticks);
+    /* Gets */
+    int getX();
+    int getY();
+    std::string getID();
+    int getTicks();
+    int getBreakeable();
+
+    /* Sets */
+    void setX(int S);
+    void setY(int S);
+    void setID(std::string S);
+    void setTicks(int S);
+    void setBreakeable(int S);
+
+    /* Draws */
+    void DrawBlock(std::string id, int x, int y);
 };

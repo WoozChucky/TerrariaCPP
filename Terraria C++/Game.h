@@ -1,34 +1,13 @@
-#include "Mine.h"
+#include "Block.h"
 
-#define NEW_GAME 10
-#define RESUME_GAME 10
-#define UNMUTE 10
-#define MUTE 12
-#define SOUND_OPTIONS 12
-#define LOAD_GAME 12
-#define EXIT_GAME 16
-#define SAVE_GAME 14
-
-#define NUM_COMMANDS 10
-
-#define C 99
-#define ESCAPE 27
-#define LEFT 1
-#define RIGHT 2
-#define UP 3
-#define DOWN 4
-#define ENTER 13
-
-class Game
+class Game : public Block
 {
 
     Game *myGame;
     Miner *myMiner;
-    BlockTypes *myBlockTypes;
-    //Block* myBlocks[10000];
     Consola *myConsole;
-    Mine *myMine;
-    int linhas, colunas;
+    Block ***myMine;
+    int _linhas, _colunas, _vision;
     int _currentStatus;
 
 public:
@@ -37,6 +16,11 @@ public:
     const static int END = 0;
 
     Game();
+
+    void InitializeMine(int Rows, int Cols, int Vision);
+    void DrawMine(int startDrawX, int startDrawY);
+
+    void RemoveBlock(Block * &bloco);
 
     //Sound
     void SoundOptions();
@@ -53,7 +37,7 @@ public:
     void NewGame();
     void SaveGame();
     void LoadGame();
-    void Play(int playerX = 0, int playerY = 0);
+    void Play();
     void Pause();
     void Resume();
 

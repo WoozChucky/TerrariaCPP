@@ -1,129 +1,108 @@
-#include <iostream>
 #include "Miner.h"
 
-
-
-Miner::Miner(int Life, int Energy, int Coins)
-{
-    this->energy = Energy;
-    this->coins = Coins;
-    this->life = Life;
-    this->escadas = false;
-    this->picareta = false;
-    this->lanterna = false;
-}
-
+/* General */
 void Miner::ResetStats()
 {
-    energy = 100;
-    coins = 0;
-    life = 3;
+    _energy = 100;
+    _coins = 0;
+    _life = 3;
 }
 
+/* Verifications */
 bool Miner::hasLifes()
 {
-    if (this->life <= 0)
+    if (_life <= 0)
         return false;
     return true;
 }
-
-void Miner::isAlive(Consola Console)
+void Miner::isAlive()
 {
-    if (this->energy <= 0)
+    if (_energy <= 0)
         {
-            Console.clrscr();
-            Console.gotoxy(4, 18);
-            std::cout << "Perdeste toda a energia e 1 vida. Prima qualquer tecla para continuar.";
-            this->setLife(this->getLife()-1);
-            this->setEnergy(100);
+            clrscr();
+            gotoxy(1, 6);
+            std::cout << "Perdeste toda a energia e 1 vida. Prima qualquer tecla para recomecar.";
+            _life -= 1;
+            _energy = 100;
+            getch();
         }
 }
 
-void Miner::setPosition(int X, int Y)
+/* Movement */
+void Miner::Move(int X, int Y)
 {
-    this->x = X;
-    this->y = Y;
+    Remove();
+    setCoordinates(X, Y);
+    _energy--;
+    isAlive();
+}
+void Miner::setCoordinates(int X, int Y)
+{
+    _x = X;
+    _y = Y;
 }
 
-void Miner::Show(Consola Console, int X, int Y)
+/* Draws */
+void Miner::Show()
 {
-    Console.gotoxy(X, Y);
+    setTextColor(PRETO);
+    gotoxy(_x * 5, _y * 5);
     std::cout << (char)255 << (char)255 << (char)2 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 1);
+    setTextColor(VERMELHO_CLARO);
+    gotoxy(_x * 5, _y * 5 + 1);
     std::cout << (char)255 << (char)205 << (char)203 << (char)205 << (char)255;
 
-    Console.gotoxy(X, Y + 2);
+    gotoxy(_x * 5, _y * 5 + 2);
     std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 3);
+    setTextColor(AZUL);
+    gotoxy(_x * 5, _y * 5 + 3);
     std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 4);
+    gotoxy(_x * 5, _y * 5 + 4);
     std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
-
 }
-
-void Miner::Move(Consola Console, int X, int Y)
+void Miner::Remove()
 {
-    setPosition(X, Y);
-    energy--;
-    Remove(Console);
-}
-
-void Miner::Remove(Consola Console)
-{
-    int X = this->getX();
-    int Y = this->getY();
-
-    Console.gotoxy(X, Y);
+    gotoxy(_x * 5, _y * 5);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 1);
+    gotoxy(_x * 5, _y * 5 + 1);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 2);
+    gotoxy(_x * 5, _y * 5 + 2);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 3);
+    gotoxy(_x * 5, _y * 5 + 3);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 
-    Console.gotoxy(X, Y + 4);
+    gotoxy(_x * 5, _y * 5 + 4);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 }
-
-void Miner::DeleteStats(Consola Console, int X)
+void Miner::DeleteStats()
 {
-    Console.gotoxy(2, 1);
+    gotoxy(2, 1);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-    Console.gotoxy(2, 2);
+    gotoxy(2, 2);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-    Console.gotoxy(2, 3);
+    gotoxy(2, 3);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-    Console.gotoxy(2, 4);
+    gotoxy(2, 4);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-    Console.gotoxy(0, 6);
+    gotoxy(0, 6);
     std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
 }
-
-int Miner::getX()
+void Miner::showStats()
 {
-    return x;
-}
+    setTextColor(PRETO);
+    gotoxy(1, 35);
+    std::cout << "X: " << _x << " Y: " << _y << (char)255;
 
-int Miner::getY()
-{
-    return y;
-}
-
-void Miner::showStats(Consola Console)
-{
-    Console.gotoxy(2, 1);
-    std::cout << "X: " << this->getX() << " Y: " << this->getY() << (char)255;
-
-    Console.gotoxy(2, 2);
-    std::cout << "Lifes: ";
-    switch (this->getLife())
+    gotoxy(1, 36);
+    std::cout << "Lives: ";
+    setTextColor(VERMELHO_CLARO);
+    switch (_life)
         {
         case 3:
             std::cout << (char)3 << (char)3 << (char)3;
@@ -136,78 +115,91 @@ void Miner::showStats(Consola Console)
             break;
         }
 
-    Console.gotoxy(2, 3);
+    setTextColor(PRETO);
+    gotoxy(1, 37);
     std::cout << "Energy: ";
-    if (this->energy == 100)
+    setTextColor(VERMELHO_CLARO);
+    if (_energy == 100)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219;
         }
-    else if (this->energy >= 90)
+    else if (_energy >= 90)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255;
         }
-    else if (this->energy >= 80)
+    else if (_energy >= 80)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255;
         }
-    else if (this->energy >= 70)
+    else if (_energy >= 70)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255;
         }
-    else if (this->energy >= 60)
+    else if (_energy >= 60)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255;
         }
-    else if (this->energy >= 50)
+    else if (_energy >= 50)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
         }
-    else if (this->energy >= 40)
+    else if (_energy >= 40)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
         }
-    else if (this->energy >= 30)
+    else if (_energy >= 30)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
         }
-    else if (this->energy >= 20)
+    else if (_energy >= 20)
         {
             std::cout << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
         }
-    else if (this->energy >= 10)
+    else if (_energy >= 10)
         {
             std::cout << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
         }
-    std::cout << " " << this->getEnergy() << "/100" << (char)255;
+    std::cout << " " << _energy << "/100" << (char)255;
 
-    Console.gotoxy(2, 4);
-    std::cout << "Coins: " << this->getCoins();
-
-    Console.gotoxy(0, 6);
-    std::cout << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205 << (char)205;
+    setTextColor(PRETO);
+    gotoxy(1, 38);
+    std::cout << "Coins: ";
+    setTextColor(AMARELO_CLARO);
+    std::cout << _coins;
 }
 
+/* Gets*/
 int Miner::getEnergy()
 {
-    return energy;
+    return _energy;
 }
-
 int Miner::getCoins()
 {
-    return coins;
+    return _coins;
 }
-
 int Miner::getLife()
 {
-    return life;
+    return _life;
+}
+int Miner::getX()
+{
+    return _x;
+}
+int Miner::getY()
+{
+    return _y;
 }
 
+/* Sets */
 void Miner::setLife(int S)
 {
-    life = S;
+    _life = S;
 }
-
 void Miner::setEnergy(int S)
 {
-    energy = S;
+    _energy = S;
+}
+void Miner::setCoins(int S)
+{
+    _coins = S;
 }
