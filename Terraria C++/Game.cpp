@@ -30,16 +30,15 @@ std::string myBlocks[12] =
     "V" //Viga
 };
 
+/* General */
 Game::Game()
 {
     _currentStatus = ACTIVE;
     myGame = this;
     myConsole = new Consola();
-    myMiner = new Miner();
-    myMiner->setEnergy(100);
-    myMiner->setLife(3);
+    myMiner = new Miner(START_LIVES, START_ENERGY, START_GOLD);
+    LoadUtensilios(myUtensilios);
 }
-
 void Game::InitializeMine(int Rows, int Cols, int Vision)
 {
     _linhas = Rows;
@@ -113,66 +112,6 @@ void Game::InitializeMine(int Rows, int Cols, int Vision)
                 }
         }
 }
-
-void Game::DrawMine(int startDrawX, int startDrawY)
-{
-    int piX = (myMiner->getX() - _vision > 0) ? myMiner->getX() - _vision : 0; //Initial X
-    int piY = (myMiner->getY() - _vision > 0) ? myMiner->getY() - _vision : 0; //Initial Y
-
-    int pfX = (myMiner->getX() + _vision < _colunas) ? myMiner->getX() + _vision : myMiner->getX() + (_colunas - myMiner->getX()) - 1; //Final X
-    int pfY = (myMiner->getY() + _vision < _linhas) ? myMiner->getY() + _vision : myMiner->getY() + (_linhas - myMiner->getY()) - 1; //Final Y
-
-    for (startDrawX = piY; startDrawX <= pfY; startDrawX++)
-        {
-            for (startDrawY = piX; startDrawY <= pfX; startDrawY++)
-                {
-                    (startDrawX >= piY && startDrawX <= pfY && startDrawY >= piX && startDrawY <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), startDrawY * 5, startDrawX * 5) : 0;
-                }
-        }
-}
-
-void Game::RemoveBlock(Block * &bloco)
-{
-    bloco = new Block();
-    bloco->setID("NULL");
-    bloco->setX(-1);
-    bloco->setY(-1);
-}
-
-void Game::WriteMainMenu()
-{
-    myConsole->gotoxy(14, 2);
-    myConsole->setTextColor(VERDE);
-    std::cout << "Bem vindo ao Gem Miner";
-    myConsole->gotoxy(10, 8);
-    myConsole->setTextColor(AMARELO);
-    std::cout << "** Escolhe uma opcao **";
-    myConsole->gotoxy(10, 10);
-    myConsole->setTextColor(VERMELHO);
-    std::cout << "Novo Jogo";
-    myConsole->gotoxy(10, 12);
-    std::cout << "Carregar Jogo";
-    myConsole->gotoxy(10, 14);
-    std::cout << "Sair";
-    myConsole->setTextColor(AZUL_CLARO);
-}
-
-void Game::WritePauseMenu()
-{
-    myConsole->gotoxy(14, 2);
-    std::cout << " -----Pausa-----";
-    myConsole->gotoxy(10, 8);
-    std::cout << "** Escolhe uma opcao **";
-    myConsole->gotoxy(10, 10);
-    std::cout << "Continuar";
-    myConsole->gotoxy(10, 12);
-    std::cout << "Som";
-    myConsole->gotoxy(10, 14);
-    std::cout << "Guardar Jogo";
-    myConsole->gotoxy(10, 16);
-    std::cout << "Sair do Jogo";
-}
-
 void Game::Start()
 {
     PlayIntro();
@@ -222,6 +161,8 @@ void Game::Start()
         }
 }
 
+/* Game States */
+
 void Game::NewGame()
 {
     int nLinhas, nColunas;
@@ -251,7 +192,6 @@ void Game::NewGame()
 
     Play();
 }
-
 void Game::LoadGame()
 {
     int numSaves = 0;
@@ -330,32 +270,7 @@ void Game::LoadGame()
     Play();
 
 
-}
-
-std::string Game::GetLoadFilename(int Index)
-{
-    char ch[260];
-    char DefChar = ' ';
-    bool H = true;
-    wchar_t* savesLocation = L"saves/*.gem";
-
-    WIN32_FIND_DATA FindFileData;
-    HANDLE hFind;
-    hFind = FindFirstFile(savesLocation, &FindFileData);
-
-    if (hFind != INVALID_HANDLE_VALUE)
-        {
-            for (int f = 1; f < Index; f++)
-                {
-                    FindNextFile(hFind, &FindFileData);
-                }
-        }
-
-    WideCharToMultiByte(CP_ACP, 0, FindFileData.cFileName, -1, ch, 260, &DefChar, NULL);
-
-    return ch;
-}
-
+} //TODO: Serialization
 void Game::SaveGame()
 {
     myConsole->clrscr();
@@ -406,8 +321,7 @@ void Game::SaveGame()
 
     std::cout << "Gravado em " << filename;
     myConsole->getch();
-}
-
+} //TODO: Serialization
 void Game::Play()
 {
     setScreenBufferSize(7 * 5 + 5, 7 * 5);
@@ -572,6 +486,7 @@ void Game::Play()
     return;
 }
 
+/* Menu Interface */
 void Game::Pause()
 {
     setTextColor(PRETO);
@@ -619,13 +534,11 @@ void Game::Pause()
         }
     Resume();
 }
-
 void Game::Resume()
 {
     //TODO: Fazer DrawParcial da mina
     //DrawMine();
 }
-
 void Game::SoundOptions()
 {
     myConsole->clrscr();
@@ -677,22 +590,6 @@ void Game::SoundOptions()
         }
     Pause();
 }
-
-void Game::PlayIntro()
-{
-    PlaySound(TEXT("data/intro.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
-}
-
-void Game::PlayTheme()
-{
-    PlaySound(TEXT("data/theme.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
-}
-
-void Game::StopMusic()
-{
-    PlaySound(NULL, 0, 0);
-}
-
 void Game::CommandMode()
 {
     std::string read;
@@ -858,18 +755,84 @@ void Game::CommandMode()
     return;
 }
 
-void Game::Write(std::string input)
+/* Sound */
+void Game::PlayIntro()
 {
-    myConsole->clrscr();
-    myConsole->gotoxy(10, 2);
-    std::cout << input << std::endl;
+    PlaySound(TEXT("data/intro.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+}
+void Game::PlayTheme()
+{
+    PlaySound(TEXT("data/theme.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+}
+void Game::StopMusic()
+{
+    PlaySound(NULL, 0, 0);
 }
 
+/* Gets */
 int Game::Status() const
 {
     return _currentStatus;
 }
 
+/* Draws */
+void Game::WriteMainMenu()
+{
+    myConsole->gotoxy(14, 2);
+    myConsole->setTextColor(VERDE);
+    std::cout << "Bem vindo ao Gem Miner";
+    myConsole->gotoxy(10, 8);
+    myConsole->setTextColor(AMARELO);
+    std::cout << "** Escolhe uma opcao **";
+    myConsole->gotoxy(10, 10);
+    myConsole->setTextColor(VERMELHO);
+    std::cout << "Novo Jogo";
+    myConsole->gotoxy(10, 12);
+    std::cout << "Carregar Jogo";
+    myConsole->gotoxy(10, 14);
+    std::cout << "Sair";
+    myConsole->setTextColor(AZUL_CLARO);
+}
+void Game::WritePauseMenu()
+{
+    myConsole->gotoxy(14, 2);
+    std::cout << " -----Pausa-----";
+    myConsole->gotoxy(10, 8);
+    std::cout << "** Escolhe uma opcao **";
+    myConsole->gotoxy(10, 10);
+    std::cout << "Continuar";
+    myConsole->gotoxy(10, 12);
+    std::cout << "Som";
+    myConsole->gotoxy(10, 14);
+    std::cout << "Guardar Jogo";
+    myConsole->gotoxy(10, 16);
+    std::cout << "Sair do Jogo";
+}
+void Game::DrawMine(int startDrawX, int startDrawY)
+{
+    int piX = (myMiner->getX() - _vision > 0) ? myMiner->getX() - _vision : 0; //Initial X
+    int piY = (myMiner->getY() - _vision > 0) ? myMiner->getY() - _vision : 0; //Initial Y
+
+    int pfX = (myMiner->getX() + _vision < _colunas) ? myMiner->getX() + _vision : myMiner->getX() + (_colunas - myMiner->getX()) - 1; //Final X
+    int pfY = (myMiner->getY() + _vision < _linhas) ? myMiner->getY() + _vision : myMiner->getY() + (_linhas - myMiner->getY()) - 1; //Final Y
+
+    for (startDrawX = piY; startDrawX <= pfY; startDrawX++)
+        {
+            for (startDrawY = piX; startDrawY <= pfX; startDrawY++)
+                {
+                    (startDrawX >= piY && startDrawX <= pfY && startDrawY >= piX && startDrawY <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), startDrawY * 5, startDrawX * 5) : 0;
+                }
+        }
+}
+void Game::RemoveBlock(Block * &bloco)
+{
+    bloco = new Block();
+    bloco->setID("NULL");
+    bloco->setX(-1);
+    bloco->setY(-1);
+}
+
+/* System Funcionts */
 const std::string Game::currentDate()
 {
     time_t     now = time(0);
@@ -878,4 +841,33 @@ const std::string Game::currentDate()
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%d%m%Y", &tstruct);
     return buf;
+}
+void Game::Write(std::string input)
+{
+    myConsole->clrscr();
+    myConsole->gotoxy(10, 2);
+    std::cout << input << std::endl;
+}
+std::string Game::GetLoadFilename(int Index)
+{
+    char ch[260];
+    char DefChar = ' ';
+    bool H = true;
+    wchar_t* savesLocation = L"saves/*.gem";
+
+    WIN32_FIND_DATA FindFileData;
+    HANDLE hFind;
+    hFind = FindFirstFile(savesLocation, &FindFileData);
+
+    if (hFind != INVALID_HANDLE_VALUE)
+        {
+            for (int f = 1; f < Index; f++)
+                {
+                    FindNextFile(hFind, &FindFileData);
+                }
+        }
+
+    WideCharToMultiByte(CP_ACP, 0, FindFileData.cFileName, -1, ch, 260, &DefChar, NULL);
+
+    return ch;
 }

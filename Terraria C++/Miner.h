@@ -11,6 +11,7 @@ class Miner : public Consola
     int _x, _y; //current coordinates
 public:
     /* General */
+    Miner(int life = START_LIVES, int energy = START_ENERGY, int coins = START_GOLD);
     void ResetStats();
 
     /* Verifications */
@@ -33,11 +34,11 @@ public:
     void setCoins(int S);
 
     /* Gets */
-    int getEnergy();
-    int getCoins();
-    int getLife();
-    int getX();
-    int getY();
+    int getEnergy() const;
+    int getCoins() const;
+    int getLife() const;
+    int getX() const;
+    int getY() const;
 
 };
 

@@ -3,11 +3,8 @@
 
 /*
 TODO:
-	1º Boundings - check
-	2º UpdateBlock - check
-	3º OffSet
-	4º Colisao - semi-check
-	5º Desenhar Blocos
+	1º > 7x7
+	2º OffSet
 */
 
 /* General */
@@ -49,6 +46,7 @@ enum BlockIDS
     V = 11 //Viga
 };
 
+/* Menu Coordinates */
 #define NEW_GAME 10
 #define RESUME_GAME 10
 #define UNMUTE 10
@@ -58,8 +56,15 @@ enum BlockIDS
 #define EXIT_GAME 16
 #define SAVE_GAME 14
 
+/* General */
 #define NUM_COMMANDS 10
 
+/*Miner Default Stats*/
+#define START_ENERGY 100
+#define START_GOLD 0
+#define START_LIVES 3
+
+/* Console Chars Keys */
 #define C 99
 #define ESCAPE 27
 #define LEFT 1
@@ -68,6 +73,7 @@ enum BlockIDS
 #define DOWN 4
 #define ENTER 13
 
+/*Sound Libs*/
 #pragma comment(lib, "strmiids.lib")
 #pragma comment(lib, "winmm.lib")
 

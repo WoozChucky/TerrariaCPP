@@ -1,8 +1,9 @@
 #include "Block.h"
+#include "Utensilio.h"
 
 class Game : public Block
 {
-
+    Utensilio myUtensilios[NUM_UTENSILIOS];
     Game *myGame;
     Miner *myMiner;
     Consola *myConsole;

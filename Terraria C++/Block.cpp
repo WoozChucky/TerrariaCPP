@@ -1,23 +1,23 @@
 #include "Block.h"
 
 /* Gets */
-int Block::getX()
+int Block::getX() const
 {
     return _x;
 }
-int Block::getY()
+int Block::getY() const
 {
     return _y;
 }
-std::string Block::getID()
+std::string Block::getID() const
 {
     return _id;
 }
-int Block::getTicks()
+int Block::getTicks() const
 {
     return _ticks;
 }
-int Block::getBreakeable()
+int Block::getBreakeable() const
 {
     return _breakeable;
 }

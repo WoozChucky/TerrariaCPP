@@ -1,6 +1,12 @@
 #include "Miner.h"
 
 /* General */
+Miner::Miner(int lives, int energy, int coins)
+{
+    _life = lives;
+    _energy = energy;
+    _coins = coins;
+}
 void Miner::ResetStats()
 {
     _energy = 100;
@@ -169,23 +175,23 @@ void Miner::showStats()
 }
 
 /* Gets*/
-int Miner::getEnergy()
+int Miner::getEnergy() const
 {
     return _energy;
 }
-int Miner::getCoins()
+int Miner::getCoins() const
 {
     return _coins;
 }
-int Miner::getLife()
+int Miner::getLife() const
 {
     return _life;
 }
-int Miner::getX()
+int Miner::getX() const
 {
     return _x;
 }
-int Miner::getY()
+int Miner::getY() const
 {
     return _y;
 }

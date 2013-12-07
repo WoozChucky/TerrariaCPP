@@ -9,11 +9,11 @@ class Block : public Miner
 
 public:
     /* Gets */
-    int getX();
-    int getY();
-    std::string getID();
-    int getTicks();
-    int getBreakeable();
+    int getX() const;
+    int getY() const;
+    std::string getID() const;
+    int getTicks() const;
+    int getBreakeable() const;
 
     /* Sets */
     void setX(int S);
