@@ -172,6 +172,7 @@ void Miner::showStats()
     std::cout << "Coins: ";
     setTextColor(AMARELO_CLARO);
     std::cout << _coins;
+    setTextColor(PRETO);
 }
 
 /* Gets*/

@@ -7,6 +7,11 @@ TODO:
 	2º OffSet
 */
 
+/* Boost Library */
+#include <assert.h>
+//#include <boost\archive\text_oarchive.hpp>
+//#include <boost\archive\text_iarchive.hpp>
+
 /* General */
 #include <vector>
 #include <string>

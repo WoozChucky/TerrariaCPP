@@ -2,8 +2,8 @@
 
 std::string validCommands[NUM_COMMANDS][2] =
 {
-    { "u", "2" }, //u nome-utensilio
-    { "b", "4" }, //b ID x y
+    { "u", "2" },//u nome-utensilio
+    { "b", "4" },//b ID x y
     { "t", "3" },//t x y
     { "g", "2" },//g value
     { "e", "2" },//e value
@@ -11,7 +11,7 @@ std::string validCommands[NUM_COMMANDS][2] =
     { "f", "2" },//f name
     { "a", "3" },//a source destination
     { "x", "2" },//x
-    { "j"  "2" }//j
+    { "j"  "2" } //j
 };
 
 std::string myBlocks[12] =
@@ -45,7 +45,7 @@ void Game::InitializeMine(int Rows, int Cols, int Vision)
     _colunas = Cols;
     _vision = Vision;
 
-    srand(time(NULL));
+    srand( (unsigned int)time(NULL) );
 
     /* Create Mine Array Dinamically */
     myMine = new Block**[_linhas];
@@ -162,7 +162,6 @@ void Game::Start()
 }
 
 /* Game States */
-
 void Game::NewGame()
 {
     int nLinhas, nColunas;
@@ -185,7 +184,7 @@ void Game::NewGame()
 
     clrscr();
 
-    InitializeMine(_linhas, _colunas, 2);
+    InitializeMine(_linhas, _colunas, 3);
 
     StopMusic();
     PlayTheme();
@@ -196,7 +195,7 @@ void Game::LoadGame()
 {
     int numSaves = 0;
     char tecla;
-    bool H = true;
+    BOOL H = true;
     wchar_t* savesLocation = L"saves/*.gem";
 
     WIN32_FIND_DATA FindFileData;
@@ -355,12 +354,11 @@ void Game::Play()
                     CommandMode();
                     break;
                 case UP:
-
-                    pY -= 1; //Move 1 posição para cima
+                    pY -= 1; //Move 1 position UP
 
                     (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
 
-                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
+                    if (isColliding(pY, pX)) //Collision Detection
                         {
                             if (myMine[pY][pX]->getBreakeable() == 1)
                                 {
@@ -378,19 +376,16 @@ void Game::Play()
                                         }
                                 }
                             else
-                                {
-                                    pY += 1;
-                                }
+                                pY += 1;
                         }
                     myMiner->Move(pX, pY);
                     break;
                 case DOWN:
-
                     pY += 1; //Move 1 posição para baixo
 
                     (pY >= _linhas - 1 ? pY = _linhas - 1 : pY = pY); //Bottom Bounding
 
-                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
+                    if (isColliding(pY, pX)) //Collision Detection
                         {
                             if (myMine[pY][pX]->getBreakeable() == 1)
                                 {
@@ -408,20 +403,16 @@ void Game::Play()
                                         }
                                 }
                             else
-                                {
-                                    pY -= 1;
-                                }
+                                pY -= 1;
                         }
-
                     myMiner->Move(pX, pY);
-
                     break;
                 case LEFT:
                     pX -= 1; //Move 1 posição para a esquerda
 
                     (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
 
-                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
+                    if (isColliding(pY, pX)) //Collision Detection
                         {
                             if (myMine[pY][pX]->getBreakeable() == 1)
                                 {
@@ -439,21 +430,17 @@ void Game::Play()
                                         }
                                 }
                             else
-                                {
-                                    pX += 1;
-                                }
+                                pX += 1;
                         }
-
                     myMiner->Move(pX, pY);
                     break;
-
                 case RIGHT:
 
                     pX += 1; //Moves 1 position to the right
 
                     (pX >= _colunas - 1 ? pX = _colunas - 1 : pX = pX); //Right Bounding
 
-                    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY()) //Collision Detection
+                    if (isColliding(pY, pX)) //Collision Detection
                         {
                             if (myMine[pY][pX]->getBreakeable() == 1)
                                 {
@@ -471,11 +458,8 @@ void Game::Play()
                                         }
                                 }
                             else
-                                {
-                                    pX -= 1;
-                                }
+                                pX -= 1;
                         }
-
                     myMiner->Move(pX, pY);
                     break;
                 }
@@ -483,7 +467,17 @@ void Game::Play()
     Write("Game Over");
     getch();
     _currentStatus = END;
+    EndGame();
     return;
+}
+void Game::EndGame()
+{
+    delete myConsole;
+    delete myGame;
+    delete myMiner;
+    delete[] myMine;
+    free(myUtensilios);
+    free(myBlocks);
 }
 
 /* Menu Interface */
@@ -536,8 +530,7 @@ void Game::Pause()
 }
 void Game::Resume()
 {
-    //TODO: Fazer DrawParcial da mina
-    //DrawMine();
+    DrawMine(_linhas / 2 - 3, _colunas / 2 - 3);
 }
 void Game::SoundOptions()
 {
@@ -828,8 +821,8 @@ void Game::RemoveBlock(Block * &bloco)
 {
     bloco = new Block();
     bloco->setID("NULL");
-    bloco->setX(-1);
-    bloco->setY(-1);
+    bloco->setX(2147483647);
+    bloco->setY(2147483647);
 }
 
 /* System Funcionts */
@@ -870,4 +863,14 @@ std::string Game::GetLoadFilename(int Index)
     WideCharToMultiByte(CP_ACP, 0, FindFileData.cFileName, -1, ch, 260, &DefChar, NULL);
 
     return ch;
+}
+
+/* Collision Detection */
+bool Game::isColliding(int pY, int pX)
+{
+    std::cout << pX << " : " << myMine[pY][pX]->getX() << " / " << pY << " : " << myMine[pY][pX]->getY();
+    getch();
+    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY())
+        return true;
+    return false;
 }
