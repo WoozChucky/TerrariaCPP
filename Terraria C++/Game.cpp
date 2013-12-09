@@ -795,6 +795,7 @@ void Game::RemoveBlock(int &bX, int &bY, int DIRECTION)
         {
             if (myMine[bY][bX]->getBreakeable() == 1)
                 {
+                    PlaySound(TEXT("data/mine.wav"), NULL, SND_ASYNC | SND_FILENAME);
                     while (myMine[bY][bX]->getTicks() > 0)
                         {
                             myMine[bY][bX]->setTicks(myMine[bY][bX]->getTicks() - 1);
