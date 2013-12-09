@@ -3,9 +3,17 @@
 
 /*
 TODO:
-	1º > 7x7
-	2º OffSet
+	1º OffSet
+	2º DownFall
 */
+
+//for (int r = 0, startDrawY = piY; r < 7; r++, startDrawY++)
+//{
+//	for (int c = 0, startDrawX = piX; c < 7; c++, startDrawX++)
+//	{
+//		(startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), c * 5, r * 5) : 0;
+//	}
+//}
 
 /* Boost Library */
 #include <assert.h>
@@ -62,7 +70,8 @@ enum BlockIDS
 #define SAVE_GAME 14
 
 /* General */
-#define NUM_COMMANDS 10
+#define NUM_COMMANDS 11
+#define VISION 1
 
 /*Miner Default Stats*/
 #define START_ENERGY 100

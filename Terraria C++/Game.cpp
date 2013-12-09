@@ -11,7 +11,8 @@ std::string validCommands[NUM_COMMANDS][2] =
     { "f", "2" },//f name
     { "a", "3" },//a source destination
     { "x", "2" },//x
-    { "j"  "2" } //j
+    { "j", "2" },//j
+    { "m", "1" } //m
 };
 
 std::string myBlocks[12] =
@@ -61,54 +62,88 @@ void Game::InitializeMine(int Rows, int Cols, int Vision)
         {
             for (int c = 0; c < _colunas; c++)
                 {
-                    int blockType = rand() % 2 + 2;
+                    int blockType = rand() % 10 + 1;
 
-
-
-                    /*if (blockType == 1)
-                        {
-                            myMine[r][c]->setID(myBlocks[P]);
-                            myMine[r][c]->setBreakeable(0);
-                            myMine[r][c]->setTicks(0);
-                            myMine[r][c]->setX(c);
-                            myMine[r][c]->setY(r);
-                        }
-                    else if (blockType == 2)
-                        { */
-                    myMine[r][c]->setID(myBlocks[TM]);
-                    myMine[r][c]->setBreakeable(1);
-                    myMine[r][c]->setTicks(2);
-                    myMine[r][c]->setX(c);
-                    myMine[r][c]->setY(r);
-                    //  }
-                    //else if (blockType == 3) //Ouro de teste
-                    //    {
-                    //        if (c > _colunas / 2)
-                    //            {
-                    //                myMine[r][c]->setID(myBlocks[TcO]);
-                    //                myMine[r][c]->setBreakeable(1);
-                    //                myMine[r][c]->setTicks(2);
-                    //                myMine[r][c]->setX(c);
-                    //                myMine[r][c]->setY(r);
-                    //            }
-                    //        else
-                    //            {
-                    //                myMine[r][c]->setID(myBlocks[TM]);
-                    //                myMine[r][c]->setBreakeable(1);
-                    //                myMine[r][c]->setTicks(1);
-                    //                myMine[r][c]->setX(c);
-                    //                myMine[r][c]->setY(r);
-                    //            }
-                    //    }
-
+                    myMine[r][c]->setX(c); //Cordinate X
+                    myMine[r][c]->setY(r); //Coordinate Y
 
                     if (r == _linhas / 2 && c == _colunas / 2) //Mineiro
                         {
-                            /*myMine[r][c]->setID(myBlocks[M]);
-                            myMine[r][c]->setX(c);
-                            myMine[r][c]->setY(r);*/
+                            myMine[r][c]->setID(myBlocks[M]);
+                            myMine[r][c]->setBreakeable(1);
                         }
-                    // AI da Mine
+                    else
+                        {
+
+                            if (blockType == 1)
+                                {
+                                    myMine[r][c]->setID(myBlocks[P]);
+                                    myMine[r][c]->setBreakeable(0);
+                                }
+                            else if (blockType == 2)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TM]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(1);
+                                }
+                            else if (blockType == 3)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TD]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(2);
+                                    if (c > _colunas / 2)
+                                        {
+                                            myMine[r][c]->setID(myBlocks[TcO]);
+                                            myMine[r][c]->setBreakeable(1);
+                                            myMine[r][c]->setTicks(2);
+                                        }
+                                    else
+                                        {
+                                            myMine[r][c]->setID(myBlocks[TM]);
+                                            myMine[r][c]->setBreakeable(1);
+                                            myMine[r][c]->setTicks(1);
+                                        }
+                                }
+                            else if (blockType == 4)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TcA]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(2);
+                                }
+                            else if (blockType == 5)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TcC]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(2);
+                                }
+                            else if (blockType == 6)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TcF]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(2);
+                                }
+                            else if (blockType == 7)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TcO]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(2);
+                                }
+                            else if (blockType == 8)
+                                {
+                                    myMine[r][c]->setID(myBlocks[TcD]);
+                                    myMine[r][c]->setBreakeable(1);
+                                    myMine[r][c]->setTicks(2);
+                                }
+                            else if (blockType == 9)
+                                {
+                                    myMine[r][c]->setID(myBlocks[E]);
+                                }
+                            else if (blockType == 10)
+                                {
+                                    myMine[r][c]->setID(myBlocks[V]);
+                                }
+
+                        }
                 }
         }
 }
@@ -184,7 +219,7 @@ void Game::NewGame()
 
     clrscr();
 
-    InitializeMine(_linhas, _colunas, 3);
+    InitializeMine(_linhas, _colunas, VISION);
 
     StopMusic();
     PlayTheme();
@@ -354,30 +389,13 @@ void Game::Play()
                     CommandMode();
                     break;
                 case UP:
+
                     pY -= 1; //Move 1 position UP
 
                     (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
 
-                    if (isColliding(pY, pX)) //Collision Detection
-                        {
-                            if (myMine[pY][pX]->getBreakeable() == 1)
-                                {
-                                    if (myMine[pY][pX]->getTicks() > 0)
-                                        {
-                                            while (myMine[pY][pX]->getTicks() > 0)
-                                                {
-                                                    if (myMiner->getEnergy() > 0)
-                                                        {
-                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
-                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
-                                                        }
-                                                }
-                                            RemoveBlock(myMine[pX][pY]);
-                                        }
-                                }
-                            else
-                                pY += 1;
-                        }
+                    RemoveBlock(pX, pY, UP);
+
                     myMiner->Move(pX, pY);
                     break;
                 case DOWN:
@@ -385,26 +403,8 @@ void Game::Play()
 
                     (pY >= _linhas - 1 ? pY = _linhas - 1 : pY = pY); //Bottom Bounding
 
-                    if (isColliding(pY, pX)) //Collision Detection
-                        {
-                            if (myMine[pY][pX]->getBreakeable() == 1)
-                                {
-                                    if (myMine[pY][pX]->getTicks() > 0)
-                                        {
-                                            while (myMine[pY][pX]->getTicks() > 0)
-                                                {
-                                                    if (myMiner->getEnergy() > 0)
-                                                        {
-                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
-                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
-                                                        }
-                                                }
-                                            RemoveBlock(myMine[pX][pY]);
-                                        }
-                                }
-                            else
-                                pY -= 1;
-                        }
+                    RemoveBlock(pX, pY, DOWN);
+
                     myMiner->Move(pX, pY);
                     break;
                 case LEFT:
@@ -412,26 +412,8 @@ void Game::Play()
 
                     (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
 
-                    if (isColliding(pY, pX)) //Collision Detection
-                        {
-                            if (myMine[pY][pX]->getBreakeable() == 1)
-                                {
-                                    if (myMine[pY][pX]->getTicks() > 0)
-                                        {
-                                            while (myMine[pY][pX]->getTicks() > 0)
-                                                {
-                                                    if (myMiner->getEnergy() > 0)
-                                                        {
-                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
-                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
-                                                        }
-                                                }
-                                            RemoveBlock(myMine[pX][pY]);
-                                        }
-                                }
-                            else
-                                pX += 1;
-                        }
+                    RemoveBlock(pX, pY, LEFT);
+
                     myMiner->Move(pX, pY);
                     break;
                 case RIGHT:
@@ -440,26 +422,8 @@ void Game::Play()
 
                     (pX >= _colunas - 1 ? pX = _colunas - 1 : pX = pX); //Right Bounding
 
-                    if (isColliding(pY, pX)) //Collision Detection
-                        {
-                            if (myMine[pY][pX]->getBreakeable() == 1)
-                                {
-                                    if (myMine[pY][pX]->getTicks() > 0)
-                                        {
-                                            while (myMine[pY][pX]->getTicks() > 0)
-                                                {
-                                                    if (myMiner->getEnergy() > 0)
-                                                        {
-                                                            myMine[pY][pX]->setTicks(myMine[pY][pX]->getTicks() - 1);
-                                                            myMiner->setEnergy(myMiner->getEnergy() - 1);
-                                                        }
-                                                }
-                                            RemoveBlock(myMine[pX][pY]);
-                                        }
-                                }
-                            else
-                                pX -= 1;
-                        }
+                    RemoveBlock(pX, pY, RIGHT);
+
                     myMiner->Move(pX, pY);
                     break;
                 }
@@ -472,12 +436,7 @@ void Game::Play()
 }
 void Game::EndGame()
 {
-    delete myConsole;
-    delete myGame;
-    delete myMiner;
-    delete[] myMine;
-    free(myUtensilios);
-    free(myBlocks);
+    //TODO: Free Memory
 }
 
 /* Menu Interface */
@@ -740,6 +699,19 @@ void Game::CommandMode()
                             myConsole->clrscr();
                             return;
                             break;
+                        case 10:
+                            if (count != atoi(validCommands[action][1].c_str()))
+                                {
+                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
+                                    myConsole->getch();
+                                    break;
+                                }
+                            for (int i = 0; i < NUM_UTENSILIOS; i++)
+                                {
+                                    std::cout << myUtensilios[i].getName() << " - " << myUtensilios[i].getCost() << std::endl;
+
+                                }
+                            break;
                         }
                     //command = strtok(command, " "); stringstream
                 }
@@ -809,20 +781,50 @@ void Game::DrawMine(int startDrawX, int startDrawY)
     int pfX = (myMiner->getX() + _vision < _colunas) ? myMiner->getX() + _vision : myMiner->getX() + (_colunas - myMiner->getX()) - 1; //Final X
     int pfY = (myMiner->getY() + _vision < _linhas) ? myMiner->getY() + _vision : myMiner->getY() + (_linhas - myMiner->getY()) - 1; //Final Y
 
-    for (startDrawX = piY; startDrawX <= pfY; startDrawX++)
+    for (startDrawY = piY; startDrawY <= pfY; startDrawY++)
         {
-            for (startDrawY = piX; startDrawY <= pfX; startDrawY++)
+            for (startDrawX = piX; startDrawX <= pfX; startDrawX++)
                 {
-                    (startDrawX >= piY && startDrawX <= pfY && startDrawY >= piX && startDrawY <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), startDrawY * 5, startDrawX * 5) : 0;
+                    (startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), myMine[startDrawY][startDrawX]->getX() * 5, myMine[startDrawY][startDrawX]->getY() * 5) : 0;
                 }
         }
 }
-void Game::RemoveBlock(Block * &bloco)
+void Game::RemoveBlock(int &bX, int &bY, int DIRECTION)
 {
-    bloco = new Block();
-    bloco->setID("NULL");
-    bloco->setX(2147483647);
-    bloco->setY(2147483647);
+    if (myMine[bY][bX]->getID() != "E" && myMine[bY][bX]->getID() != "V")
+        {
+            if (myMine[bY][bX]->getBreakeable() == 1)
+                {
+                    while (myMine[bY][bX]->getTicks() > 0)
+                        {
+                            myMine[bY][bX]->setTicks(myMine[bY][bX]->getTicks() - 1);
+                            myMiner->setEnergy(myMiner->getEnergy() - 1);
+                        }
+                    myMine[bY][bX]->setID("NULL");
+                    myMine[bY][bX]->setBreakeable(1);
+                }
+            else
+                {
+                    switch (DIRECTION)
+                        {
+                        case UP:
+                            bY++;
+                            break;
+                        case DOWN:
+                            bY--;
+                            break;
+                        case RIGHT:
+                            bX--;
+                            break;
+                        case LEFT:
+                            bX++;
+                            break;
+                        }
+                }
+        }
+
+
+
 }
 
 /* System Funcionts */
@@ -863,14 +865,4 @@ std::string Game::GetLoadFilename(int Index)
     WideCharToMultiByte(CP_ACP, 0, FindFileData.cFileName, -1, ch, 260, &DefChar, NULL);
 
     return ch;
-}
-
-/* Collision Detection */
-bool Game::isColliding(int pY, int pX)
-{
-    std::cout << pX << " : " << myMine[pY][pX]->getX() << " / " << pY << " : " << myMine[pY][pX]->getY();
-    getch();
-    if (pX == myMine[pY][pX]->getX() && pY == myMine[pY][pX]->getY())
-        return true;
-    return false;
 }

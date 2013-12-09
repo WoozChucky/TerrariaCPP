@@ -28,7 +28,7 @@ public:
 
     /* Draws */
     void DrawMine(int startDrawX, int startDrawY);
-    void RemoveBlock(Block * &bloco);
+    void RemoveBlock(int &bX, int &b, int DIRECTION);
     void WriteMainMenu();
     void WritePauseMenu();
 
