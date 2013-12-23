@@ -1,5 +1,13 @@
 #include "Block.h"
 
+/* Constructor */
+Block::Block(int X, int Y)
+{
+    _breakeable = 1;
+    _x = X;
+    _y = Y;
+}
+
 /* Gets */
 int Block::getX() const
 {
@@ -47,27 +55,8 @@ void Block::setBreakeable(int S)
 /* Draws */
 void Block::DrawBlock(std::string id, int x, int y)
 {
-
-    if (id == "M")
+    if (id == "TD")
         {
-            /*gotoxy(x, y);
-            std::cout << (char)255 << (char)255 << (char)2 << (char)255 << (char)255;
-
-            gotoxy(x, y + 1);
-            std::cout << (char)255 << (char)205 << (char)203 << (char)205 << (char)255;
-
-            gotoxy(x, y + 2);
-            std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
-
-            gotoxy(x, y + 3);
-            std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
-
-            gotoxy(x, y + 4);
-            std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;*/
-        }
-    else if (id == "TD")
-        {
-
             setTextColor(PRETO);
             gotoxy(x, y);
             std::cout << (char)218 << (char)196 << (char)196 << (char)196 << (char)191;
@@ -77,20 +66,6 @@ void Block::DrawBlock(std::string id, int x, int y)
             std::cout << (char)179 << (char)178 << (char)178 << (char)178 << (char)179;
             gotoxy(x, y + 3);
             std::cout << (char)179 << (char)178 << (char)178 << (char)178 << (char)179;
-            gotoxy(x, y + 4);
-            std::cout << (char)192 << (char)196 << (char)196 << (char)196 << (char)217;
-        }
-
-    else if (id == "P")
-        {
-            gotoxy(x, y);
-            std::cout << (char)218 << (char)196 << (char)196 << (char)196 << (char)191;
-            gotoxy(x, y + 1);
-            std::cout << (char)179 << (char)219 << (char)219 << (char)219 << (char)179;
-            gotoxy(x, y + 2);
-            std::cout << (char)179 << (char)219 << (char)219 << (char)219 << (char)179;
-            gotoxy(x, y + 3);
-            std::cout << (char)179 << (char)219 << (char)219 << (char)219 << (char)179;
             gotoxy(x, y + 4);
             std::cout << (char)192 << (char)196 << (char)196 << (char)196 << (char)217;
         }
@@ -308,18 +283,5 @@ void Block::DrawBlock(std::string id, int x, int y)
             gotoxy(x, y + 4);
             std::cout << (char)195 << (char)45 << (char)45 << (char)45 << (char)180;
 
-        }
-    else if (id == "NULL")
-        {
-            gotoxy(x, y);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            gotoxy(x, y + 1);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            gotoxy(x, y + 2);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            gotoxy(x, y + 3);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            gotoxy(x, y + 4);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
         }
 }

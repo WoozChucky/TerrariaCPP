@@ -1,9 +1,9 @@
 #include "Game.h"
 
-void main()
+int main(void)
 {
     Game *myGame = new Game();
     myGame->Start();
     delete myGame;
-    return;
+    return 0;
 }

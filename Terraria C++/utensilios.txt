@@ -16,4 +16,4 @@ AplicadorVigas 5
 ParaQuedas 200
 VidaEXTRA 250
 Dinamite 100
-Dildo 9000
+Chicken 9000

@@ -1,13 +1,18 @@
-#include "Block.h"
+#include "Drawer.h"
 #include "Utensilio.h"
+#include "CommunicatorInterface.h"
+#include "INIReader.h"
 
-class Game : public Block
+class Game
 {
-    Utensilio myUtensilios[NUM_UTENSILIOS];
-    Game *myGame;
-    Miner *myMiner;
+    INIReader *reader;
+    Drawer *myDrawer;
     Consola *myConsole;
+    Miner *myMiner;
     Block ***myMine;
+    CommunicatorInterface *myCommunicatorInterface;
+    Utensilio myUtensilios[NUM_UTENSILIOS];
+
     int _linhas, _colunas, _vision;
     int _currentStatus;
 
@@ -17,7 +22,8 @@ public:
     const static int END = 0;
 
     /* General */
-    Game(); //Constructor
+    Game();  //Constructor
+    ~Game(); //Destructor
     void InitializeMine(int Rows, int Cols, int Vision);
     void Start();
 
@@ -37,7 +43,6 @@ public:
     void SaveGame();
     void LoadGame();
     void Play();
-    void EndGame();
 
     /* Menu Interface */
     void Pause();
@@ -49,9 +54,6 @@ public:
     const std::string Game::currentDate();
     std::string GetLoadFilename(int Index);
     void Write(std::string input);
-
-    /* Collision Detection */
-    bool isColliding(int pY, int pX);
 
     /* Gets */
     int Status() const;

@@ -81,20 +81,50 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="CommunicatorInterface.h" />
     <ClInclude Include="Consola.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Drawer.h" />
+    <ClInclude Include="Escada.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="ini.h" />
+    <ClInclude Include="INIReader.h" />
     <ClInclude Include="Miner.h" />
+    <ClInclude Include="Pedra.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TerraCAluminio.h" />
+    <ClInclude Include="TerraCCarvao.h" />
+    <ClInclude Include="TerraCDiamante.h" />
+    <ClInclude Include="TerraCFerro.h" />
+    <ClInclude Include="TerraCFrango.h" />
+    <ClInclude Include="TerraCOuro.h" />
+    <ClInclude Include="TerrenoDuro.h" />
+    <ClInclude Include="TerrenoMole.h" />
     <ClInclude Include="Utensilio.h" />
+    <ClInclude Include="Viga.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="CommunicatorInterface.cpp" />
     <ClCompile Include="Consola.cpp" />
+    <ClCompile Include="Drawer.cpp" />
+    <ClCompile Include="Escada.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="ini.c" />
+    <ClCompile Include="INIReader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Miner.cpp" />
+    <ClCompile Include="Pedra.cpp" />
+    <ClCompile Include="TerraCAluminio.cpp" />
+    <ClCompile Include="TerraCCarvao.cpp" />
+    <ClCompile Include="TerraCDiamante.cpp" />
+    <ClCompile Include="TerraCFerro.cpp" />
+    <ClCompile Include="TerraCFrango.cpp" />
+    <ClCompile Include="TerraCOuro.cpp" />
+    <ClCompile Include="TerrenoDuro.cpp" />
+    <ClCompile Include="TerrenoMole.cpp" />
     <ClCompile Include="Utensilio.cpp" />
+    <ClCompile Include="Viga.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Terraria C++.rc" />

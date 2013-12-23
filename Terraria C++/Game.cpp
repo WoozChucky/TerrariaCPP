@@ -1,5 +1,6 @@
 #include "Game.h"
 
+
 std::string validCommands[NUM_COMMANDS][2] =
 {
     { "u", "2" },//u nome-utensilio
@@ -35,9 +36,16 @@ std::string myBlocks[12] =
 Game::Game()
 {
     _currentStatus = ACTIVE;
-    myGame = this;
+    reader = new INIReader("data/config.ini");
+    if (reader->ParseError() < 0)
+        {
+            std::cout << "Can't load 'test.ini'\n";
+            return;
+        }
+    myDrawer = new Drawer();
     myConsole = new Consola();
-    myMiner = new Miner(START_LIVES, START_ENERGY, START_GOLD);
+    myMiner = new Miner((int)reader->GetInteger("MINER_DEFAULT_STATS", "StartLives", 3), (int)reader->GetInteger("MINER_DEFAULT_STATS", "StartEnergy", 100), (int)reader->GetInteger("MINER_DEFAULT_STATS", "StartCoins", 0));
+    myCommunicatorInterface = new CommunicatorInterface(reader->Get("NETWORKING", "IP", 0).c_str(), reader->Get("NETWORKING", "Port", 0).c_str());
     LoadUtensilios(myUtensilios);
 }
 void Game::InitializeMine(int Rows, int Cols, int Vision)
@@ -46,7 +54,7 @@ void Game::InitializeMine(int Rows, int Cols, int Vision)
     _colunas = Cols;
     _vision = Vision;
 
-    srand( (unsigned int)time(NULL) );
+    srand( (unsigned int)time(NULL) ); //Randomize
 
     /* Create Mine Array Dinamically */
     myMine = new Block**[_linhas];
@@ -62,87 +70,50 @@ void Game::InitializeMine(int Rows, int Cols, int Vision)
         {
             for (int c = 0; c < _colunas; c++)
                 {
-                    int blockType = rand() % 10 + 1;
+                    int blockType = rand() % 10 + 1; //Generates a random block type
 
-                    myMine[r][c]->setX(c); //Cordinate X
-                    myMine[r][c]->setY(r); //Coordinate Y
-
-                    if (r == _linhas / 2 && c == _colunas / 2) //Mineiro
+                    if (r == _linhas / 2 && c == _colunas / 2) //Middle of Mine
                         {
-                            myMine[r][c]->setID(myBlocks[M]);
-                            myMine[r][c]->setBreakeable(1);
+                            myMine[r][c] = new Block(c, r); //Empty Block
                         }
                     else
                         {
-
-                            if (blockType == 1)
+                            switch (blockType)
                                 {
-                                    myMine[r][c]->setID(myBlocks[P]);
-                                    myMine[r][c]->setBreakeable(0);
+                                case P:
+                                    myMine[r][c] = new Pedra(c, r);
+                                    break;
+                                case TM:
+                                    myMine[r][c] = new TerrenoMole(c, r);
+                                    break;
+                                case TD:
+                                    myMine[r][c] = new TerrenoDuro(c, r);
+                                    break;
+                                case TcA:
+                                    myMine[r][c] = new TerraCAluminio(c, r);
+                                    break;
+                                case TcC:
+                                    myMine[r][c] = new TerraCCarvao(c, r);
+                                    break;
+                                case TcF:
+                                    myMine[r][c] = new TerraCFerro(c, r);
+                                    break;
+                                case TcO:
+                                    myMine[r][c] = new TerraCOuro(c, r);
+                                    break;
+                                case TcD:
+                                    myMine[r][c] = new TerraCDiamante(c, r);
+                                    break;
+                                case TcFAF:
+                                    myMine[r][c] = new TerraCFrango(c, r);
+                                    break;
+                                case E:
+                                    myMine[r][c] = new Escada(c, r);
+                                    break;
+                                case V:
+                                    myMine[r][c] = new Viga(c, r);
+                                    break;
                                 }
-                            else if (blockType == 2)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TM]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(1);
-                                }
-                            else if (blockType == 3)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TD]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(2);
-                                    if (c > _colunas / 2)
-                                        {
-                                            myMine[r][c]->setID(myBlocks[TcO]);
-                                            myMine[r][c]->setBreakeable(1);
-                                            myMine[r][c]->setTicks(2);
-                                        }
-                                    else
-                                        {
-                                            myMine[r][c]->setID(myBlocks[TM]);
-                                            myMine[r][c]->setBreakeable(1);
-                                            myMine[r][c]->setTicks(1);
-                                        }
-                                }
-                            else if (blockType == 4)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TcA]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(2);
-                                }
-                            else if (blockType == 5)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TcC]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(2);
-                                }
-                            else if (blockType == 6)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TcF]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(2);
-                                }
-                            else if (blockType == 7)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TcO]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(2);
-                                }
-                            else if (blockType == 8)
-                                {
-                                    myMine[r][c]->setID(myBlocks[TcD]);
-                                    myMine[r][c]->setBreakeable(1);
-                                    myMine[r][c]->setTicks(2);
-                                }
-                            else if (blockType == 9)
-                                {
-                                    myMine[r][c]->setID(myBlocks[E]);
-                                }
-                            else if (blockType == 10)
-                                {
-                                    myMine[r][c]->setID(myBlocks[V]);
-                                }
-
                         }
                 }
         }
@@ -200,7 +171,6 @@ void Game::Start()
 void Game::NewGame()
 {
     int nLinhas, nColunas;
-
     clrscr();
     gotoxy(14, 2);
     std::cout << "Criacao Novo Jogo";
@@ -219,7 +189,7 @@ void Game::NewGame()
 
     clrscr();
 
-    InitializeMine(_linhas, _colunas, VISION);
+    InitializeMine(_linhas, _colunas, (int)reader->GetInteger("GENERAL", "Vision", 2));
 
     StopMusic();
     PlayTheme();
@@ -358,27 +328,30 @@ void Game::SaveGame()
 } //TODO: Serialization
 void Game::Play()
 {
-    setScreenBufferSize(7 * 5 + 5, 7 * 5);
-    setScreenSize(7 * 5 + 5, 7 * 5);
-    setTextColor(PRETO);
+    myConsole->setScreenBufferSize(7 * 5 + 5, 7 * 5);
+    myConsole->setScreenSize(7 * 5 + 5, 7 * 5);
+    myConsole->setTextColor(myConsole->PRETO);
 
     char tecla;
     int pX = _linhas / 2, pY = _colunas / 2; //Player Start Position
     int vX = _linhas / 2 - 3, vY = _colunas / 2 - 3; //Mine Start Writing Position
 
-
+    /* Miner Start Position */
     myMiner->setCoordinates(pX, pY);
-    //myConsole->NewWindow(L"Gem Miner - Stats", 400, 400, 400, 250);
 
     /* Main cycle of Game */
     while (myMiner->hasLifes())
         {
-            clrscr();
-            DrawMine(vX, vY); //Draws Mine
-            myMiner->Show(); //Draws Miner
-            myMiner->showStats(); //Draw Stats
+            myConsole->clrscr();
+            myDrawer->Draw(myMine, myMiner, vX, vY, _vision, _colunas, _linhas);	//Draws Mine
+            myDrawer->Draw(*myMiner, SHOW);											//Draws Miner
+            myDrawer->DrawStats(*myMiner, SHOW);									//Draw Stats
 
-            tecla = getch();
+            /*char buf[sizeof(int)*3+7];
+            _snprintf(buf, sizeof buf, "X: %d", pX);
+            myCommunicatorInterface->Send(buf);*/
+
+            tecla = myConsole->getch();
 
             switch (tecla)
                 {
@@ -389,54 +362,38 @@ void Game::Play()
                     CommandMode();
                     break;
                 case UP:
-
                     pY -= 1; //Move 1 position UP
-
                     (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
-
                     RemoveBlock(pX, pY, UP);
-
+                    myDrawer->Draw(*myMiner, REMOVE);
                     myMiner->Move(pX, pY);
                     break;
-                case DOWN:
-                    pY += 1; //Move 1 posição para baixo
-
+                case DOWN: //TODO: Fall
+                    pY += 1; //Move 1 position DOWN
                     (pY >= _linhas - 1 ? pY = _linhas - 1 : pY = pY); //Bottom Bounding
-
                     RemoveBlock(pX, pY, DOWN);
-
+                    myDrawer->Draw(*myMiner, REMOVE);
                     myMiner->Move(pX, pY);
                     break;
                 case LEFT:
-                    pX -= 1; //Move 1 posição para a esquerda
-
+                    pX -= 1; //Move 1 position LEFT
                     (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
-
                     RemoveBlock(pX, pY, LEFT);
-
+                    myDrawer->Draw(*myMiner, REMOVE);
                     myMiner->Move(pX, pY);
                     break;
                 case RIGHT:
-
-                    pX += 1; //Moves 1 position to the right
-
+                    pX += 1; //Move 1 position RIGHT
                     (pX >= _colunas - 1 ? pX = _colunas - 1 : pX = pX); //Right Bounding
-
                     RemoveBlock(pX, pY, RIGHT);
-
+                    myDrawer->Draw(*myMiner, REMOVE);
                     myMiner->Move(pX, pY);
                     break;
                 }
         }
     Write("Game Over");
-    getch();
     _currentStatus = END;
-    EndGame();
     return;
-}
-void Game::EndGame()
-{
-    //TODO: Free Memory
 }
 
 /* Menu Interface */
@@ -544,6 +501,7 @@ void Game::SoundOptions()
 }
 void Game::CommandMode()
 {
+    //TODO: Code Rework with Recursive
     std::string read;
     bool valid = false;
     int action = 0;
@@ -553,7 +511,6 @@ void Game::CommandMode()
 
     while (read != "j")
         {
-            //Console.clrscr();
             myConsole->gotoxy(2, 2);
             std::cout << "[MODO DE COMANDOS]";
             myConsole->gotoxy(0, 4);
@@ -824,8 +781,6 @@ void Game::RemoveBlock(int &bX, int &bY, int DIRECTION)
                 }
         }
 
-
-
 }
 
 /* System Funcionts */
@@ -843,6 +798,7 @@ void Game::Write(std::string input)
     myConsole->clrscr();
     myConsole->gotoxy(10, 2);
     std::cout << input << std::endl;
+    myConsole->getch();
 }
 std::string Game::GetLoadFilename(int Index)
 {

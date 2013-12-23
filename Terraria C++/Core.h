@@ -1,46 +1,49 @@
-#ifndef __CORE_H__
-#define __CORE_H__
+#pragma once
 
 /*
 TODO:
 	1º OffSet
 	2º DownFall
+	3º Miner - Viga/Escadas
+	5º Save/Load Game
+	6º Serialization
 */
 
-//for (int r = 0, startDrawY = piY; r < 7; r++, startDrawY++)
-//{
-//	for (int c = 0, startDrawX = piX; c < 7; c++, startDrawX++)
-//	{
-//		(startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), c * 5, r * 5) : 0;
-//	}
-//}
+/* Socket Librarys */
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
-/* Boost Library */
-#include <assert.h>
-//#include <boost\archive\text_oarchive.hpp>
-//#include <boost\archive\text_iarchive.hpp>
-
-/* General */
+/* General Librarys */
 #include <vector>
 #include <string>
+#include <stdio.h>
 
-/* Windows */
+/* Windows Librarys */
 #include <cstdio>
 #include <windows.h>
 #include "mmsystem.h"
 #include <dshow.h>
-#include<conio.h>
-#include<dos.h>
+#include <conio.h>
+#include <dos.h>
 
-/* Time */
+/* Time Librarys */
 #include <ctime>
 #include <time.h>
 
-/* Streams */
+/* Stream Librarys */
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <istream>
+
+/* Sock Libs*/
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+/*Sound Libs*/
+#pragma comment(lib, "strmiids.lib")
+#pragma comment(lib, "winmm.lib")
 
 /* Blocks */
 enum BlockIDS
@@ -59,6 +62,10 @@ enum BlockIDS
     V = 11 //Viga
 };
 
+/* General */
+#define NUM_COMMANDS 11
+#define VISION 2
+
 /* Menu Coordinates */
 #define NEW_GAME 10
 #define RESUME_GAME 10
@@ -69,14 +76,14 @@ enum BlockIDS
 #define EXIT_GAME 16
 #define SAVE_GAME 14
 
-/* General */
-#define NUM_COMMANDS 11
-#define VISION 1
+/* Networking */
+#define DEFAULT_BUFLEN 512
+#define DEFAULT_PORT "27015"
+#define DEFAULT_IP "10.65.130.190"
 
 /*Miner Default Stats*/
-#define START_ENERGY 100
-#define START_GOLD 0
-#define START_LIVES 3
+#define SHOW 1
+#define REMOVE 0
 
 /* Console Chars Keys */
 #define C 99
@@ -87,8 +94,10 @@ enum BlockIDS
 #define DOWN 4
 #define ENTER 13
 
-/*Sound Libs*/
-#pragma comment(lib, "strmiids.lib")
-#pragma comment(lib, "winmm.lib")
-
-#endif
+//for (int r = 0, startDrawY = piY; r < 7; r++, startDrawY++)
+//{
+//	for (int c = 0, startDrawX = piX; c < 7; c++, startDrawX++)
+//	{
+//		(startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), c * 5, r * 5) : 0;
+//	}
+//}
