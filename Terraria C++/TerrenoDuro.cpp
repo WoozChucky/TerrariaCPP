@@ -13,3 +13,18 @@ TerrenoDuro::TerrenoDuro(int X, int Y)
 TerrenoDuro::~TerrenoDuro()
 {
 }
+
+std::array<std::array<int, 5>, 5> TerrenoDuro::getDrawSequence() const
+{
+    return
+    {
+        {
+            { { 218, 196, 196, 196, 191 } },
+            { { 179, 178, 178, 178, 179 } },
+            { { 179, 178, 178, 178, 179 } },
+            { { 179, 178, 178, 178, 179 } },
+            { { 192, 196, 196, 196, 217 } }
+        }
+    };
+}
+

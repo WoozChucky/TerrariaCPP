@@ -1,45 +1,69 @@
-#ifndef __MINER_H__
-#define __MINER_H__
-
+#pragma once
 #include "Consola.h"
-
-class Miner : public Consola
+class Miner
 {
-    int _life;
+private:
+    Consola *myConsole;
     int _energy;
     int _coins;
     int _x, _y; //current coordinates
+    int _pickaxeLevel, _energyRestoreLevel, _bagpackLevel, _lightLevel, _parachuteCount, _ladderCount, _beamCount, _extraLiveCount, _dynamiteCount; //Tools
+    int _aluminiumCount, _charcoalCount, _ironCount, _goldCount, _diamondCount; //Ores
+    int _capacity;
 public:
     /* General */
-    Miner(int life = START_LIVES, int energy = START_ENERGY, int coins = START_GOLD);
+    Miner(int energy);
     void ResetStats();
+    void ResetOreCount();
+    void ReachSurface();
 
     /* Verifications */
-    bool hasLifes();
+    bool hasLives();
     void isAlive();
 
     /* Movement */
     void Move(int X, int Y);
     void setCoordinates(int X, int Y);
 
-    /* Draws */
-    void Show();
-    void Remove();
-    void showStats();
-    void DeleteStats();
-
-    /* Sets */
-    void setLife(int S);
-    void setEnergy(int S);
+    /*           Sets                 */
+    void setEnergyLevel(int S);
     void setCoins(int S);
+    void setCapacity(int S);
+    /* Tools Level */
+    void setExtraLiveCount(int S);
+    void setPickaxeLevel(int S);
+    void setBagpackLevel(int S);
+    void setEnergyRestoreLevel(int S);
+    void setLightLevel(int S);
+    /* Tools Count */
+    void setParachuteCount(int S);
+    void setLadderCount(int S);
+    void setBeamCount(int S);
+    void setDynamiteCount(int S);
+    /* Ores */
+    void setAluminiumCount(int S);
+    void setCharcoalCount(int S);
+    void setIronCount(int S);
+    void setGoldCount(int S);
+    void setDiamondCount(int S);
 
     /* Gets */
-    int getEnergy() const;
+    int getEnergyLevel() const;
     int getCoins() const;
-    int getLife() const;
+    int getExtraLiveCount() const;
     int getX() const;
     int getY() const;
+    int getMaxCapacity() const;
+    int getCapacity() const;
+    int getLightLevel() const;
+    int getLadderCount() const;
+    int getBeamCount() const;
+    int getDynamiteCount() const;
+    /* Ores */
+    int getAluminumCount() const;
+    int getCharcoalCount() const;
+    int getDiamondCount() const;
+    int getIronCount() const;
+    int getGoldCount() const;
 
 };
-
-#endif

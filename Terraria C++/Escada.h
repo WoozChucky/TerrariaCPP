@@ -6,5 +6,7 @@ class Escada :
 public:
     Escada(int X, int Y);
     virtual ~Escada();
+
+    std::array<std::array<int, 5>, 5> getDrawSequence() const;
 };
 

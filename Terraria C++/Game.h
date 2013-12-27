@@ -1,20 +1,19 @@
-#include "Drawer.h"
+#include "Mine.h"
 #include "Utensilio.h"
 #include "CommunicatorInterface.h"
-#include "INIReader.h"
 
 class Game
 {
+private:
     INIReader *reader;
-    Drawer *myDrawer;
     Consola *myConsole;
-    Miner *myMiner;
-    Block ***myMine;
     CommunicatorInterface *myCommunicatorInterface;
+    Mine *myMine;
     Utensilio myUtensilios[NUM_UTENSILIOS];
 
-    int _linhas, _colunas, _vision;
     int _currentStatus;
+
+    int vX, vY, pX, pY;
 
 public:
 
@@ -24,7 +23,6 @@ public:
     /* General */
     Game();  //Constructor
     ~Game(); //Destructor
-    void InitializeMine(int Rows, int Cols, int Vision);
     void Start();
 
     /* Sound */
@@ -33,8 +31,6 @@ public:
     void StopMusic();
 
     /* Draws */
-    void DrawMine(int startDrawX, int startDrawY);
-    void RemoveBlock(int &bX, int &b, int DIRECTION);
     void WriteMainMenu();
     void WritePauseMenu();
 
@@ -46,11 +42,15 @@ public:
 
     /* Menu Interface */
     void Pause();
-    void Resume();
     void SoundOptions();
-    void CommandMode();
 
-    /*System Option */
+    /* Commands */
+    void CommandMode();
+    void BuyTool(std::string toolName);
+    void CreateBlock(int blockType, int X, int Y);
+    void Teleport(int X, int Y);
+
+    /* System Option */
     const std::string Game::currentDate();
     std::string GetLoadFilename(int Index);
     void Write(std::string input);

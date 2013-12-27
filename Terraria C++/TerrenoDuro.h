@@ -6,5 +6,7 @@ class TerrenoDuro :
 public:
     TerrenoDuro(int X, int Y);
     virtual ~TerrenoDuro();
+
+    std::array<std::array<int, 5>, 5> getDrawSequence() const;
 };
 

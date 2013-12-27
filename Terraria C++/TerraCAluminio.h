@@ -6,5 +6,7 @@ class TerraCAluminio :
 public:
     TerraCAluminio(int X, int Y);
     virtual ~TerraCAluminio();
+
+    std::array<std::array<int, 5>, 5> getDrawSequence() const;
 };
 

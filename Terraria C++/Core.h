@@ -18,6 +18,8 @@ TODO:
 #include <vector>
 #include <string>
 #include <stdio.h>
+#include <array>
+#include <typeinfo> //compare types of classes
 
 /* Windows Librarys */
 #include <cstdio>
@@ -48,7 +50,6 @@ TODO:
 /* Blocks */
 enum BlockIDS
 {
-    M = 0, //Mineiro
     P = 1, //Pedra
     TM = 2, //Terreno Mole
     TD = 3, //Terreno Duro
@@ -58,8 +59,9 @@ enum BlockIDS
     TcO = 7, //Terra c Ouro
     TcD = 8, //Terra c Diamante
     TcFAF = 9, //Terra c Frango Assado Fossilizado
-    E = 10, //Escada
-    V = 11 //Viga
+    ESC = 10, //Escada
+    VIG = 11, //Viga
+    NULLED = 12 //Vazio
 };
 
 /* General */
@@ -84,15 +86,20 @@ enum BlockIDS
 /*Miner Default Stats*/
 #define SHOW 1
 #define REMOVE 0
+#define FULL 15
 
 /* Console Chars Keys */
-#define C 99
-#define ESCAPE 27
 #define LEFT 1
 #define RIGHT 2
 #define UP 3
 #define DOWN 4
 #define ENTER 13
+#define ESCAPE 27
+#define C 99
+#define D 100
+#define E 101
+#define V 118
+#define _X_ 120
 
 //for (int r = 0, startDrawY = piY; r < 7; r++, startDrawY++)
 //{

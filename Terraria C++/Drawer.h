@@ -13,7 +13,8 @@
 #include "TerraCFerro.h"
 #include "TerraCFrango.h"
 #include "TerraCOuro.h"
-#include "Consola.h"
+#include "Vazio.h"
+#include "Dynamite.h"
 
 class Drawer
 {
@@ -26,19 +27,8 @@ public:
 
     void Draw(Miner obj, int ACTION);
     void DrawStats(Miner obj, int ACTION);
-    void Draw(Block ***obj, Miner *obj2, int startDrawX, int startDrawY, int Vision, int Colunas, int Linhas);
-    void Draw(Block obj);
-    void Draw(Pedra obj);
-    void Draw(Escada obj);
-    void Draw(Viga obj);
-    void Draw(TerrenoDuro obj);
-    void Draw(TerrenoMole obj);
-    void Draw(TerraCAluminio obj);
-    void Draw(TerraCCarvao obj);
-    void Draw(TerraCFrango obj);
-    void Draw(TerraCOuro obj);
-    void Draw(TerraCDiamante obj);
-    void Draw(TerraCFerro obj);
+    void DrawMine(Block ***obj, Miner obj2, int startDrawX, int startDrawY, int Vision, int Colunas, int Linhas);
+    void DrawBlock(std::array<std::array<int, 5>, 5> drawSequence, int _y, int _x);
 
 
 };
