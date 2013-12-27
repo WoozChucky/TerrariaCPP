@@ -1,5 +1,9 @@
-﻿Build started 27/12/2013 00:23:11.
+﻿Build started 27/12/2013 23:26:16.
+     1>Project "C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Terraria C++\Terraria C++.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         Terraria C++.vcxproj -> C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Debug\Terraria C++.exe
+     1>Done Building Project "C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Terraria C++\Terraria C++.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.03
+Time Elapsed 00:00:00.58

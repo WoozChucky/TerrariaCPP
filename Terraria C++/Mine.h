@@ -18,9 +18,13 @@ public:
     Mine(int Rows, int Cols);
     ~Mine();
 
-    int getVision();
-    int getColunas();
-    int getLinhas();
+    void setVision(int S);
+    void setColunas(int S);
+    void setLinhas(int S);
+
+    int getVision() const;
+    int getColunas() const;
+    int getLinhas() const;
 
     void RemoveBlock(int &bX, int &bY, int DIRECTION);
     void insertLadder(int x, int y);

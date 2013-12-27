@@ -3,7 +3,7 @@
 
 Mine::Mine(int Rows, int Cols)
 {
-    reader = new INIReader("data/config.ini");
+    reader = new INIReader("Data/config.ini");
     if (reader->ParseError() < 0)
         {
             std::cout << "Can't load 'test.ini'\n";
@@ -35,11 +35,7 @@ Mine::Mine(int Rows, int Cols)
                 {
                     int blockType = rand() % 9 + 1; //Generates a random block type
 
-                    if (r == _linhas / 2 && c == _colunas / 2) //Middle of Mine
-                        {
-                            myMine[r][c] = new Vazio(c, r); //Empty Block
-                        }
-                    else if (r == 0)
+                    if (r == 0)
                         {
                             myMine[r][c] = new Vazio(c, r);
                         }
@@ -89,15 +85,28 @@ Mine::~Mine()
 {
 }
 
-int Mine::getLinhas()
+void Mine::setVision(int S)
+{
+    _vision = S;
+}
+void Mine::setColunas(int S)
+{
+    _colunas = S;
+}
+void Mine::setLinhas(int S)
+{
+    _linhas = S;
+}
+
+int Mine::getLinhas() const
 {
     return _linhas;
 }
-int Mine::getColunas()
+int Mine::getColunas() const
 {
     return _colunas;
 }
-int Mine::getVision()
+int Mine::getVision() const
 {
     return _vision;
 }

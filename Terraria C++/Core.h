@@ -3,10 +3,6 @@
 /*
 TODO:
 	1º OffSet
-	2º DownFall
-	3º Miner - Viga/Escadas
-	5º Save/Load Game
-	6º Serialization
 */
 
 /* Socket Librarys */

@@ -6,10 +6,12 @@ private:
     Consola *myConsole;
     int _energy;
     int _coins;
-    int _x, _y; //current coordinates
-    int _pickaxeLevel, _energyRestoreLevel, _bagpackLevel, _lightLevel, _parachuteCount, _ladderCount, _beamCount, _extraLiveCount, _dynamiteCount; //Tools
-    int _aluminiumCount, _charcoalCount, _ironCount, _goldCount, _diamondCount; //Ores
     int _capacity;
+    int _x, _y; //current coordinates
+    int _pickaxeLevel, _energyRestoreLevel, _bagpackLevel, _lightLevel; //Levels
+    int _parachuteCount, _ladderCount, _beamCount, _extraLiveCount, _dynamiteCount; //Tools
+    int _aluminiumCount, _charcoalCount, _ironCount, _goldCount, _diamondCount; //Ores
+
 public:
     /* General */
     Miner(int energy);
@@ -56,6 +58,10 @@ public:
     int getMaxCapacity() const;
     int getCapacity() const;
     int getLightLevel() const;
+    int getPickaxeLevel() const;
+    int getEnergyRestoreLevel() const;
+    int getBackpackLevel() const;
+    int getParachuteCount() const;
     int getLadderCount() const;
     int getBeamCount() const;
     int getDynamiteCount() const;

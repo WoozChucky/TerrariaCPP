@@ -132,6 +132,22 @@ int Miner::getCapacity() const
 {
     return _capacity;
 }
+int Miner::getBackpackLevel() const
+{
+    return _bagpackLevel;
+}
+int Miner::getPickaxeLevel() const
+{
+    return _pickaxeLevel;
+}
+int Miner::getParachuteCount() const
+{
+    return _parachuteCount;
+}
+int Miner::getEnergyRestoreLevel() const
+{
+    return _energyRestoreLevel;
+}
 int Miner::getLightLevel() const
 {
     return _lightLevel;
@@ -185,6 +201,26 @@ void Miner::setExtraLiveCount(int S)
 void Miner::setEnergyLevel(int S)
 {
     _energy = S;
+}
+void Miner::setPickaxeLevel(int S)
+{
+    _pickaxeLevel = S;
+}
+void Miner::setBagpackLevel(int S)
+{
+    _bagpackLevel = S;
+}
+void Miner::setEnergyRestoreLevel(int S)
+{
+    _energyRestoreLevel = S;
+}
+void Miner::setLightLevel(int S)
+{
+    _lightLevel = S;
+}
+void Miner::setParachuteCount(int S)
+{
+    _parachuteCount = S;
 }
 void Miner::setCoins(int S)
 {

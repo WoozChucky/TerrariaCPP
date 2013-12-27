@@ -28,6 +28,7 @@ public:
     /* Sound */
     void PlayIntro();
     void PlayTheme();
+    void PlayMine();
     void StopMusic();
 
     /* Draws */
@@ -38,7 +39,7 @@ public:
     void NewGame();
     void SaveGame();
     void LoadGame();
-    void Play();
+    void Play(int _pX, int _pY, int _vX, int _vY);
 
     /* Menu Interface */
     void Pause();

@@ -20,7 +20,7 @@ std::string validCommands[NUM_COMMANDS][2] =
 Game::Game()
 {
     _currentStatus = ACTIVE;
-    reader = new INIReader("data/config.ini");
+    reader = new INIReader("Data/config.ini");
     if (reader->ParseError() < 0)
         {
             std::cout << "Can't load 'test.ini'\n";
@@ -103,14 +103,14 @@ void Game::NewGame()
     StopMusic();
     PlayTheme();
 
-    Play();
+    Play(0, 0, myMine->getLinhas() / 2 - 3, myMine->getColunas() / 2 - 3);
 }
 void Game::LoadGame()
 {
     int numSaves = 0;
     char tecla;
     BOOL H = true;
-    wchar_t* savesLocation = L"saves/*.gem";
+    wchar_t* savesLocation = L"Saves/*.gem";
 
     WIN32_FIND_DATA FindFileData;
     HANDLE hFind;
@@ -164,26 +164,161 @@ void Game::LoadGame()
 
     myConsole->clrscr();
     int nameID = (y - 4) / 2;
-
+    std::string data, garbageCollector("");
     std::string filename = GetLoadFilename(nameID);
 
     std::ifstream infile;
-    infile.open(filename, std::ios::binary);
+    int value = 0;
+    infile.open("Saves/" + filename);
 
-    infile.read((char *)this, sizeof(Game));
 
-    if (infile.fail())
+    infile >> data; //Data
+    infile >> data; //[MINE]
+    infile >> data >> data >> value; //Columns
+    int colunas = value;
+    infile >> data >> data >> value; //Rows
+    int linhas = value;
+    infile >> data >> data >> value; //Vision
+    int vision = value;
+
+    myMine = new Mine(linhas, colunas);
+    myMine->setVision(vision);
+
+    infile >> data; //[MINER]
+    infile >> data >> data >> value; // Coins
+    myMine->myMiner->setCoins(value);
+    infile >> data >> data >> value; // Energy
+    myMine->myMiner->setEnergyLevel(value);
+    infile >> data >> data >> value; // X
+    myMine->myMiner->setCoordinates(value, 0);
+    infile >> data >> data >> value; // Y
+    myMine->myMiner->setCoordinates(myMine->myMiner->getX(), value);
+    infile >> data >> data >> value; // Capacity
+    myMine->myMiner->setCapacity(value);
+    infile >> data >> data >> value; // Pickaxe
+    myMine->myMiner->setPickaxeLevel(value);
+    infile >> data >> data >> value; // EnergyRestore
+    myMine->myMiner->setEnergyRestoreLevel(value);
+    infile >> data >> data >> value; // Bagpack
+    myMine->myMiner->setBagpackLevel(value);
+    infile >> data >> data >> value; // LightLevel
+    myMine->myMiner->setLightLevel(value);
+    infile >> data >> data >> value; // Parachute
+    myMine->myMiner->setParachuteCount(value);
+    infile >> data >> data >> value; // Ladder
+    myMine->myMiner->setLadderCount(value);
+    infile >> data >> data >> value; // Beam
+    myMine->myMiner->setBeamCount(value);
+    infile >> data >> data >> value; // ExtraLive
+    myMine->myMiner->setExtraLiveCount(value);
+    infile >> data >> data >> value; // Dynamite
+    myMine->myMiner->setDynamiteCount(value);
+    infile >> data >> data >> value; // Aluminium
+    myMine->myMiner->setAluminiumCount(value);
+    infile >> data >> data >> value; // Charcoal
+    myMine->myMiner->setCharcoalCount(value);
+    infile >> data >> data >> value; // Diamond
+    myMine->myMiner->setDiamondCount(value);
+    infile >> data >> data >> value; // Iron
+    myMine->myMiner->setIronCount(value);
+    infile >> data >> data >> value; // Gold
+    myMine->myMiner->setGoldCount(value);
+
+    infile >> data; //[BLOCKS]
+
+    std::string className;
+    int breakeable;
+    int ticks;
+
+    for (int r = 0; r < linhas; r++)
         {
-            std::cout << "read failed" << std::endl;
+            for (int c = 0; c < colunas; c++)
+                {
+                    infile >> data >> data >> data >> data;
+                    className = data;
+                    infile >> data >> data >> value;
+                    breakeable = value;
+                    infile >> data >> data >> value;
+                    ticks = value;
+                    infile >> data >> data >> value;
+                    x = value;
+                    infile >> data >> data >> value;
+                    y = value;
+
+                    if (className == "Dynamite")
+                        {
+                            myMine->myMine[r][c] = new Dynamite(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if(className == "Escada")
+                        {
+                            myMine->myMine[r][c] = new Escada(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Pedra")
+                        {
+                            myMine->myMine[r][c] = new Pedra(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCAluminio")
+                        {
+                            myMine->myMine[r][c] = new TerraCAluminio(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCCarvao")
+                        {
+                            myMine->myMine[r][c] = new TerraCCarvao(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCDiamante")
+                        {
+                            myMine->myMine[r][c] = new TerraCDiamante(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCFerro")
+                        {
+                            myMine->myMine[r][c] = new TerraCFerro(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCFrango")
+                        {
+                            myMine->myMine[r][c] = new TerraCFrango(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCOuro")
+                        {
+                            myMine->myMine[r][c] = new TerraCOuro(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerrenoDuro")
+                        {
+                            myMine->myMine[r][c] = new TerrenoDuro(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerrenoMole")
+                        {
+                            myMine->myMine[r][c] = new TerrenoMole(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Vazio")
+                        {
+                            myMine->myMine[r][c] = new Vazio(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Viga")
+                        {
+                            myMine->myMine[r][c] = new Viga(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+
+
+                }
         }
 
-    std::cout << this->myMine->myMiner->getX();
-    system("pause");
-
-    Play();
+    Play(myMine->myMiner->getX(), myMine->myMiner->getY(), myMine->getLinhas() / 2 - 3, myMine->getColunas() / 2 - 3);
 
 
-} //TODO: Serialization
+}
 void Game::SaveGame()
 {
     myConsole->clrscr();
@@ -191,57 +326,86 @@ void Game::SaveGame()
 
     int i = 0;
 
-    std::string filename = "saves/miner-save-" + currentDate() + ".gem";
+    std::string filename = "Saves/miner-save-" + currentDate() + ".gem";
 
     std::ifstream ifile(filename);
     if (ifile)
         {
             char c;
             srand((unsigned int)time(NULL));
-            c = (rand() % 254);
+            c = (rand() % 122 + 48);
             i++;
-            filename = "saves/miner-save-" + currentDate() + c + ".gem";
+            filename = "Saves/miner-save-" + currentDate() + c + ".gem";
         }
 
-    std::cout << "SAVED: " << this->myMine->myMiner->getX();
-    system("pause");
-
     std::ofstream outfile;
-    outfile.open(filename.c_str(), std::ios::binary);
+    outfile.open(filename.c_str(), std::ios::app);
 
-    outfile.write((char *)(this), sizeof(Game));
+    outfile << currentDate() << std::endl << std::endl;
+
+    outfile << "[MINE]" << std::endl;
+    outfile << "Columns = " << myMine->getColunas() << std::endl;
+    outfile << "Rows = " << myMine->getLinhas() << std::endl;
+    outfile << "Vision = " << myMine->getVision() << std::endl << std::endl;
+
+    outfile << "[MINER]" << std::endl;
+    outfile << "Coins = " << myMine->myMiner->getCoins() << std::endl;
+    outfile << "Energy = " << myMine->myMiner->getEnergyLevel() << std::endl;
+    outfile << "X = " << myMine->myMiner->getX() << std::endl;
+    outfile << "Y = " << myMine->myMiner->getY() << std::endl;
+    outfile << "Capacity = " << myMine->myMiner->getCapacity() << std::endl;
+    outfile << "PickaxeLevel = " << myMine->myMiner->getPickaxeLevel() << std::endl;
+    outfile << "EnergyRestoreLevel = " << myMine->myMiner->getEnergyRestoreLevel() << std::endl;
+    outfile << "BagpackLevel = " << myMine->myMiner->getBackpackLevel() << std::endl;
+    outfile << "LightLevel = " << myMine->myMiner->getLightLevel() << std::endl;
+    outfile << "Parachute = " << myMine->myMiner->getParachuteCount() << std::endl;
+    outfile << "Ladder = " << myMine->myMiner->getLadderCount() << std::endl;
+    outfile << "Beam = " << myMine->myMiner->getBeamCount() << std::endl;
+    outfile << "ExtraLive = " << myMine->myMiner->getExtraLiveCount() << std::endl;
+    outfile << "Dynamite = " << myMine->myMiner->getDynamiteCount() << std::endl;
+    outfile << "Aluminium = " << myMine->myMiner->getAluminumCount() << std::endl;
+    outfile << "Charcoal = " << myMine->myMiner->getCharcoalCount() << std::endl;
+    outfile << "Diamond = " << myMine->myMiner->getDiamondCount() << std::endl;
+    outfile << "Iron = " << myMine->myMiner->getIronCount() << std::endl;
+    outfile << "Gold = " << myMine->myMiner->getGoldCount() << std::endl << std::endl;
+
+    outfile << "[BLOCKS]" << std::endl;
+    for (int r = 0; r < myMine->getLinhas(); r++)
+        {
+            for (int c = 0; c < myMine->getColunas(); c++)
+                {
+                    outfile << "Type = " << typeid(*myMine->myMine[r][c]).name() << std::endl;
+                    outfile << "Breakeable = " << myMine->myMine[r][c]->getBreakeable() << std::endl;
+                    outfile << "Ticks = " << myMine->myMine[r][c]->getTicks() << std::endl;
+                    outfile << "X = " << myMine->myMine[r][c]->getX() << std::endl;
+                    outfile << "Y = " << myMine->myMine[r][c]->getY() << std::endl << std::endl;
+                }
+        }
+
 
     if (outfile.fail())
-        std::cout << "write failed" << std::endl;
+        {
+            std::cout << "write failed" << std::endl;
+            outfile.close();
+            myConsole->getch();
+            return;
+        }
+
 
     outfile.close();
 
-
-    std::ifstream infile;
-    infile.open(filename, std::ios::binary);
-
-    infile.read((char *)this, sizeof(Game));
-
-    if (infile.fail())
-        {
-            std::cout << "read failed" << std::endl;
-        }
-
-    std::cout << "READ: " << this->myMine->myMiner->getX();
-    system("pause");
-
     std::cout << "Gravado em " << filename;
     myConsole->getch();
-} //TODO: Serialization
-void Game::Play()
+}
+void Game::Play(int _pX, int _pY, int _vX, int _vY)
 {
     this->myConsole->setScreenBufferSize(7 * 5 + 5, 7 * 5);
     this->myConsole->setScreenSize(7 * 5 + 5, 7 * 5);
     this->myConsole->setTextColor(this->myConsole->PRETO);
 
     char tecla;
-    pX = myMine->getLinhas() / 2, pY = myMine->getColunas() / 2; //Player Start Position
-    vX = myMine->getLinhas() / 2 - 3, vY = myMine->getColunas() / 2 - 3; //Mine Start Writing Position
+    pX = _pX, pY = _pY; //Player Start Position
+    vX = _vX, vY = _vY; //Mine Start Writing Position
 
     /* Miner Start Position */
     myMine->myMiner->setCoordinates(pX, pY);
@@ -281,27 +445,40 @@ void Game::Play()
                     myMine->blowDynamite();
                     break;
                 case UP:
-                    pY -= 1; //Move 1 position UP
-                    (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
-                    if (pY != 0)
+                    if (typeid(*myMine->myMine[pY - 1][pX]).name() == typeid(Escada).name())
                         {
-                            myMine->RemoveBlock(pX, pY, UP);
-                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                            myMine->myMiner->Move(pX, pY);
-                        }
-                    else
-                        {
-                            myMine->myMiner->ReachSurface();
-                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                            myMine->myMiner->Move(pX, pY);
+                            pY -= 1; //Move 1 position UP
+                            (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
+                            if (pY != 0)
+                                {
+                                    myMine->RemoveBlock(pX, pY, UP);
+                                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                                    myMine->myMiner->Move(pX, pY);
+                                }
+                            else
+                                {
+                                    myMine->myMiner->ReachSurface();
+                                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                                    myMine->myMiner->Move(pX, pY);
+                                }
                         }
                     break;
-                case DOWN: //TODO: Fall
+                case DOWN:
                     pY += 1; //Move 1 position DOWN
                     (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
                     myMine->RemoveBlock(pX, pY, DOWN);
                     myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
                     myMine->myMiner->Move(pX, pY);
+
+                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                        {
+                            pY += 1;
+                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                            myMine->myMiner->Move(pX, pY);
+                        }
+
                     break;
                 case LEFT:
                     pX -= 1; //Move 1 position LEFT
@@ -309,6 +486,15 @@ void Game::Play()
                     myMine->RemoveBlock(pX, pY, LEFT);
                     myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
                     myMine->myMiner->Move(pX, pY);
+
+                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                        {
+                            pY += 1;
+                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                            myMine->myMiner->Move(pX, pY);
+                        }
+
                     break;
                 case RIGHT:
                     pX += 1; //Move 1 position RIGHT
@@ -316,6 +502,15 @@ void Game::Play()
                     myMine->RemoveBlock(pX, pY, RIGHT);
                     myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
                     myMine->myMiner->Move(pX, pY);
+
+                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                        {
+                            pY += 1;
+                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                            myMine->myMiner->Move(pX, pY);
+                        }
+
                     break;
                 }
         }
@@ -422,7 +617,6 @@ void Game::SoundOptions()
 }
 void Game::CommandMode()
 {
-    //TODO: Code Rework with Recursive
     std::string read;
     bool valid = false;
     int action = 0;
@@ -487,7 +681,7 @@ void Game::CommandMode()
                     myConsole->gotoxy(0, 4);
                     std::cout << "Comando : ____________________";
                     myConsole->gotoxy(0, 6);
-                    std::cout << "[GAME] -> '" << read << "' existe." << std::endl;
+                    std::cout << "[GAME] -> ";
                     switch (action)
                         {
                         case 0: //BuyTool
@@ -502,11 +696,15 @@ void Game::CommandMode()
                                             this->BuyTool(params[0]);
                                             break;
                                         }
+                                    else
+                                        {
+                                            std::cout << "You have to be on surface to use shop!" << std::endl;
+                                        }
+                                    break;
                                 }
                             else
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                         case 1: //CreateBlock
@@ -521,8 +719,7 @@ void Game::CommandMode()
                                 }
                             else
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                         case 2:
@@ -537,59 +734,43 @@ void Game::CommandMode()
                                 }
                             else
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                         case 3:
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                            iss >> command;
-                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 4:
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                            iss >> command;
-                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 5:
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                            iss >> command;
-                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 6:
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                            iss >> command;
-                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 7:
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                            iss >> command;
-                            std::cout << "Param 1: " << command << std::endl;
                             break;
                         case 8:
                             myConsole->clrscr();
@@ -602,14 +783,12 @@ void Game::CommandMode()
                         case 10:
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
-                                    std::cout << std::endl << std::endl << "Numero de argumentos invalido!" << std::endl;
-                                    myConsole->getch();
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                             for (int i = 0; i < NUM_UTENSILIOS; i++)
                                 {
                                     std::cout << myUtensilios[i].getName() << " - " << myUtensilios[i].getCost() << std::endl;
-
                                 }
                             break;
                         }
@@ -628,11 +807,8 @@ void Game::BuyTool(std::string toolName)
                     if (myMine->myMiner->getCoins() >= myUtensilios[i].getCost())
                         {
                             myMine->myMiner->setCoins(myMine->myMiner->getCoins() - myUtensilios[i].getCost());
-                            switch (str2int(myUtensilios[i].getName().c_str()))
-                                {
-                                case 1:
-                                    break;
-                                }
+                            std::cout << myUtensilios[i].getName() << " bought successfully with " << myUtensilios[i].getCost() << " coins." << std::endl;
+                            myConsole->getch();
                         }
                     else
                         {
@@ -642,9 +818,12 @@ void Game::BuyTool(std::string toolName)
                         }
                     return;
                 }
-        }
-}
 
+        }
+    std::cout << "Tool non-existant!" << std::endl;
+    myConsole->getch();
+    return;
+}
 void Game::CreateBlock(int blockType, int X, int Y)
 {
     if (blockType > 0 && blockType < 13 && X <= myMine->getLinhas() && Y <= myMine->getColunas())
@@ -714,11 +893,15 @@ void Game::Teleport(int X, int Y)
 /* Sound */
 void Game::PlayIntro()
 {
-    PlaySound(TEXT("data/intro.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+    PlaySound(TEXT("Data/intro.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 }
 void Game::PlayTheme()
 {
-    PlaySound(TEXT("data/theme.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+    PlaySound(TEXT("Data/theme.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+}
+void Game::PlayMine()
+{
+    PlaySound(TEXT("Data/mine.wav"), NULL, SND_ASYNC | SND_FILENAME);
 }
 void Game::StopMusic()
 {
@@ -765,7 +948,6 @@ void Game::WritePauseMenu()
     std::cout << "Sair do Jogo";
 }
 
-
 /* System Funcionts */
 const std::string Game::currentDate()
 {
@@ -773,7 +955,7 @@ const std::string Game::currentDate()
     struct tm  tstruct;
     char       buf[80];
     tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%d%m%Y", &tstruct);
+    strftime(buf, sizeof(buf), "%d-%m-%Y", &tstruct);
     return buf;
 }
 void Game::Write(std::string input)
@@ -788,7 +970,7 @@ std::string Game::GetLoadFilename(int Index)
     char ch[260];
     char DefChar = ' ';
     bool H = true;
-    wchar_t* savesLocation = L"saves/*.gem";
+    wchar_t* savesLocation = L"Saves/*.gem";
 
     WIN32_FIND_DATA FindFileData;
     HANDLE hFind;
@@ -805,9 +987,4 @@ std::string Game::GetLoadFilename(int Index)
     WideCharToMultiByte(CP_ACP, 0, FindFileData.cFileName, -1, ch, 260, &DefChar, NULL);
 
     return ch;
-}
-
-constexpr unsigned int str2int(const char* str, int h = 0)
-{
-    return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
