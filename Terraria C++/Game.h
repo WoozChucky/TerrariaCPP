@@ -29,6 +29,8 @@ public:
     void PlayIntro();
     void PlayTheme();
     void PlayMine();
+    void PlayFalling();
+    void PlayRockSlide();
     void StopMusic();
 
     /* Draws */

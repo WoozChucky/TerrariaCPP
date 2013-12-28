@@ -15,7 +15,7 @@ Mine::Mine(int Rows, int Cols)
 
     _linhas = Rows;
     _colunas = Cols;
-    _vision = myMiner->getLightLevel() + 1;
+    _vision = myMiner->getLightLevel();
 
     srand((unsigned int)time(NULL)); //Randomize
 
@@ -214,6 +214,7 @@ void Mine::MineOre(int x, int y)
             if (myMiner->getCapacity() + 1 <= myMiner->getMaxCapacity())
                 {
                     myMiner->setAluminiumCount(myMiner->getAluminumCount() + 1);
+                    std::cout << "Found 1 aluminium ore!" << myMiner->getAluminumCount() << " in total." << std::endl;
                     myMiner->setCapacity(myMiner->getCapacity() + 1);
                 }
         }

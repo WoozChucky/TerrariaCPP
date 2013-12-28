@@ -33,7 +33,7 @@ Game::Game()
 
 void Game::Start()
 {
-    PlayIntro();
+    //PlayIntro();
 
     char tecla;
 
@@ -101,7 +101,7 @@ void Game::NewGame()
     myMine = new Mine(nLinhas, nColunas);
 
     StopMusic();
-    PlayTheme();
+    //PlayTheme();
 
     Play(0, 0, myMine->getLinhas() / 2 - 3, myMine->getColunas() / 2 - 3);
 }
@@ -399,8 +399,8 @@ void Game::SaveGame()
 }
 void Game::Play(int _pX, int _pY, int _vX, int _vY)
 {
-    this->myConsole->setScreenBufferSize(7 * 5 + 5, 7 * 5);
-    this->myConsole->setScreenSize(7 * 5 + 5, 7 * 5);
+    this->myConsole->setScreenBufferSize(7 * 5 + 10, 7 * 5);
+    this->myConsole->setScreenSize(7 * 5 + 10, 7 * 5);
     this->myConsole->setTextColor(this->myConsole->PRETO);
 
     char tecla;
@@ -445,38 +445,42 @@ void Game::Play(int _pX, int _pY, int _vX, int _vY)
                     myMine->blowDynamite();
                     break;
                 case UP:
-                    if (typeid(*myMine->myMine[pY - 1][pX]).name() == typeid(Escada).name())
+                    if ((pY - 1) >= 0)
+                        if (typeid(*myMine->myMine[pY - 1][pX]).name() == typeid(Escada).name())
+                            {
+                                pY -= 1; //Move 1 position UP
+                                (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
+                                myMine->RemoveBlock(pX, pY, UP);
+                                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                                myMine->myMiner->Move(pX, pY);
+                                myMine->myMiner->Move(pX, pY);
+                            }
+                    break;
+                case DOWN:
+                    if ((pY + 1) < myMine->getLinhas())
                         {
-                            pY -= 1; //Move 1 position UP
-                            (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
-                            if (pY != 0)
+                            if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
                                 {
-                                    myMine->RemoveBlock(pX, pY, UP);
-                                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                                    myMine->myMiner->Move(pX, pY);
+                                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                                        {
+                                            PlayFalling();
+                                            pY += 1;
+                                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                                            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+                                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                                            myMine->myMiner->Move(pX, pY);
+                                            if ((pY + 1) < myMine->getLinhas())
+                                                break;
+                                        }
                                 }
                             else
                                 {
-                                    myMine->myMiner->ReachSurface();
+                                    pY += 1; //Move 1 position DOWN
+                                    (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                                    myMine->RemoveBlock(pX, pY, DOWN);
                                     myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
                                     myMine->myMiner->Move(pX, pY);
                                 }
-                        }
-                    break;
-                case DOWN:
-                    pY += 1; //Move 1 position DOWN
-                    (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                    myMine->RemoveBlock(pX, pY, DOWN);
-                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                    myMine->myMiner->Move(pX, pY);
-
-                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                        {
-                            pY += 1;
-                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
-                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                            myMine->myMiner->Move(pX, pY);
                         }
 
                     break;
@@ -487,13 +491,19 @@ void Game::Play(int _pX, int _pY, int _vX, int _vY)
                     myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
                     myMine->myMiner->Move(pX, pY);
 
-                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                        {
-                            pY += 1;
-                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                            myMine->myMiner->Move(pX, pY);
-                        }
+                    if ((pY + 1) < myMine->getLinhas())
+                        while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                            {
+                                std::cout << pY;
+                                myConsole->getch();
+                                PlayFalling();
+                                pY += 1;
+                                (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                                myMine->myMiner->Move(pX, pY);
+                                if ((pY + 1) < myMine->getLinhas())
+                                    break;
+                            }
 
                     break;
                 case RIGHT:
@@ -503,13 +513,17 @@ void Game::Play(int _pX, int _pY, int _vX, int _vY)
                     myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
                     myMine->myMiner->Move(pX, pY);
 
-                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                        {
-                            pY += 1;
-                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                            myMine->myMiner->Move(pX, pY);
-                        }
+                    if ((pY + 1) < myMine->getLinhas())
+                        while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                            {
+                                PlayFalling();
+                                pY += 1;
+                                (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                                myMine->myMiner->Move(pX, pY);
+                                if ((pY + 1) < myMine->getLinhas())
+                                    break;
+                            }
 
                     break;
                 }
@@ -623,6 +637,8 @@ void Game::CommandMode()
 
     myConsole->clrscr();
 
+    if (pY == 0)
+        myMine->myMiner->ReachSurface();
 
     while (read != "j")
         {
@@ -666,20 +682,20 @@ void Game::CommandMode()
                 {
                     myConsole->clrscr();
                     myConsole->gotoxy(2, 2);
-                    std::cout << "[MODO DE COMANDOS]";
+                    std::cout << "[COMMAND MODE]";
                     myConsole->gotoxy(0, 4);
-                    std::cout << "Comando : ____________________";
+                    std::cout << "Command : ____________________";
                     myConsole->gotoxy(0, 6);
-                    std::cout << "[GAME] -> '" << read << "' nao encontrado.";
+                    std::cout << "[GAME] -> '" << read << "' not found.";
                 }
             else
                 {
                     valid = false;
                     myConsole->clrscr();
                     myConsole->gotoxy(2, 2);
-                    std::cout << "[MODO DE COMANDOS]";
+                    std::cout << "[COMMAND MODE]";
                     myConsole->gotoxy(0, 4);
-                    std::cout << "Comando : ____________________";
+                    std::cout << "Command : ____________________";
                     myConsole->gotoxy(0, 6);
                     std::cout << "[GAME] -> ";
                     switch (action)
@@ -715,6 +731,7 @@ void Game::CommandMode()
                                             iss >> params[i];
                                         }
                                     CreateBlock(atoi(params[0].c_str()), atoi(params[1].c_str()), atoi(params[2].c_str()));
+                                    std::cout << "Block created successfully!" << std::endl;
                                     break;
                                 }
                             else
@@ -722,7 +739,7 @@ void Game::CommandMode()
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                        case 2:
+                        case 2: //Teleport
                             if (count == atoi(validCommands[action][1].c_str()))
                                 {
                                     for (int i = 0; i < atoi(validCommands[action][1].c_str()) - 1; i++)
@@ -730,6 +747,7 @@ void Game::CommandMode()
                                             iss >> params[i];
                                         }
                                     Teleport(atoi(params[0].c_str()), atoi(params[1].c_str()));
+                                    return;
                                     break;
                                 }
                             else
@@ -737,35 +755,55 @@ void Game::CommandMode()
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
-                        case 3:
+                        case 3: //SetGold
+                            if (count == atoi(validCommands[action][1].c_str()))
+                                {
+                                    for (int i = 0; i < atoi(validCommands[action][1].c_str()) - 1; i++)
+                                        {
+                                            iss >> params[i];
+                                        }
+                                    myMine->myMiner->setGoldCount(atoi(params[0].c_str()));
+                                    std::cout << "Gold set successfully!" << std::endl;
+                                    break;
+                                }
+                            else
+                                {
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
+                                    break;
+                                }
+                            break;
+                        case 4: //SetEnergy
+                            if (count == atoi(validCommands[action][1].c_str()))
+                                {
+                                    for (int i = 0; i < atoi(validCommands[action][1].c_str()) - 1; i++)
+                                        {
+                                            iss >> params[i];
+                                        }
+                                    myMine->myMiner->setEnergyLevel(atoi(params[0].c_str()));
+                                    std::cout << "Energy set successfully!" << std::endl;
+                                    break;
+                                }
+                            else
+                                {
+                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
+                                    break;
+                                }
+                            break;
+                        case 5: //CreateMine
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                             break;
-                        case 4:
+                        case 6: //LoadMine
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                             break;
-                        case 5:
-                            if (count != atoi(validCommands[action][1].c_str()))
-                                {
-                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
-                                    break;
-                                }
-                            break;
-                        case 6:
-                            if (count != atoi(validCommands[action][1].c_str()))
-                                {
-                                    std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
-                                    break;
-                                }
-                            break;
-                        case 7:
+                        case 7: //CopyMine
                             if (count != atoi(validCommands[action][1].c_str()))
                                 {
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
@@ -831,40 +869,40 @@ void Game::CreateBlock(int blockType, int X, int Y)
             switch (blockType)
                 {
                 case 1:
-                    myMine->myMine[X][Y] = new Pedra(X, Y);
+                    myMine->myMine[Y][X] = new Pedra(X, Y);
                     break;
                 case 2:
-                    myMine->myMine[X][Y] = new TerrenoMole(X, Y);
+                    myMine->myMine[Y][X] = new TerrenoMole(X, Y);
                     break;
                 case 3:
-                    myMine->myMine[X][Y] = new TerrenoDuro(X, Y);
+                    myMine->myMine[Y][X] = new TerrenoDuro(X, Y);
                     break;
                 case 4:
-                    myMine->myMine[X][Y] = new TerraCAluminio(X, Y);
+                    myMine->myMine[Y][X] = new TerraCAluminio(X, Y);
                     break;
                 case 5:
-                    myMine->myMine[X][Y] = new TerraCCarvao(X, Y);
+                    myMine->myMine[Y][X] = new TerraCCarvao(X, Y);
                     break;
                 case 6:
-                    myMine->myMine[X][Y] = new TerraCFerro(X, Y);
+                    myMine->myMine[Y][X] = new TerraCFerro(X, Y);
                     break;
                 case 7:
-                    myMine->myMine[X][Y] = new TerraCOuro(X, Y);
+                    myMine->myMine[Y][X] = new TerraCOuro(X, Y);
                     break;
                 case 8:
-                    myMine->myMine[X][Y] = new TerraCDiamante(X, Y);
+                    myMine->myMine[Y][X] = new TerraCDiamante(X, Y);
                     break;
                 case 9:
-                    myMine->myMine[X][Y] = new TerraCFrango(X, Y);
+                    myMine->myMine[Y][X] = new TerraCFrango(X, Y);
                     break;
                 case 10:
-                    myMine->myMine[X][Y] = new Escada(X, Y);
+                    myMine->myMine[Y][X] = new Escada(X, Y);
                     break;
                 case 11:
-                    myMine->myMine[X][Y] = new Viga(X, Y);
+                    myMine->myMine[Y][X] = new Viga(X, Y);
                     break;
                 case 12:
-                    myMine->myMine[X][Y] = new Vazio(X, Y);
+                    myMine->myMine[Y][X] = new Vazio(X, Y);
                     break;
                 }
         }
@@ -902,6 +940,14 @@ void Game::PlayTheme()
 void Game::PlayMine()
 {
     PlaySound(TEXT("Data/mine.wav"), NULL, SND_ASYNC | SND_FILENAME);
+}
+void Game::PlayFalling()
+{
+    PlaySound(TEXT("Data/falling.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+}
+void Game::PlayRockSlide()
+{
+    PlaySound(TEXT("Data/rockslide.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
 }
 void Game::StopMusic()
 {

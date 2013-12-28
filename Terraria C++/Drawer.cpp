@@ -64,7 +64,7 @@ void Drawer::DrawStats(Miner obj, int ACTION)
 
             myConsole->gotoxy(1, 36);
             std::cout << "Lives: ";
-            myConsole->setTextColor(myConsole->VERMELHO_CLARO);
+            myConsole->setTextColor(myConsole->VERDE);
             switch (obj.getExtraLiveCount())
                 {
                 case 3:
@@ -81,7 +81,7 @@ void Drawer::DrawStats(Miner obj, int ACTION)
             myConsole->setTextColor(myConsole->PRETO);
             myConsole->gotoxy(1, 37);
             std::cout << "Energy: ";
-            myConsole->setTextColor(myConsole->VERMELHO_CLARO);
+            myConsole->setTextColor(myConsole->VERDE);
             if (obj.getEnergyLevel() == 100)
                 {
                     std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219;
@@ -134,20 +134,20 @@ void Drawer::DrawStats(Miner obj, int ACTION)
             std::cout << "Bag: ";
             myConsole->setTextColor(myConsole->VERDE);
             std::cout << obj.getCapacity() << "/" << obj.getMaxCapacity();
+            myConsole->gotoxy(1, 40);
+            myConsole->setTextColor(myConsole->PRETO);
+            std::cout << "Ladders: ";
+            myConsole->setTextColor(myConsole->VERDE);
+            std::cout << obj.getLadderCount();
+            myConsole->gotoxy(1, 41);
+            myConsole->setTextColor(myConsole->PRETO);
+            std::cout << "Beams: ";
+            myConsole->setTextColor(myConsole->VERDE);
+            std::cout << obj.getBeamCount();
             myConsole->setTextColor(myConsole->PRETO);
 
             break;
         case REMOVE:
-            myConsole->gotoxy(2, 1);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            myConsole->gotoxy(2, 2);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            myConsole->gotoxy(2, 3);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            myConsole->gotoxy(2, 4);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-            myConsole->gotoxy(0, 6);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
             break;
         }
 }
