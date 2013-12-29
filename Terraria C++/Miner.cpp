@@ -17,9 +17,11 @@ Miner::Miner(int energy)
     _beamCount = 5;
 
     _parachuteCount = 0;
-    _dynamiteCount = 1;
+    _dynamiteCount = 0;
 
     _capacity = 0;
+
+    _teleport = false;
 
     ResetOreCount();
 
@@ -49,7 +51,22 @@ void Miner::ResetOreCount()
 }
 void Miner::ReachSurface()
 {
-    _energy = 100;
+    switch (getEnergyRestoreLevel())
+        {
+        case 1:
+            _energy = 80;
+            break;
+        case 2:
+            _energy = 120;
+            break;
+        case 3:
+            _energy = 160;
+            break;
+        case 4:
+            _energy = 400;
+            break;
+        }
+
     _capacity = 0;
 
     _coins += (_aluminiumCount * 5) + (_charcoalCount * 8) + (_diamondCount * 25) + (_ironCount * 12) + (_goldCount * 18);
@@ -64,6 +81,10 @@ bool Miner::hasLives()
     if (_extraLiveCount <= 0)
         return false;
     return true;
+}
+bool Miner::canTeleport()
+{
+    return _teleport;
 }
 void Miner::isAlive()
 {
@@ -114,7 +135,7 @@ int Miner::getY() const
 }
 int Miner::getMaxCapacity() const
 {
-    switch (_pickaxeLevel)
+    switch (_bagpackLevel)
         {
         case 1:
             return 15;
@@ -186,6 +207,10 @@ int Miner::getDynamiteCount() const
 }
 
 /* Sets */
+void Miner::setTeleport(bool S)
+{
+    _teleport = S;
+}
 void Miner::setDynamiteCount(int S)
 {
     _dynamiteCount = S;

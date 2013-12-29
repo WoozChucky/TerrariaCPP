@@ -33,14 +33,17 @@ public:
     void PlayRockSlide();
     void StopMusic();
 
-    /* Draws */
-    void WriteMainMenu();
-    void WritePauseMenu();
+    /* Movement Handling*/
+    void MoveUp();
+    void MoveDown();
+    void MoveLeft();
+    void MoveRight();
 
     /* Game Stats*/
     void NewGame();
-    void SaveGame();
-    void LoadGame();
+    void SaveGame(std::string filename);
+    void LoadGame(std::string filename);
+    void LoadGameMenu();
     void Play(int _pX, int _pY, int _vX, int _vY);
 
     /* Menu Interface */

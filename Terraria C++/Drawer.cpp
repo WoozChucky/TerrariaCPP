@@ -60,70 +60,19 @@ void Drawer::DrawStats(Miner obj, int ACTION)
         case SHOW:
             myConsole->setTextColor(myConsole->PRETO);
             myConsole->gotoxy(1, 35);
-            std::cout << "X: " << obj.getX() << " Y: " << obj.getY() << (char)255;
+            std::cout << "X: " << obj.getX() << " Y: " << obj.getY();
 
             myConsole->gotoxy(1, 36);
             std::cout << "Lives: ";
             myConsole->setTextColor(myConsole->VERDE);
-            switch (obj.getExtraLiveCount())
-                {
-                case 3:
-                    std::cout << (char)3 << (char)3 << (char)3;
-                    break;
-                case 2:
-                    std::cout << (char)3 << (char)3;
-                    break;
-                case 1:
-                    std::cout << (char)3;
-                    break;
-                }
+            for (int i = 0; i < obj.getExtraLiveCount(); i++)
+                std::cout << (char)3;
 
             myConsole->setTextColor(myConsole->PRETO);
             myConsole->gotoxy(1, 37);
             std::cout << "Energy: ";
             myConsole->setTextColor(myConsole->VERDE);
-            if (obj.getEnergyLevel() == 100)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219;
-                }
-            else if (obj.getEnergyLevel() >= 90)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 80)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 70)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 60)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 50)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 40)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 30)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 20)
-                {
-                    std::cout << (char)219 << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-                }
-            else if (obj.getEnergyLevel() >= 10)
-                {
-                    std::cout << (char)219 << (char)219 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-                }
-            std::cout << " " << obj.getEnergyLevel() << "/100" << (char)255;
-
+            std::cout << obj.getEnergyLevel();
             myConsole->setTextColor(myConsole->PRETO);
             myConsole->gotoxy(1, 38);
             std::cout << "Coins: ";
@@ -144,6 +93,12 @@ void Drawer::DrawStats(Miner obj, int ACTION)
             std::cout << "Beams: ";
             myConsole->setTextColor(myConsole->VERDE);
             std::cout << obj.getBeamCount();
+            myConsole->setTextColor(myConsole->PRETO);
+            myConsole->gotoxy(1, 42);
+            myConsole->setTextColor(myConsole->PRETO);
+            std::cout << "Dynamite: ";
+            myConsole->setTextColor(myConsole->VERDE);
+            std::cout << obj.getDynamiteCount();
             myConsole->setTextColor(myConsole->PRETO);
 
             break;
@@ -180,4 +135,36 @@ void Drawer::DrawBlock(std::array<std::array<int, 5>, 5> charSequence, int _y, i
 
             std::cout << std::endl;
         }
+}
+void Drawer::DrawPauseMenu()
+{
+    myConsole->gotoxy(14, 2);
+    std::cout << " -----Pause-----";
+    myConsole->gotoxy(10, 8);
+    std::cout << "** Choose an option **";
+    myConsole->gotoxy(10, 10);
+    std::cout << "Continue";
+    myConsole->gotoxy(10, 12);
+    std::cout << "Sound";
+    myConsole->gotoxy(10, 14);
+    std::cout << "Save Game";
+    myConsole->gotoxy(10, 16);
+    std::cout << "Main Menu";
+}
+void Drawer::DrawMainMenu()
+{
+    myConsole->gotoxy(14, 2);
+    myConsole->setTextColor(myConsole->VERDE);
+    std::cout << "Welcome to Gem Miner";
+    myConsole->gotoxy(10, 8);
+    myConsole->setTextColor(myConsole->AMARELO);
+    std::cout << "** Choose an option **";
+    myConsole->gotoxy(10, 10);
+    myConsole->setTextColor(myConsole->VERMELHO);
+    std::cout << "New Game";
+    myConsole->gotoxy(10, 12);
+    std::cout << "Load Game";
+    myConsole->gotoxy(10, 14);
+    std::cout << "Exit";
+    myConsole->setTextColor(myConsole->AZUL_CLARO);
 }

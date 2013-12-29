@@ -16,6 +16,7 @@ TODO:
 #include <stdio.h>
 #include <array>
 #include <typeinfo> //compare types of classes
+#include <random>
 
 /* Windows Librarys */
 #include <cstdio>
@@ -94,6 +95,7 @@ enum BlockIDS
 #define C 99
 #define D 100
 #define E 101
+#define _S_ 115
 #define V 118
 #define _X_ 120
 

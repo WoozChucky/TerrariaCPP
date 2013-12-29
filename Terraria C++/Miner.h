@@ -11,6 +11,7 @@ private:
     int _pickaxeLevel, _energyRestoreLevel, _bagpackLevel, _lightLevel; //Levels
     int _parachuteCount, _ladderCount, _beamCount, _extraLiveCount, _dynamiteCount; //Tools
     int _aluminiumCount, _charcoalCount, _ironCount, _goldCount, _diamondCount; //Ores
+    bool _teleport;
 
 public:
     /* General */
@@ -21,6 +22,7 @@ public:
 
     /* Verifications */
     bool hasLives();
+    bool canTeleport();
     void isAlive();
 
     /* Movement */
@@ -31,6 +33,7 @@ public:
     void setEnergyLevel(int S);
     void setCoins(int S);
     void setCapacity(int S);
+    void setTeleport(bool S);
     /* Tools Level */
     void setExtraLiveCount(int S);
     void setPickaxeLevel(int S);

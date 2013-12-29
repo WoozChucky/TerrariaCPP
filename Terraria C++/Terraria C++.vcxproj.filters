@@ -108,6 +108,9 @@
     <ClInclude Include="Dynamite.h">
       <Filter>Header Files\Blocks</Filter>
     </ClInclude>
+    <ClInclude Include="TerraCVeneno.h">
+      <Filter>Header Files\Blocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Consola.cpp">
@@ -182,6 +185,9 @@
     <ClCompile Include="Dynamite.cpp">
       <Filter>Source Files\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="TerraCVeneno.cpp">
+      <Filter>Source Files\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Terraria C++.rc">
@@ -189,9 +195,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Pictures\PhotoScan.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="icon1.ico">
       <Filter>Resource Files</Filter>
     </Image>

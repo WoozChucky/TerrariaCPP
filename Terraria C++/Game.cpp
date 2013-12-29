@@ -30,7 +30,6 @@ Game::Game()
     //myCommunicatorInterface = new CommunicatorInterface(reader->Get("NETWORKING", "IP", 0).c_str(), reader->Get("NETWORKING", "Port", 0).c_str());
     LoadUtensilios(myUtensilios);
 }
-
 void Game::Start()
 {
     //PlayIntro();
@@ -42,7 +41,7 @@ void Game::Start()
     myConsole->setScreenSize(20, 50);
     myConsole->clrscr();
 
-    this->WriteMainMenu();
+    myMine->myDrawer->DrawMainMenu();
 
     int x = 8, y = 10;
     myConsole->gotoxy(x, y);
@@ -72,7 +71,7 @@ void Game::Start()
             NewGame();
             break;
         case LOAD_GAME:
-            LoadGame();
+            LoadGameMenu();
             break;
         case SAVE_GAME: //Suposto EXIT_GAME
             exit(0);
@@ -86,13 +85,13 @@ void Game::NewGame()
     int nLinhas, nColunas;
     this->myConsole->clrscr();
     this->myConsole->gotoxy(14, 2);
-    std::cout << "Criacao Novo Jogo";
-    std::cout << std::endl << "Dimensao da Mina" << std::endl;
-    std::cout << "Linhas: ";
+    std::cout << "New game creation";
+    std::cout << std::endl << "Mine dimension" << std::endl;
+    std::cout << "Rows: ";
     this->myConsole->setTextColor(this->myConsole->VERMELHO_CLARO);
     std::cin >> nLinhas;
     this->myConsole->setTextColor(this->myConsole->AZUL_CLARO);
-    std::cout << "Colunas: ";
+    std::cout << "Columns: ";
     this->myConsole->setTextColor(this->myConsole->VERMELHO_CLARO);
     std::cin >> nColunas;
     std::cout << std::endl;
@@ -105,7 +104,7 @@ void Game::NewGame()
 
     Play(0, 0, myMine->getLinhas() / 2 - 3, myMine->getColunas() / 2 - 3);
 }
-void Game::LoadGame()
+void Game::LoadGameMenu()
 {
     int numSaves = 0;
     char tecla;
@@ -138,7 +137,7 @@ void Game::LoadGame()
 
     for (int i = 1; i <= numSaves; i++)
         {
-            myConsole->gotoxy(4, 4 + (i*2));
+            myConsole->gotoxy(4, 4 + (i * 2));
             std::cout << "Save " << i;
         }
 
@@ -164,13 +163,20 @@ void Game::LoadGame()
 
     myConsole->clrscr();
     int nameID = (y - 4) / 2;
-    std::string data, garbageCollector("");
     std::string filename = GetLoadFilename(nameID);
 
     std::ifstream infile;
     int value = 0;
+    std::string data;
+
     infile.open("Saves/" + filename);
 
+    if (!infile)
+        {
+            std::cout << "File doesnt exist!";
+            myConsole->getch();
+            return;
+        }
 
     infile >> data; //Data
     infile >> data; //[MINE]
@@ -229,6 +235,167 @@ void Game::LoadGame()
     std::string className;
     int breakeable;
     int ticks;
+
+    for (int r = 0; r < linhas; r++)
+        {
+            for (int c = 0; c < colunas; c++)
+                {
+                    infile >> data >> data >> data >> data;
+                    className = data;
+                    infile >> data >> data >> value;
+                    breakeable = value;
+                    infile >> data >> data >> value;
+                    ticks = value;
+                    infile >> data >> data >> value;
+                    x = value;
+                    infile >> data >> data >> value;
+                    y = value;
+
+                    if (className == "Dynamite")
+                        {
+                            myMine->myMine[r][c] = new Dynamite(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Escada")
+                        {
+                            myMine->myMine[r][c] = new Escada(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Pedra")
+                        {
+                            myMine->myMine[r][c] = new Pedra(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCAluminio")
+                        {
+                            myMine->myMine[r][c] = new TerraCAluminio(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCCarvao")
+                        {
+                            myMine->myMine[r][c] = new TerraCCarvao(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCDiamante")
+                        {
+                            myMine->myMine[r][c] = new TerraCDiamante(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCFerro")
+                        {
+                            myMine->myMine[r][c] = new TerraCFerro(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCFrango")
+                        {
+                            myMine->myMine[r][c] = new TerraCFrango(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerraCOuro")
+                        {
+                            myMine->myMine[r][c] = new TerraCOuro(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerrenoDuro")
+                        {
+                            myMine->myMine[r][c] = new TerrenoDuro(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "TerrenoMole")
+                        {
+                            myMine->myMine[r][c] = new TerrenoMole(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Vazio")
+                        {
+                            myMine->myMine[r][c] = new Vazio(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+                    else if (className == "Viga")
+                        {
+                            myMine->myMine[r][c] = new Viga(x, y);
+                            myMine->myMine[r][c]->setTicks(ticks);
+                        }
+
+
+                }
+        }
+
+    Play(myMine->myMiner->getX(), myMine->myMiner->getY(), myMine->getLinhas() / 2 - 3, myMine->getColunas() / 2 - 3);
+}
+void Game::LoadGame(std::string filename)
+{
+    std::ifstream infile;
+    int value = 0;
+    std::string data;
+
+    infile.open("Saves/" + filename + ".gem");
+
+    if (!infile)
+        {
+            std::cout << "File doesnt exist!";
+            myConsole->getch();
+            return;
+        }
+
+    infile >> data; //Data
+    infile >> data; //[MINE]
+    infile >> data >> data >> value; //Columns
+    int colunas = value;
+    infile >> data >> data >> value; //Rows
+    int linhas = value;
+    infile >> data >> data >> value; //Vision
+    int vision = value;
+
+    myMine = new Mine(linhas, colunas);
+    myMine->setVision(vision);
+
+    infile >> data; //[MINER]
+    infile >> data >> data >> value; // Coins
+    myMine->myMiner->setCoins(value);
+    infile >> data >> data >> value; // Energy
+    myMine->myMiner->setEnergyLevel(value);
+    infile >> data >> data >> value; // X
+    myMine->myMiner->setCoordinates(value, 0);
+    infile >> data >> data >> value; // Y
+    myMine->myMiner->setCoordinates(myMine->myMiner->getX(), value);
+    infile >> data >> data >> value; // Capacity
+    myMine->myMiner->setCapacity(value);
+    infile >> data >> data >> value; // Pickaxe
+    myMine->myMiner->setPickaxeLevel(value);
+    infile >> data >> data >> value; // EnergyRestore
+    myMine->myMiner->setEnergyRestoreLevel(value);
+    infile >> data >> data >> value; // Bagpack
+    myMine->myMiner->setBagpackLevel(value);
+    infile >> data >> data >> value; // LightLevel
+    myMine->myMiner->setLightLevel(value);
+    infile >> data >> data >> value; // Parachute
+    myMine->myMiner->setParachuteCount(value);
+    infile >> data >> data >> value; // Ladder
+    myMine->myMiner->setLadderCount(value);
+    infile >> data >> data >> value; // Beam
+    myMine->myMiner->setBeamCount(value);
+    infile >> data >> data >> value; // ExtraLive
+    myMine->myMiner->setExtraLiveCount(value);
+    infile >> data >> data >> value; // Dynamite
+    myMine->myMiner->setDynamiteCount(value);
+    infile >> data >> data >> value; // Aluminium
+    myMine->myMiner->setAluminiumCount(value);
+    infile >> data >> data >> value; // Charcoal
+    myMine->myMiner->setCharcoalCount(value);
+    infile >> data >> data >> value; // Diamond
+    myMine->myMiner->setDiamondCount(value);
+    infile >> data >> data >> value; // Iron
+    myMine->myMiner->setIronCount(value);
+    infile >> data >> data >> value; // Gold
+    myMine->myMiner->setGoldCount(value);
+
+    infile >> data; //[BLOCKS]
+
+    std::string className;
+    int breakeable;
+    int ticks;
+    int x, y;
 
     for (int r = 0; r < linhas; r++)
         {
@@ -319,23 +486,17 @@ void Game::LoadGame()
 
 
 }
-void Game::SaveGame()
+void Game::SaveGame(std::string filename)
 {
-    myConsole->clrscr();
-    myConsole->gotoxy(2, 2);
 
-    int i = 0;
-
-    std::string filename = "Saves/miner-save-" + currentDate() + ".gem";
+    filename = "Saves/" + filename + ".gem";
 
     std::ifstream ifile(filename);
     if (ifile)
         {
-            char c;
-            srand((unsigned int)time(NULL));
-            c = (rand() % 122 + 48);
-            i++;
-            filename = "Saves/miner-save-" + currentDate() + c + ".gem";
+            std::cout << "File name already exists!";
+            myConsole->getch();
+            return;
         }
 
     std::ofstream outfile;
@@ -394,8 +555,9 @@ void Game::SaveGame()
 
     outfile.close();
 
-    std::cout << "Gravado em " << filename;
+    std::cout << "Saved at " << filename;
     myConsole->getch();
+    return;
 }
 void Game::Play(int _pX, int _pY, int _vX, int _vY)
 {
@@ -444,87 +606,21 @@ void Game::Play(int _pX, int _pY, int _vX, int _vY)
                 case _X_:
                     myMine->blowDynamite();
                     break;
+                case _S_:
+                    if (myMine->myMiner->canTeleport())
+                        Teleport(0, 0);
+                    break;
                 case UP:
-                    if ((pY - 1) >= 0)
-                        if (typeid(*myMine->myMine[pY - 1][pX]).name() == typeid(Escada).name())
-                            {
-                                pY -= 1; //Move 1 position UP
-                                (pY <= 0 ? pY = 0 : pY = pY); //Top Bounding
-                                myMine->RemoveBlock(pX, pY, UP);
-                                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                                myMine->myMiner->Move(pX, pY);
-                                myMine->myMiner->Move(pX, pY);
-                            }
+                    MoveUp();
                     break;
                 case DOWN:
-                    if ((pY + 1) < myMine->getLinhas())
-                        {
-                            if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                                {
-                                    while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                                        {
-                                            PlayFalling();
-                                            pY += 1;
-                                            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                                            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
-                                            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                                            myMine->myMiner->Move(pX, pY);
-                                            if ((pY + 1) < myMine->getLinhas())
-                                                break;
-                                        }
-                                }
-                            else
-                                {
-                                    pY += 1; //Move 1 position DOWN
-                                    (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                                    myMine->RemoveBlock(pX, pY, DOWN);
-                                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                                    myMine->myMiner->Move(pX, pY);
-                                }
-                        }
-
+                    MoveDown();
                     break;
                 case LEFT:
-                    pX -= 1; //Move 1 position LEFT
-                    (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
-                    myMine->RemoveBlock(pX, pY, LEFT);
-                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                    myMine->myMiner->Move(pX, pY);
-
-                    if ((pY + 1) < myMine->getLinhas())
-                        while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                            {
-                                std::cout << pY;
-                                myConsole->getch();
-                                PlayFalling();
-                                pY += 1;
-                                (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                                myMine->myMiner->Move(pX, pY);
-                                if ((pY + 1) < myMine->getLinhas())
-                                    break;
-                            }
-
+                    MoveLeft();
                     break;
                 case RIGHT:
-                    pX += 1; //Move 1 position RIGHT
-                    (pX >= myMine->getColunas() - 1 ? pX = myMine->getColunas() - 1 : pX = pX); //Right Bounding
-                    myMine->RemoveBlock(pX, pY, RIGHT);
-                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                    myMine->myMiner->Move(pX, pY);
-
-                    if ((pY + 1) < myMine->getLinhas())
-                        while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
-                            {
-                                PlayFalling();
-                                pY += 1;
-                                (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-                                myMine->myMiner->Move(pX, pY);
-                                if ((pY + 1) < myMine->getLinhas())
-                                    break;
-                            }
-
+                    MoveRight();
                     break;
                 }
         }
@@ -539,7 +635,7 @@ void Game::Pause()
     myConsole->setTextColor(myConsole->PRETO);
     char tecla;
     myConsole->clrscr();
-    WritePauseMenu();
+    myMine->myDrawer->DrawPauseMenu();
 
     int x = 8, y = 10;
     myConsole->gotoxy(x, y);
@@ -571,7 +667,6 @@ void Game::Pause()
             SoundOptions();
             break;
         case SAVE_GAME:
-            SaveGame();
             break;
         case EXIT_GAME:
             myMine->myMiner->ResetStats();
@@ -583,15 +678,15 @@ void Game::SoundOptions()
 {
     myConsole->clrscr();
     myConsole->gotoxy(14, 2);
-    std::cout << " ---Opcoes de Som---";
+    std::cout << " ---Sound Options---";
     myConsole->gotoxy(10, 8);
-    std::cout << "** Escolhe uma opcao **";
+    std::cout << "** Choose an option **";
     myConsole->gotoxy(10, 10);
     std::cout << "ON";
     myConsole->gotoxy(10, 12);
     std::cout << "OFF";
     myConsole->gotoxy(10, 14);
-    std::cout << "Voltar";
+    std::cout << "Back";
 
     char tecla;
 
@@ -643,9 +738,9 @@ void Game::CommandMode()
     while (read != "j")
         {
             myConsole->gotoxy(2, 2);
-            std::cout << "[MODO DE COMANDOS]";
+            std::cout << "[COMMAND MODE]";
             myConsole->gotoxy(0, 4);
-            std::cout << "Comando : ____________________";
+            std::cout << "Command : ____________________";
             myConsole->gotoxy(10, 4);
             std::getline(std::cin, read);
 
@@ -790,21 +885,72 @@ void Game::CommandMode()
                                 }
                             break;
                         case 5: //CreateMine
-                            if (count != atoi(validCommands[action][1].c_str()))
+                            if (count == atoi(validCommands[action][1].c_str()))
+                                {
+                                    for (int i = 0; i < atoi(validCommands[action][1].c_str()) - 1; i++)
+                                        {
+                                            iss >> params[i];
+                                        }
+                                    SaveGame(params[0]);
+                                    break;
+                                }
+                            else
                                 {
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                             break;
                         case 6: //LoadMine
-                            if (count != atoi(validCommands[action][1].c_str()))
+                            if (count == atoi(validCommands[action][1].c_str()))
+                                {
+                                    for (int i = 0; i < atoi(validCommands[action][1].c_str()) - 1; i++)
+                                        {
+                                            iss >> params[i];
+                                        }
+                                    LoadGame(params[0]);
+                                    break;
+                                }
+                            else
                                 {
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
                                 }
                             break;
                         case 7: //CopyMine
-                            if (count != atoi(validCommands[action][1].c_str()))
+                            if (count == atoi(validCommands[action][1].c_str()))
+                                {
+                                    for (int i = 0; i < atoi(validCommands[action][1].c_str()) - 1; i++)
+                                        {
+                                            iss >> params[i];
+                                        }
+
+                                    std::ifstream  src("Saves/" + params[0] + ".gem");
+                                    std::ofstream  dst("Saves/" + params[1] + ".gem");
+
+                                    if (!src)
+                                        {
+                                            std::cout << "Source file doesnt exist!";
+                                            myConsole->getch();
+                                            break;
+                                        }
+                                    else if (dst)
+                                        {
+                                            std::cout << "Destination file exist!";
+                                            myConsole->getch();
+                                            break;
+                                        }
+                                    else
+                                        {
+                                            dst << src.rdbuf();
+
+                                            dst.close();
+                                            src.close();
+
+                                            std::cout << "Copy was successfull!" << std::endl;
+                                            break;
+                                        }
+                                }
+                            else
                                 {
                                     std::cout << std::endl << std::endl << "Invalid argument number!" << std::endl;
                                     break;
@@ -835,32 +981,215 @@ void Game::CommandMode()
     myConsole->clrscr();
     return;
 }
-
 void Game::BuyTool(std::string toolName)
 {
-    for (int i = 0; i < NUM_UTENSILIOS; i++)
+    bool found = false;
+    int i = 0;
+    for (i = 0; i < NUM_UTENSILIOS; i++)
         {
             if (myUtensilios[i].getName().compare(toolName.c_str()) == 0)
                 {
-                    if (myMine->myMiner->getCoins() >= myUtensilios[i].getCost())
+                    found = true;
+                }
+            if (found)
+                break;
+            if (i == NUM_UTENSILIOS)
+                {
+                    std::cout << "Tool non-existant!" << std::endl;
+                    myConsole->getch();
+                    return;
+                }
+        }
+
+    if (myMine->myMiner->getCoins() >= myUtensilios[i].getCost())
+        {
+            myMine->myMiner->setCoins(myMine->myMiner->getCoins() - myUtensilios[i].getCost());
+
+            switch (i)
+                {
+                case 0: //Picareta
+                    std::cout << "Tool already bought!";
+                    myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                    myConsole->getch();
+                    return;
+                    break;
+                case 1: //PicaretaAutomatica
+                    switch (myMine->myMiner->getPickaxeLevel())
                         {
-                            myMine->myMiner->setCoins(myMine->myMiner->getCoins() - myUtensilios[i].getCost());
-                            std::cout << myUtensilios[i].getName() << " bought successfully with " << myUtensilios[i].getCost() << " coins." << std::endl;
-                            myConsole->getch();
-                        }
-                    else
-                        {
-                            std::cout << "Not enough coins!" << std::endl;
+                        case 1:
+                            myMine->myMiner->setPickaxeLevel(2);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
                             myConsole->getch();
                             return;
                         }
+                    break;
+                case 2: //MarteloPneumatico
+                    switch (myMine->myMiner->getPickaxeLevel())
+                        {
+                        case 2:
+                            myMine->myMiner->setPickaxeLevel(3);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 3: //Mochila
+                    std::cout << "Tool already bought!";
+                    myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                    myConsole->getch();
                     return;
+                    break;
+                case 4: //MochilaPro
+                    switch (myMine->myMiner->getBackpackLevel())
+                        {
+                        case 1:
+                            myMine->myMiner->setBagpackLevel(2);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 5: //MochilaHeavyDuty
+                    switch (myMine->myMiner->getBackpackLevel())
+                        {
+                        case 2:
+                            myMine->myMiner->setBagpackLevel(3);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 6: //Isqueiro
+                    std::cout << "Tool already bought!";
+                    myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                    myConsole->getch();
+                    return;
+                    break;
+                case 7: //Lanterna
+                    switch (myMine->myMiner->getLightLevel())
+                        {
+                        case 1:
+                            myMine->myMiner->setLightLevel(2);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 8: //Holofote
+                    switch (myMine->myMiner->getLightLevel())
+                        {
+                        case 2:
+                            myMine->myMiner->setLightLevel(3);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 9: //LataDeAtum
+                    std::cout << "Tool already bought!";
+                    myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                    myConsole->getch();
+                    return;
+                    break;
+                case 10: //BebidaEnergetica
+                    switch (myMine->myMiner->getEnergyRestoreLevel())
+                        {
+                        case 1:
+                            myMine->myMiner->setEnergyRestoreLevel(2);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 11: //LancheiraCampismo
+                    switch (myMine->myMiner->getEnergyRestoreLevel())
+                        {
+                        case 2:
+                            myMine->myMiner->setEnergyRestoreLevel(3);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 12: //FrigorificoPortatil
+                    switch (myMine->myMiner->getEnergyRestoreLevel())
+                        {
+                        case 3:
+                            myMine->myMiner->setEnergyRestoreLevel(4);
+                            break;
+                        default:
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    break;
+                case 13: //AplicadorEscada
+                    myMine->myMiner->setLadderCount(myMine->myMiner->getLadderCount() + 1);
+                    break;
+                case 14: //AplicadorVigas
+                    myMine->myMiner->setBeamCount(myMine->myMiner->getBeamCount() + 1);
+                    break;
+                case 15: //Paraquedas
+                    myMine->myMiner->setParachuteCount(myMine->myMiner->getParachuteCount() + 1);
+                    break;
+                case 16: //VidaExtra
+                    myMine->myMiner->setExtraLiveCount(myMine->myMiner->getExtraLiveCount() + 1);
+                    break;
+                case 17: //Dynamite
+                    myMine->myMiner->setDynamiteCount(myMine->myMiner->getDynamiteCount() + 1);
+                    break;
+                case 18: //Teleport
+                    if (myMine->myMiner->canTeleport())
+                        {
+                            std::cout << "Tool already bought!";
+                            myMine->myMiner->setGoldCount(myMine->myMiner->getGoldCount() + myUtensilios[i].getCost());
+                            myConsole->getch();
+                            return;
+                        }
+                    else
+                        myMine->myMiner->setTeleport(true);
+                    break;
+                default:
+                    break;
                 }
 
+            std::cout << myUtensilios[i].getName() << " bought successfully with " << myUtensilios[i].getCost() << " coins." << std::endl;
+            myConsole->getch();
+            return;
         }
-    std::cout << "Tool non-existant!" << std::endl;
-    myConsole->getch();
+    else
+        {
+            std::cout << "Not enough coins!" << std::endl;
+            myConsole->getch();
+            return;
+        }
     return;
+
 }
 void Game::CreateBlock(int blockType, int X, int Y)
 {
@@ -943,7 +1272,7 @@ void Game::PlayMine()
 }
 void Game::PlayFalling()
 {
-    PlaySound(TEXT("Data/falling.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_LOOP);
+    PlaySound(TEXT("Data/falling.wav"), NULL, SND_ASYNC | SND_FILENAME);
 }
 void Game::PlayRockSlide()
 {
@@ -954,44 +1283,104 @@ void Game::StopMusic()
     PlaySound(NULL, 0, 0);
 }
 
+/* Movement Handling*/
+void Game::MoveUp()
+{
+    if ((pY - 1) >= 0) //TopBouding
+        if (typeid(*myMine->myMine[pY - 1][pX]).name() == typeid(Escada).name() || (pY - 1) == 0)
+            {
+                pY -= 1; //Move 1 position UP
+                myMine->RemoveBlock(pX, pY, UP);
+                myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                myMine->myMiner->Move(pX, pY);
+                myMine->myMiner->Move(pX, pY);
+            }
+}
+void Game::MoveDown()
+{
+    if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
+        {
+            int t = myMine->myMine[pY + 1][pX]->getY();
+            while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                {
+                    if (t == myMine->getLinhas() - 1)
+                        break;
+                    PlayFalling();
+                    pY += 1;
+                    (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                    myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                    myMine->myMiner->Move(pX, pY);
+                    t++;
+                }
+        }
+    else //Move Down
+        {
+            pY += 1;
+            (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+            myMine->RemoveBlock(pX, pY, UP);
+            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+            myMine->myMiner->Move(pX, pY);
+        }
+
+}
+void Game::MoveLeft()
+{
+    pX -= 1; //Move 1 position LEFT
+    (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
+    myMine->RemoveBlock(pX, pY, LEFT);
+    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+    myMine->myMiner->Move(pX, pY);
+
+    if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
+        {
+            int t = myMine->myMine[pY + 1][pX]->getY();
+            while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                {
+                    if (t == myMine->getLinhas() - 1)
+                        break;
+                    PlayFalling();
+                    pY += 1;
+                    (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                    myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                    myMine->myMiner->Move(pX, pY);
+                    t++;
+                }
+        }
+
+}
+void Game::MoveRight()
+{
+    pX += 1; //Move 1 position RIGHT
+    (pX >= myMine->getColunas() - 1 ? pX = myMine->getColunas() - 1 : pX = pX); //Right Bounding
+    myMine->RemoveBlock(pX, pY, RIGHT);
+    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+    myMine->myMiner->Move(pX, pY);
+
+    if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
+        {
+            int t = myMine->myMine[pY + 1][pX]->getY();
+            while (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+                {
+                    if (t == myMine->getLinhas() - 1)
+                        break;
+                    PlayFalling();
+                    pY += 1;
+                    (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
+                    myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+                    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+                    myMine->myMiner->Move(pX, pY);
+                    t++;
+                }
+        }
+}
+
 /* Gets */
 int Game::Status() const
 {
     return _currentStatus;
-}
-
-/* Draws */
-void Game::WriteMainMenu()
-{
-    myConsole->gotoxy(14, 2);
-    myConsole->setTextColor(myConsole->VERDE);
-    std::cout << "Bem vindo ao Gem Miner";
-    myConsole->gotoxy(10, 8);
-    myConsole->setTextColor(myConsole->AMARELO);
-    std::cout << "** Escolhe uma opcao **";
-    myConsole->gotoxy(10, 10);
-    myConsole->setTextColor(myConsole->VERMELHO);
-    std::cout << "Novo Jogo";
-    myConsole->gotoxy(10, 12);
-    std::cout << "Carregar Jogo";
-    myConsole->gotoxy(10, 14);
-    std::cout << "Sair";
-    myConsole->setTextColor(myConsole->AZUL_CLARO);
-}
-void Game::WritePauseMenu()
-{
-    myConsole->gotoxy(14, 2);
-    std::cout << " -----Pausa-----";
-    myConsole->gotoxy(10, 8);
-    std::cout << "** Escolhe uma opcao **";
-    myConsole->gotoxy(10, 10);
-    std::cout << "Continuar";
-    myConsole->gotoxy(10, 12);
-    std::cout << "Som";
-    myConsole->gotoxy(10, 14);
-    std::cout << "Guardar Jogo";
-    myConsole->gotoxy(10, 16);
-    std::cout << "Sair do Jogo";
 }
 
 /* System Funcionts */

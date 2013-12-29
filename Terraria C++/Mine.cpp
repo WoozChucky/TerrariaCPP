@@ -28,6 +28,27 @@ Mine::Mine(int Rows, int Cols)
                 myMine[r][c] = new Block();
         }
 
+    //floor -
+    //ceil +
+    //round +-
+
+    std::random_device rd;
+    std::default_random_engine re(rd());
+    std::uniform_real_distribution<> coiso(1.0, 100.0);
+
+    /*for (int n = 0; n < 10; ++n)
+        {
+            std::cout << round(coiso(re)) << " ";
+        }
+    system("pause");*/
+
+
+    int FiftyPercent = round(50 * _colunas / 100);
+    int FourtyPercent = ceil(40 * _colunas / 100);
+    int ThirtyPercent = ceil(30 * _colunas / 100);
+    int TwentyPercent = ceil(20 * _colunas / 100);
+    int TenPercent = ceil(10 * _colunas / 100);
+
     /* Populate Mine Array Automatically */
     for (int r = 0; r < _linhas; r++)
         {
@@ -35,9 +56,17 @@ Mine::Mine(int Rows, int Cols)
                 {
                     int blockType = rand() % 9 + 1; //Generates a random block type
 
-                    if (r == 0)
+                    if (r == 0) //first row empty
                         {
                             myMine[r][c] = new Vazio(c, r);
+                        }
+                    else if (r == _linhas - 1) //last row with stone
+                        {
+                            myMine[r][c] = new Pedra(c, r);
+                        }
+                    else if (r == 1 && c == 0)
+                        {
+                            myMine[r][c] = new Pedra(c, r);
                         }
                     else
                         {
@@ -113,6 +142,16 @@ int Mine::getVision() const
 
 void Mine::RemoveBlock(int &bX, int &bY, int DIRECTION)
 {
+    int Picks;
+    switch (myMiner->getPickaxeLevel())
+        {
+        case 1:
+            Picks = 1;
+        case 2:
+            Picks = 2;
+        case 3:
+            Picks = 4;
+        }
     if (this->myMine[bY][bX]->getBreakeable() == 1)
         {
             if (typeid(*myMine[bY][bX]).name() != typeid(Viga).name() && typeid(*myMine[bY][bX]).name() != typeid(Escada).name())
@@ -120,7 +159,7 @@ void Mine::RemoveBlock(int &bX, int &bY, int DIRECTION)
                     while (this->myMine[bY][bX]->getTicks() > 0)
                         {
                             PlaySound(TEXT("data/mine.wav"), NULL, SND_ASYNC | SND_FILENAME);
-                            this->myMine[bY][bX]->setTicks(this->myMine[bY][bX]->getTicks() - 1);
+                            this->myMine[bY][bX]->setTicks(this->myMine[bY][bX]->getTicks() - Picks);
                             this->myMiner->setEnergyLevel(this->myMiner->getEnergyLevel() - 1);
                             this->myMiner->isAlive();
                         }
@@ -249,5 +288,11 @@ void Mine::MineOre(int x, int y)
                     myMiner->setGoldCount(myMiner->getGoldCount() + 1);
                     myMiner->setCapacity(myMiner->getCapacity() + 4);
                 }
+        }
+    else if(typeid(*myMine[y][x]).name() == typeid(TerraCVeneno).name())
+        {
+            std::cout << "That block was poisoned, you lost 10 energy!";
+            myMiner->setEnergyLevel(myMiner->getEnergyLevel() - 10);
+            myConsole->getch();
         }
 }

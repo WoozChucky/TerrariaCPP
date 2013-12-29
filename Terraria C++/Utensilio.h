@@ -4,7 +4,7 @@
 #include <string>
 
 #define NUM_UTENSILIOS 19
-#define UTENSILIOS_FILE_NAME "utensilios.txt"
+#define UTENSILIOS_FILE_NAME "Data/tools.ini"
 
 class Utensilio
 {

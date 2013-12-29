@@ -1,37 +1,20 @@
-﻿Build started 28/12/2013 01:59:46.
+﻿Build started 29/12/2013 17:28:05.
      1>Project "C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Terraria C++\Terraria C++.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Nuno\Desktop\boost_1_55_0 /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\Nuno\Desktop\boost_1_55_0 /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Drawer.cpp Game.cpp Main.cpp Mine.cpp
          Game.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Debug\Terraria C++.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\boost\boost\bin.v2\libs kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Debug\Terraria C++.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Debug\Terraria C++.lib" /MACHINE:X86 "Debug\Terraria C++.res"
-         Debug\Block.obj
-         Debug\CommunicatorInterface.obj
-         Debug\Consola.obj
-         Debug\Drawer.obj
-         Debug\Dynamite.obj
-         Debug\Escada.obj
-         Debug\Game.obj
-         Debug\ini.obj
-         Debug\INIReader.obj
-         Debug\Main.obj
-         Debug\Mine.obj
-         Debug\Miner.obj
-         Debug\Pedra.obj
-         Debug\TerraCAluminio.obj
-         Debug\TerraCCarvao.obj
-         Debug\TerraCDiamante.obj
-         Debug\TerraCFerro.obj
-         Debug\TerraCFrango.obj
-         Debug\TerraCOuro.obj
-         Debug\TerrenoDuro.obj
-         Debug\TerrenoMole.obj
-         Debug\Utensilio.obj
-         Debug\Vazio.obj
-         Debug\Viga.obj
-         Terraria C++.vcxproj -> C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Debug\Terraria C++.exe
-     1>Done Building Project "C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Terraria C++\Terraria C++.vcxproj" (Build target(s)).
+     1>c:\users\nuno\documents\github\terrariacpp\terraria c++\game.cpp(44): error C2039: 'WriteMainMenu' : is not a member of 'Game'
+                 c:\users\nuno\documents\github\terrariacpp\terraria c++\game.h(6) : see declaration of 'Game'
+     1>c:\users\nuno\documents\github\terrariacpp\terraria c++\game.cpp(638): error C3861: 'WritePauseMenu': identifier not found
+         Drawer.cpp
+         Generating Code...
+         Compiling...
+         Main.cpp
+         Generating Code...
+         Skipping... (no relevant changes detected)
+         Mine.cpp
+     1>Done Building Project "C:\Users\Nuno\Documents\GitHub\TerrariaCPP\Terraria C++\Terraria C++.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:04.86
+Time Elapsed 00:00:06.24

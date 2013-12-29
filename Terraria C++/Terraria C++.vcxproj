@@ -100,6 +100,7 @@
     <ClInclude Include="TerraCFerro.h" />
     <ClInclude Include="TerraCFrango.h" />
     <ClInclude Include="TerraCOuro.h" />
+    <ClInclude Include="TerraCVeneno.h" />
     <ClInclude Include="TerrenoDuro.h" />
     <ClInclude Include="TerrenoMole.h" />
     <ClInclude Include="Utensilio.h" />
@@ -126,6 +127,7 @@
     <ClCompile Include="TerraCFerro.cpp" />
     <ClCompile Include="TerraCFrango.cpp" />
     <ClCompile Include="TerraCOuro.cpp" />
+    <ClCompile Include="TerraCVeneno.cpp" />
     <ClCompile Include="TerrenoDuro.cpp" />
     <ClCompile Include="TerrenoMole.cpp" />
     <ClCompile Include="Utensilio.cpp" />
@@ -136,7 +138,6 @@
     <ResourceCompile Include="Terraria C++.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Pictures\PhotoScan.jpg" />
     <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
