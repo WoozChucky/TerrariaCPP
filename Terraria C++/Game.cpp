@@ -32,7 +32,7 @@ Game::Game()
 }
 void Game::Start()
 {
-    //PlayIntro();
+    PlayIntro();
 
     char tecla;
 
@@ -41,7 +41,7 @@ void Game::Start()
     myConsole->setScreenSize(20, 50);
     myConsole->clrscr();
 
-    myMine->myDrawer->DrawMainMenu();
+    DrawMainMenu();
 
     int x = 8, y = 10;
     myConsole->gotoxy(x, y);
@@ -100,7 +100,7 @@ void Game::NewGame()
     myMine = new Mine(nLinhas, nColunas);
 
     StopMusic();
-    //PlayTheme();
+    PlayTheme();
 
     Play(0, 0, myMine->getLinhas() / 2 - 3, myMine->getColunas() / 2 - 3);
 }
@@ -1286,6 +1286,7 @@ void Game::StopMusic()
 /* Movement Handling*/
 void Game::MoveUp()
 {
+    myMine->Rockslide();
     if ((pY - 1) >= 0) //TopBouding
         if (typeid(*myMine->myMine[pY - 1][pX]).name() == typeid(Escada).name() || (pY - 1) == 0)
             {
@@ -1298,6 +1299,7 @@ void Game::MoveUp()
 }
 void Game::MoveDown()
 {
+    myMine->Rockslide();
     if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
         {
             int t = myMine->myMine[pY + 1][pX]->getY();
@@ -1316,10 +1318,9 @@ void Game::MoveDown()
         }
     else //Move Down
         {
-            pY += 1;
+            pY += 1; //Move 1 position DOWN
             (pY >= myMine->getLinhas() - 1 ? pY = myMine->getLinhas() - 1 : pY = pY); //Bottom Bounding
-            myMine->RemoveBlock(pX, pY, UP);
-            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() - 5);
+            myMine->RemoveBlock(pX, pY, DOWN);
             myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
             myMine->myMiner->Move(pX, pY);
         }
@@ -1327,11 +1328,22 @@ void Game::MoveDown()
 }
 void Game::MoveLeft()
 {
+    myMine->Rockslide();
     pX -= 1; //Move 1 position LEFT
-    (pX <= 0 ? pX = 0 : pX = pX); //Left Bounding
-    myMine->RemoveBlock(pX, pY, LEFT);
-    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-    myMine->myMiner->Move(pX, pY);
+    if (pX < 0)
+        {
+            pX++;
+            myMine->myMiner->Move(pX, pY);
+            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() + 1);
+            return;
+        }
+    else
+        {
+            myMine->RemoveBlock(pX, pY, LEFT);
+            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+            myMine->myMiner->Move(pX, pY);
+
+        }
 
     if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
         {
@@ -1349,15 +1361,24 @@ void Game::MoveLeft()
                     t++;
                 }
         }
-
 }
 void Game::MoveRight()
 {
+    myMine->Rockslide();
     pX += 1; //Move 1 position RIGHT
-    (pX >= myMine->getColunas() - 1 ? pX = myMine->getColunas() - 1 : pX = pX); //Right Bounding
-    myMine->RemoveBlock(pX, pY, RIGHT);
-    myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
-    myMine->myMiner->Move(pX, pY);
+    if (pX > myMine->getColunas() - 1)
+        {
+            pX--;
+            myMine->myMiner->Move(pX, pY);
+            myMine->myMiner->setEnergyLevel(myMine->myMiner->getEnergyLevel() + 1);
+            return;
+        }
+    else
+        {
+            myMine->RemoveBlock(pX, pY, LEFT);
+            myMine->myDrawer->Draw(*myMine->myMiner, REMOVE);
+            myMine->myMiner->Move(pX, pY);
+        }
 
     if (typeid(*myMine->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
         {

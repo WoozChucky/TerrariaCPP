@@ -42,7 +42,10 @@ Mine::Mine(int Rows, int Cols)
         }
     system("pause");*/
 
-
+    int NinetyPercent = round(90 * _colunas / 100);
+    int EightyPercent = round(80 * _colunas / 100);
+    int SeventyPercent = round(70 * _colunas / 100);
+    int SixtyPercent = round(60 * _colunas / 100);
     int FiftyPercent = round(50 * _colunas / 100);
     int FourtyPercent = ceil(40 * _colunas / 100);
     int ThirtyPercent = ceil(30 * _colunas / 100);
@@ -64,48 +67,29 @@ Mine::Mine(int Rows, int Cols)
                         {
                             myMine[r][c] = new Pedra(c, r);
                         }
-                    else if (r == 1 && c == 0)
+                    else if (r == 1 && c == 0) //pedra under spawn
                         {
                             myMine[r][c] = new Pedra(c, r);
                         }
+                    else if (r > TwentyPercent)
+                        {
+                            int poss = rand() % 8 + 0;
+                            if (poss == 8)
+                                myMine[r][c] = new TerraCOuro(c, r);
+                            else
+                                myMine[r][c] = new TerrenoDuro(c, r);
+                        }
+                    else if (r > TenPercent)
+                        {
+                            int poss = rand() % 10 + 0;
+                            if (poss == 5)
+                                myMine[r][c] = new TerraCDiamante(c, r);
+                            else
+                                myMine[r][c] = new TerrenoMole(c, r);
+                        }
                     else
                         {
-                            switch (blockType)
-                                {
-                                case P:
-                                    myMine[r][c] = new Pedra(c, r);
-                                    break;
-                                case TM:
-                                    myMine[r][c] = new TerrenoMole(c, r);
-                                    break;
-                                case TD:
-                                    myMine[r][c] = new TerrenoDuro(c, r);
-                                    break;
-                                case TcA:
-                                    myMine[r][c] = new TerraCAluminio(c, r);
-                                    break;
-                                case TcC:
-                                    myMine[r][c] = new TerraCCarvao(c, r);
-                                    break;
-                                case TcF:
-                                    myMine[r][c] = new TerraCFerro(c, r);
-                                    break;
-                                case TcO:
-                                    myMine[r][c] = new TerraCOuro(c, r);
-                                    break;
-                                case TcD:
-                                    myMine[r][c] = new TerraCDiamante(c, r);
-                                    break;
-                                case TcFAF:
-                                    myMine[r][c] = new TerraCFrango(c, r);
-                                    break;
-                                case ESC:
-                                    myMine[r][c] = new Escada(c, r);
-                                    break;
-                                case VIG:
-                                    myMine[r][c] = new Viga(c, r);
-                                    break;
-                                }
+                            myMine[r][c] = new TerrenoDuro(c, r);
                         }
                 }
         }
@@ -169,6 +153,7 @@ void Mine::RemoveBlock(int &bX, int &bY, int DIRECTION)
         }
     else
         {
+            myMiner->setEnergyLevel(myMiner->getEnergyLevel() + 1);
             switch (DIRECTION)
                 {
                 case UP:
@@ -198,7 +183,7 @@ void Mine::insertLadder(int x, int y)
 void Mine::insertBeam(int x, int y)
 {
     if (myMiner->getBeamCount() > 0)
-        if (typeid(*myMine[y][x]).name() == typeid(Vazio).name())
+        if (typeid(*myMine[y][x]).name() == typeid(Vazio).name() && typeid(*myMine[y - 1][x]).name() == typeid(Pedra).name())
             {
                 myMine[y][x] = new Viga(x, y);
                 myMiner->setBeamCount(myMiner->getBeamCount() - 1);
@@ -245,8 +230,6 @@ void Mine::MineOre(int x, int y)
     if (typeid(*myMine[y][x]).name() == typeid(TerraCFrango).name())
         {
             myMiner->setEnergyLevel(myMiner->getEnergyLevel() + 21);
-            if (myMiner->getEnergyLevel() > 100)
-                myMiner->setEnergyLevel(101);
         }
     else if (typeid(*myMine[y][x]).name() == typeid(TerraCAluminio).name())
         {
@@ -294,5 +277,29 @@ void Mine::MineOre(int x, int y)
             std::cout << "That block was poisoned, you lost 10 energy!";
             myMiner->setEnergyLevel(myMiner->getEnergyLevel() - 10);
             myConsole->getch();
+        }
+}
+
+void Mine::Rockslide()
+{
+    for (int r = 0; r < _linhas - 1; r++)
+        {
+            for (int c = 0; c < _colunas; c++)
+                {
+                    if (typeid(*myMine[r][c]).name() == typeid(Pedra).name() && typeid(*myMine[r + 1][c]).name() == typeid(Vazio).name())
+                        {
+                            if (myMiner->getX() == myMine[r + 1][c]->getX() && myMiner->getY() == myMine[r + 1][c]->getY() && typeid(*myMine[r][c]).name() == typeid(Pedra).name())
+                                {
+                                    myMiner->setEnergyLevel(0);
+                                    std::cout << myMiner->getX() << "=" << myMine[r + 1][c]->getX() << " / " << myMiner->getY() << "=" << myMine[r + 1][c]->getY();
+                                    myConsole->getch();
+                                }
+                            else
+                                {
+                                    myMine[r][c] = new Vazio(c, r);
+                                    myMine[r + 1][c] = new Pedra(c, r + 1);
+                                }
+                        }
+                }
         }
 }

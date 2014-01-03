@@ -32,6 +32,7 @@ public:
     void insertDynamite(int x, int y);
     void blowDynamite();
     void MineOre(int x, int y);
+    void Rockslide();
 
 };
 

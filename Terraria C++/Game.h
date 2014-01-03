@@ -2,7 +2,7 @@
 #include "Utensilio.h"
 #include "CommunicatorInterface.h"
 
-class Game
+class Game : public Drawer
 {
 private:
     INIReader *reader;
