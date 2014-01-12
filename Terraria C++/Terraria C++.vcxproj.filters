@@ -25,11 +25,11 @@
     <Filter Include="Source Files\Blocks">
       <UniqueIdentifier>{8ac8df81-001d-40a4-a23f-8c158321eb7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Networking">
-      <UniqueIdentifier>{fe5d73ec-cf1e-4f00-a588-3662a52b357e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{18acec94-29a7-4cab-834a-fca3e0592105}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{fe5d73ec-cf1e-4f00-a588-3662a52b357e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -132,7 +132,7 @@
       <Filter>Source Files\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="CommunicatorInterface.cpp">
-      <Filter>Source Files\Networking</Filter>
+      <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="Pedra.cpp">
       <Filter>Source Files\Blocks</Filter>

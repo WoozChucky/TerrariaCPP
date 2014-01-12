@@ -17,7 +17,7 @@ Miner::Miner(int energy)
     _beamCount = 5;
 
     _parachuteCount = 0;
-    _dynamiteCount = 0;
+    _dynamiteCount = 1;
 
     _capacity = 0;
 

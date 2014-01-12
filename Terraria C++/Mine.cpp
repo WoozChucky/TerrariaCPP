@@ -1,18 +1,13 @@
 #include "Mine.h"
 
 
-Mine::Mine(int Rows, int Cols)
+Mine::Mine(std::string Name, int Rows, int Cols)
 {
-    reader = new INIReader("Data/config.ini");
-    if (reader->ParseError() < 0)
-        {
-            std::cout << "Can't load 'test.ini'\n";
-            return;
-        }
     myDrawer = new Drawer();
     myConsole = new Consola();
-    myMiner = new Miner((int)reader->GetInteger("MINER_DEFAULT_STATS", "StartEnergy", 100));
+    myMiner = new Miner(100);
 
+    _nome = Name;
     _linhas = Rows;
     _colunas = Cols;
     _vision = myMiner->getLightLevel();
@@ -42,15 +37,15 @@ Mine::Mine(int Rows, int Cols)
         }
     system("pause");*/
 
-    int NinetyPercent = round(90 * _colunas / 100);
-    int EightyPercent = round(80 * _colunas / 100);
-    int SeventyPercent = round(70 * _colunas / 100);
-    int SixtyPercent = round(60 * _colunas / 100);
-    int FiftyPercent = round(50 * _colunas / 100);
-    int FourtyPercent = ceil(40 * _colunas / 100);
-    int ThirtyPercent = ceil(30 * _colunas / 100);
-    int TwentyPercent = ceil(20 * _colunas / 100);
-    int TenPercent = ceil(10 * _colunas / 100);
+    int NinetyPercent = (int)round(90 * _colunas / 100);
+    int EightyPercent = (int)round(80 * _colunas / 100);
+    int SeventyPercent = (int)round(70 * _colunas / 100);
+    int SixtyPercent = (int)round(60 * _colunas / 100);
+    int FiftyPercent = (int)round(50 * _colunas / 100);
+    int FourtyPercent = (int)ceil(40 * _colunas / 100);
+    int ThirtyPercent = (int)ceil(30 * _colunas / 100);
+    int TwentyPercent = (int)ceil(20 * _colunas / 100);
+    int TenPercent = (int)ceil(10 * _colunas / 100);
 
     /* Populate Mine Array Automatically */
     for (int r = 0; r < _linhas; r++)
@@ -208,19 +203,25 @@ void Mine::blowDynamite()
                 {
                     if (typeid(*myMine[r][c]).name() == typeid(Dynamite).name())
                         {
-                            myMine[r + 1][c] = new Vazio(c, r);
-                            myMine[r - 1][c] = new Vazio(c, r);
+                            PlaySound(TEXT("Data/explosion.wav"), NULL, SND_ASYNC | SND_FILENAME);
+                            int startR = (r - 2 >= 0) ? r - 2 : (r - 1 >= 0) ? r - 1 : 0;
+                            int endR = (r + 2 <= _linhas - 1) ? r + 2 : (r + 1 <= _linhas - 1) ? r + 1 : _linhas - 1;
 
-                            myMine[r][c + 1] = new Vazio(c, r);
-                            myMine[r][c - 1] = new Vazio(c, r);
+                            int startC = (c - 2 >= 0) ? c - 2 : (c - 1 >= 0) ? c - 1 : 0;
+                            int endC = (c + 2 <= _colunas - 1 ? c + 2 : (c + 1 <= _colunas - 1) ? c + 1 : _colunas - 1);
 
-                            myMine[r + 1][c + 1] = new Vazio(c, r);
-                            myMine[r - 1][c + 1] = new Vazio(c, r);
-
-                            myMine[r + 1][c - 1] = new Vazio(c, r);
-                            myMine[r - 1][c - 1] = new Vazio(c, r);
-
-                            myMine[r][c] = new Vazio(c, r);
+                            for (int R = startR; R <= endR; R++)
+                                {
+                                    for (int C = startC; C <= endC; C++)
+                                        {
+                                            myMine[R][C] = new Vazio(C ,R);
+                                            if (myMiner->getX() == C && myMiner->getY() == R)
+                                                {
+                                                    myMiner->setEnergyLevel(0);
+                                                    break;
+                                                }
+                                        }
+                                }
                         }
                 }
         }
@@ -288,14 +289,13 @@ void Mine::Rockslide()
                 {
                     if (typeid(*myMine[r][c]).name() == typeid(Pedra).name() && typeid(*myMine[r + 1][c]).name() == typeid(Vazio).name())
                         {
-                            if (myMiner->getX() == myMine[r + 1][c]->getX() && myMiner->getY() == myMine[r + 1][c]->getY() && typeid(*myMine[r][c]).name() == typeid(Pedra).name())
+                            if (myMiner->getX() == myMine[r][c]->getX() && myMiner->getY() == myMine[r][c]->getY() && typeid(*myMine[r][c]).name() == typeid(Pedra).name())
                                 {
                                     myMiner->setEnergyLevel(0);
-                                    std::cout << myMiner->getX() << "=" << myMine[r + 1][c]->getX() << " / " << myMiner->getY() << "=" << myMine[r + 1][c]->getY();
-                                    myConsole->getch();
                                 }
                             else
                                 {
+                                    PlaySound(TEXT("Data/rockslide.wav"), NULL, SND_ASYNC | SND_FILENAME);
                                     myMine[r][c] = new Vazio(c, r);
                                     myMine[r + 1][c] = new Pedra(c, r + 1);
                                 }

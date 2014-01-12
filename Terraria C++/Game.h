@@ -5,7 +5,6 @@
 class Game : public Drawer
 {
 private:
-    INIReader *reader;
     Consola *myConsole;
     CommunicatorInterface *myCommunicatorInterface;
     Mine *myMine;
@@ -13,7 +12,7 @@ private:
 
     int _currentStatus;
 
-    int vX, vY, pX, pY;
+    int vX, vY, pX, pY, offSetX, offSetY;
 
 public:
 
@@ -30,17 +29,17 @@ public:
     void PlayTheme();
     void PlayMine();
     void PlayFalling();
-    void PlayRockSlide();
     void StopMusic();
 
     /* Movement Handling*/
+    void ApplyGravity();
     void MoveUp();
     void MoveDown();
     void MoveLeft();
     void MoveRight();
 
     /* Game Stats*/
-    void NewGame();
+    void NewGame(std::string Name, int Rows, int Columns, int Difficulty);
     void SaveGame(std::string filename);
     void LoadGame(std::string filename);
     void LoadGameMenu();

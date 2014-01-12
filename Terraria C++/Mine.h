@@ -7,15 +7,14 @@ class Mine
 
     Consola *myConsole;
     int _linhas, _colunas, _vision;
+    std::string _nome;
 
 public:
-
-    INIReader *reader;
     Drawer *myDrawer;
     Miner *myMiner;
     Block ***myMine;
 
-    Mine(int Rows, int Cols);
+    Mine(std::string Name, int Rows, int Cols);
     ~Mine();
 
     void setVision(int S);

@@ -9,28 +9,65 @@ Drawer::~Drawer()
     delete this;
 }
 
-void Drawer::Draw(Miner obj, int ACTION)
+void Drawer::Draw(Miner obj, int ACTION, int SPECIAL)
 {
     switch (ACTION)
         {
         case SHOW:
-            myConsole->setTextColor(myConsole->PRETO);
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
-            std::cout << (char)255 << (char)255 << (char)2 << (char)255 << (char)255;
+            switch (SPECIAL)
+                {
+                case 0:
+                    myConsole->setTextColor(myConsole->PRETO);
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
+                    std::cout << (char)255 << (char)255 << (char)2 << (char)255 << (char)255;
 
-            myConsole->setTextColor(myConsole->VERMELHO_CLARO);
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
-            std::cout << (char)255 << (char)205 << (char)203 << (char)205 << (char)255;
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
+                    std::cout << (char)255 << (char)205 << (char)203 << (char)205 << (char)255;
 
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
-            std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
+                    std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
 
-            myConsole->setTextColor(myConsole->AZUL);
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
-            std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
+                    std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
 
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
-            std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
+                    std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
+                    break;
+                case 1: //Ladder
+                    myConsole->setTextColor(myConsole->PRETO);
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
+                    std::cout << (char)45 << (char)255 << (char)2 << (char)45 << (char)180;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
+                    std::cout << (char)195 << (char)205 << (char)203 << (char)205 << (char)180;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
+                    std::cout << (char)195 << (char)45 << (char)186 << (char)45 << (char)180;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
+                    std::cout << (char)195 << (char)45 << (char)202 << (char)45 << (char)180;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
+                    std::cout << (char)195 << (char)188 << (char)45 << (char)200 << (char)180;
+                    break;
+                case 2: //Beam
+                    myConsole->setTextColor(myConsole->PRETO);
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
+                    std::cout << (char)203 << (char)255 << (char)2 << (char)255 << (char)203;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
+                    std::cout << (char)179 << (char)205 << (char)203 << (char)205 << (char)179;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
+                    std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
+                    std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
+
+                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
+                    std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
+                    break;
+                }
             break;
         case REMOVE:
             myConsole->setTextColor(myConsole->PRETO);
@@ -96,9 +133,14 @@ void Drawer::DrawStats(Miner obj, int ACTION)
             myConsole->setTextColor(myConsole->PRETO);
             myConsole->gotoxy(1, 42);
             myConsole->setTextColor(myConsole->PRETO);
-            std::cout << "Dynamite: ";
+            std::cout << "Dynamites: ";
             myConsole->setTextColor(myConsole->VERDE);
             std::cout << obj.getDynamiteCount();
+            myConsole->setTextColor(myConsole->PRETO);
+            myConsole->gotoxy(1, 43);
+            std::cout << "Parachutes: ";
+            myConsole->setTextColor(myConsole->VERDE);
+            std::cout << obj.getParachuteCount();
             myConsole->setTextColor(myConsole->PRETO);
 
             break;
@@ -114,9 +156,9 @@ void Drawer::DrawMine(Block ***obj, Miner obj2, int startDrawX, int startDrawY, 
     int pfX = (obj2.getX() + Vision < Colunas) ? obj2.getX() + Vision : obj2.getX() + (Colunas - obj2.getX()) - 1; //Final X
     int pfY = (obj2.getY() + Vision < Linhas) ? obj2.getY() + Vision : obj2.getY() + (Linhas - obj2.getY()) - 1; //Final Y
 
-    for (startDrawY = piY; startDrawY <= pfY; startDrawY++)
+    for (int r = 0, startDrawY = piY; r < 7; r++, startDrawY++)
         {
-            for (startDrawX = piX; startDrawX <= pfX; startDrawX++)
+            for (int c = 0, startDrawX = piX; c < 7; c++, startDrawX++)
                 {
                     (startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(obj[startDrawY][startDrawX]->getDrawSequence(), obj[startDrawY][startDrawX]->getX(), obj[startDrawY][startDrawX]->getY()) : 0;
                 }
@@ -147,8 +189,6 @@ void Drawer::DrawPauseMenu()
     myConsole->gotoxy(10, 12);
     std::cout << "Sound";
     myConsole->gotoxy(10, 14);
-    std::cout << "Save Game";
-    myConsole->gotoxy(10, 16);
     std::cout << "Main Menu";
 }
 void Drawer::DrawMainMenu()
