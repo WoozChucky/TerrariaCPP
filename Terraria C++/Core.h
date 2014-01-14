@@ -62,7 +62,7 @@ enum BlockIDS
 };
 
 /* General */
-#define NUM_COMMANDS 11
+#define NUM_COMMANDS 13
 #define VISION 2
 
 /* Menu Coordinates */
@@ -106,3 +106,5 @@ enum BlockIDS
 //		(startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(myMine[startDrawY][startDrawX]->getID(), c * 5, r * 5) : 0;
 //	}
 //}
+
+//(mine->GetX() + 1 <= mine->GetColumns() - 7 && mine->GetOffsetX() == 0) ? mine->SetPosition(mine->GetX() + 1, mine->GetY()) : mine->SetOffsets(mine->GetOffsetX() + 1, mine->GetOffsetY());

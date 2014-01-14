@@ -18,4 +18,4 @@ public:
     int getCost();
 };
 
-void LoadUtensilios(Utensilio Utensilios[]);
+void LoadUtensilios(Utensilio Utensilios[], int Difficulty);

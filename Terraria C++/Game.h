@@ -7,12 +7,13 @@ class Game : public Drawer
 private:
     Consola *myConsole;
     CommunicatorInterface *myCommunicatorInterface;
-    Mine *myMine;
-    Utensilio myUtensilios[NUM_UTENSILIOS];
 
+    Mine **minesGrid;
+    Utensilio myUtensilios[NUM_UTENSILIOS];
+    //Mine *myMine;
     int _currentStatus;
 
-    int vX, vY, pX, pY, offSetX, offSetY;
+    int vX, vY, pX, pY, offSetX, offSetY, activeMines, currentMine;
 
 public:
 

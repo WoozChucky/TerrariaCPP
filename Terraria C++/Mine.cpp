@@ -89,8 +89,53 @@ Mine::Mine(std::string Name, int Rows, int Cols)
                 }
         }
 }
+Mine::Mine(const Mine& Origin)
+{
+    this->_colunas = Origin._colunas;
+    this->_linhas = Origin._linhas;
+    this->_nome = Origin._nome;
+
+    this->myMiner = Origin.myMiner;
+    this->myMine = Origin.myMine;
+    for (int r = 0; r < Origin.getLinhas(); r++)
+        {
+            for (int c = 0; c < Origin.getColunas(); c++)
+                {
+                    this->myMine[r][c] = Origin.myMine[r][c];
+                    this->myMine[r][c]->setX(Origin.myMine[r][c]->getX());
+                    this->myMine[r][c]->setY(Origin.myMine[r][c]->getY());
+                }
+        }
+    this->myConsole = Origin.myConsole;
+    this->myDrawer = Origin.myDrawer;
+}
 Mine::~Mine()
 {
+    delete[] myMine;
+    delete[] myMiner;
+    delete[] myDrawer;
+    delete[] myConsole;
+}
+
+const Mine& Mine::operator=(const Mine& Other)
+{
+    if (this != &Other)
+        {
+            this->myMiner = Other.myMiner;
+            this->myMine = Other.myMine;
+            for (int r = 0; r < Other.getLinhas(); r++)
+                {
+                    for (int c = 0; c < Other.getColunas(); c++)
+                        {
+                            this->myMine[r][c] = Other.myMine[r][c];
+                            this->myMine[r][c]->setX(Other.myMine[r][c]->getX());
+                            this->myMine[r][c]->setY(Other.myMine[r][c]->getY());
+                        }
+                }
+            this->myConsole = Other.myConsole;
+            this->myDrawer = Other.myDrawer;
+        }
+    return *this;
 }
 
 void Mine::setVision(int S)
@@ -105,6 +150,10 @@ void Mine::setLinhas(int S)
 {
     _linhas = S;
 }
+void Mine::setName(std::string newName)
+{
+    _nome = newName;
+}
 
 int Mine::getLinhas() const
 {
@@ -117,6 +166,10 @@ int Mine::getColunas() const
 int Mine::getVision() const
 {
     return _vision;
+}
+std::string Mine::getName() const
+{
+    return _nome;
 }
 
 void Mine::RemoveBlock(int &bX, int &bY, int DIRECTION)

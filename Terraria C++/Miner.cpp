@@ -26,6 +26,61 @@ Miner::Miner(int energy)
     ResetOreCount();
 
 }
+Miner::Miner(const Miner& Origin)
+{
+    this->_energy = Origin._energy;
+    this->_coins = Origin._coins;
+    this->_capacity = Origin._capacity;
+    this->_x = Origin._x;
+    this->_y = Origin._y;
+    this->_pickaxeLevel = Origin._pickaxeLevel;
+    this->_energyRestoreLevel = Origin._energyRestoreLevel;
+    this->_bagpackLevel = Origin._bagpackLevel;
+    this->_lightLevel = Origin._lightLevel;
+    this->_parachuteCount = Origin._parachuteCount;
+    this->_ladderCount = Origin._ladderCount;
+    this->_beamCount = Origin._beamCount;
+    this->_extraLiveCount = Origin._extraLiveCount;
+    this->_dynamiteCount = Origin._dynamiteCount;
+    this->_aluminiumCount = Origin._aluminiumCount;
+    this->_charcoalCount = Origin._charcoalCount;
+    this->_ironCount = Origin._ironCount;
+    this->_goldCount = Origin._goldCount;
+    this->_diamondCount = Origin._diamondCount;
+    this->_teleport = Origin._teleport;
+}
+Miner::~Miner()
+{
+    delete[] myConsole;
+}
+const Miner& Miner::operator=(const Miner& Other)
+{
+    if (this != &Other)
+        {
+            this->_energy = Other._energy;
+            this->_coins = Other._coins;
+            this->_capacity = Other._capacity;
+            this->_x = Other._x;
+            this->_y = Other._y;
+            this->_pickaxeLevel = Other._pickaxeLevel;
+            this->_energyRestoreLevel = Other._energyRestoreLevel;
+            this->_bagpackLevel = Other._bagpackLevel;
+            this->_lightLevel = Other._lightLevel;
+            this->_parachuteCount = Other._parachuteCount;
+            this->_ladderCount = Other._ladderCount;
+            this->_beamCount = Other._beamCount;
+            this->_extraLiveCount = Other._extraLiveCount;
+            this->_dynamiteCount = Other._dynamiteCount;
+            this->_aluminiumCount = Other._aluminiumCount;
+            this->_charcoalCount = Other._charcoalCount;
+            this->_ironCount = Other._ironCount;
+            this->_goldCount = Other._goldCount;
+            this->_diamondCount = Other._diamondCount;
+            this->_teleport = Other._teleport;
+        }
+    return *this;
+}
+
 void Miner::ResetStats()
 {
     _extraLiveCount = 1;
@@ -94,7 +149,26 @@ void Miner::isAlive()
             myConsole->gotoxy(1, 4);
             std::cout << "Perdeste toda a energia e 1 vida. Prima qualquer tecla para recomecar.";
             _extraLiveCount -= 1;
-            _energy = 100;
+
+            switch (getEnergyRestoreLevel())
+                {
+                case 1:
+                    _energy = 80;
+                    break;
+                case 2:
+                    _energy = 120;
+                    break;
+                case 3:
+                    _energy = 160;
+                    break;
+                case 4:
+                    _energy = 400;
+                    break;
+                }
+
+            _capacity = 0;
+            _goldCount = 0;
+            ResetOreCount();
             myConsole->getch();
         }
 }

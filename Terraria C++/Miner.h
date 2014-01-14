@@ -16,6 +16,11 @@ private:
 public:
     /* General */
     Miner(int energy);
+    Miner(const Miner& Origin);
+    ~Miner();
+
+    const Miner& operator=(const Miner& Other);
+
     void ResetStats();
     void ResetOreCount();
     void ReachSurface();
@@ -51,7 +56,6 @@ public:
     void setIronCount(int S);
     void setGoldCount(int S);
     void setDiamondCount(int S);
-
     /* Gets */
     int getEnergyLevel() const;
     int getCoins() const;

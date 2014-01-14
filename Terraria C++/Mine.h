@@ -15,15 +15,20 @@ public:
     Block ***myMine;
 
     Mine(std::string Name, int Rows, int Cols);
+    Mine(const Mine& Origin);
     ~Mine();
+
+    const Mine& operator=(const Mine& Other);
 
     void setVision(int S);
     void setColunas(int S);
     void setLinhas(int S);
+    void setName(std::string newName);
 
     int getVision() const;
     int getColunas() const;
     int getLinhas() const;
+    std::string getName() const;
 
     void RemoveBlock(int &bX, int &bY, int DIRECTION);
     void insertLadder(int x, int y);

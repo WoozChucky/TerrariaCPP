@@ -23,18 +23,39 @@ int Utensilio::getCost()
     return cost;
 }
 
-void LoadUtensilios(Utensilio Utensilios[])
+void LoadUtensilios(Utensilio Utensilios[], int Difficulty)
 {
     std::ifstream utensiliosFile(UTENSILIOS_FILE_NAME, std::ifstream::in);
     std::string nome;
     int cost, K = 0;
     if (utensiliosFile.is_open())
         {
-            while (utensiliosFile >> nome >> cost)
+            switch (Difficulty)
                 {
-                    Utensilios[K].setName(nome);
-                    Utensilios[K].setCost(cost);
-                    K++;
+                case 1:
+                    while (utensiliosFile >> nome >> cost)
+                        {
+                            Utensilios[K].setName(nome);
+                            Utensilios[K].setCost(cost);
+                            K++;
+                        }
+                    break;
+                case 2:
+                    while (utensiliosFile >> nome >> cost)
+                        {
+                            Utensilios[K].setName(nome);
+                            Utensilios[K].setCost(cost + (cost / 2));
+                            K++;
+                        }
+                    break;
+                case 3:
+                    while (utensiliosFile >> nome >> cost)
+                        {
+                            Utensilios[K].setName(nome);
+                            Utensilios[K].setCost(cost * 2);
+                            K++;
+                        }
+                    break;
                 }
         }
 }

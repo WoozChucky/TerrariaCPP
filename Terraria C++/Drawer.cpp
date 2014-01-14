@@ -142,7 +142,6 @@ void Drawer::DrawStats(Miner obj, int ACTION)
             myConsole->setTextColor(myConsole->VERDE);
             std::cout << obj.getParachuteCount();
             myConsole->setTextColor(myConsole->PRETO);
-
             break;
         case REMOVE:
             break;
@@ -150,17 +149,18 @@ void Drawer::DrawStats(Miner obj, int ACTION)
 }
 void Drawer::DrawMine(Block ***obj, Miner obj2, int startDrawX, int startDrawY, int Vision, int Colunas, int Linhas)
 {
-    int piX = (obj2.getX() - Vision > 0) ? obj2.getX() - Vision : 0; //Initial X
-    int piY = (obj2.getY() - Vision > 0) ? obj2.getY() - Vision : 0; //Initial Y
 
-    int pfX = (obj2.getX() + Vision < Colunas) ? obj2.getX() + Vision : obj2.getX() + (Colunas - obj2.getX()) - 1; //Final X
-    int pfY = (obj2.getY() + Vision < Linhas) ? obj2.getY() + Vision : obj2.getY() + (Linhas - obj2.getY()) - 1; //Final Y
+    int rMinimum = (obj2.getY() - Vision > 0) ? obj2.getY() - Vision : 0;
+    int rMaximum = (obj2.getY() + Vision < Linhas) ? obj2.getY() + Vision : obj2.getY() + (Linhas - obj2.getY());
 
-    for (int r = 0, startDrawY = piY; r < 7; r++, startDrawY++)
+    int cMinimum = (obj2.getX() - Vision > 0) ? obj2.getX() - Vision : 0;
+    int cMaximum = (obj2.getX() + Vision < Colunas) ? obj2.getX() + Vision : obj2.getY() + (Colunas - obj2.getX());
+
+    for (int r = 0, mineR = startDrawY; r < 7; r++, mineR++)
         {
-            for (int c = 0, startDrawX = piX; c < 7; c++, startDrawX++)
+            for (int c = 0, mineC = startDrawX; c < 7; c++, mineC++)
                 {
-                    (startDrawY >= piY && startDrawY <= pfY && startDrawX >= piX && startDrawX <= pfX) ? DrawBlock(obj[startDrawY][startDrawX]->getDrawSequence(), obj[startDrawY][startDrawX]->getX(), obj[startDrawY][startDrawX]->getY()) : 0;
+                    (mineR >= rMinimum && mineR <= rMaximum && mineC >= cMinimum && mineC <= cMaximum) ? DrawBlock(obj[mineR][mineC]->getDrawSequence(), obj[mineR][mineC]->getX(), obj[mineR][mineC]->getY()) : 0;
                 }
         }
 }
