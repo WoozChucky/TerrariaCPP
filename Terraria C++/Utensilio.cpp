@@ -13,12 +13,12 @@ void Utensilio::setName(std::string S)
     name = S;
 }
 
-std::string Utensilio::getName()
+std::string Utensilio::getName() const
 {
     return name;
 }
 
-int Utensilio::getCost()
+int Utensilio::getCost() const
 {
     return cost;
 }

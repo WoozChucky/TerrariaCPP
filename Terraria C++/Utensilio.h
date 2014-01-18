@@ -3,7 +3,9 @@
 #include <fstream>
 #include <string>
 
-#define NUM_UTENSILIOS 19
+
+/* Tools */
+#define NUM_UTENSILIOS 20
 #define UTENSILIOS_FILE_NAME "Data/tools.ini"
 
 class Utensilio
@@ -14,8 +16,8 @@ public:
     void setName(std::string S);
     void setCost(int S);
 
-    std::string getName();
-    int getCost();
+    std::string getName() const;
+    int getCost() const;
 };
 
 void LoadUtensilios(Utensilio Utensilios[], int Difficulty);

@@ -6,10 +6,10 @@ Drawer::Drawer()
 }
 Drawer::~Drawer()
 {
-    delete this;
+    delete myConsole;
 }
 
-void Drawer::Draw(Miner obj, int ACTION, int SPECIAL)
+void Drawer::Draw(Miner obj, int datX, int datY, int ACTION, int SPECIAL)
 {
     switch (ACTION)
         {
@@ -18,74 +18,58 @@ void Drawer::Draw(Miner obj, int ACTION, int SPECIAL)
                 {
                 case 0:
                     myConsole->setTextColor(myConsole->PRETO);
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
+                    myConsole->gotoxy(datX, datY);
                     std::cout << (char)255 << (char)255 << (char)2 << (char)255 << (char)255;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
+                    myConsole->gotoxy(datX, datY + 1);
                     std::cout << (char)255 << (char)205 << (char)203 << (char)205 << (char)255;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
+                    myConsole->gotoxy(datX, datY + 2);
                     std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
+                    myConsole->gotoxy(datX, datY + 3);
                     std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
+                    myConsole->gotoxy(datX, datY + 4);
                     std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
                     break;
                 case 1: //Ladder
                     myConsole->setTextColor(myConsole->PRETO);
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
+                    myConsole->gotoxy(datX, datY);
                     std::cout << (char)45 << (char)255 << (char)2 << (char)45 << (char)180;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
+                    myConsole->gotoxy(datX, datY + 1);
                     std::cout << (char)195 << (char)205 << (char)203 << (char)205 << (char)180;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
+                    myConsole->gotoxy(datX, datY + 2);
                     std::cout << (char)195 << (char)45 << (char)186 << (char)45 << (char)180;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
+                    myConsole->gotoxy(datX, datY + 3);
                     std::cout << (char)195 << (char)45 << (char)202 << (char)45 << (char)180;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
+                    myConsole->gotoxy(datX, datY + 4);
                     std::cout << (char)195 << (char)188 << (char)45 << (char)200 << (char)180;
                     break;
                 case 2: //Beam
                     myConsole->setTextColor(myConsole->PRETO);
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
+                    myConsole->gotoxy(datX, datY);
                     std::cout << (char)203 << (char)255 << (char)2 << (char)255 << (char)203;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
+                    myConsole->gotoxy(datX, datY + 1);
                     std::cout << (char)179 << (char)205 << (char)203 << (char)205 << (char)179;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
+                    myConsole->gotoxy(datX, datY + 2);
                     std::cout << (char)255 << (char)255 << (char)186 << (char)255 << (char)255;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
+                    myConsole->gotoxy(datX, datY + 3);
                     std::cout << (char)255 << (char)255 << (char)202 << (char)255 << (char)255;
 
-                    myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
+                    myConsole->gotoxy(datX, datY + 4);
                     std::cout << (char)255 << (char)188 << (char)255 << (char)200 << (char)255;
                     break;
                 }
             break;
         case REMOVE:
-            myConsole->setTextColor(myConsole->PRETO);
-
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 1);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 2);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 3);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
-
-            myConsole->gotoxy(obj.getX() * 5, obj.getY() * 5 + 4);
-            std::cout << (char)255 << (char)255 << (char)255 << (char)255 << (char)255;
             break;
         }
 
@@ -154,22 +138,37 @@ void Drawer::DrawMine(Block ***obj, Miner obj2, int startDrawX, int startDrawY, 
     int rMaximum = (obj2.getY() + Vision < Linhas) ? obj2.getY() + Vision : obj2.getY() + (Linhas - obj2.getY());
 
     int cMinimum = (obj2.getX() - Vision > 0) ? obj2.getX() - Vision : 0;
-    int cMaximum = (obj2.getX() + Vision < Colunas) ? obj2.getX() + Vision : obj2.getY() + (Colunas - obj2.getX());
+    int cMaximum = (obj2.getX() + Vision < Colunas) ? obj2.getX() + Vision : obj2.getX() + (Colunas - obj2.getX());
 
     for (int r = 0, mineR = startDrawY; r < 7; r++, mineR++)
         {
             for (int c = 0, mineC = startDrawX; c < 7; c++, mineC++)
                 {
-                    (mineR >= rMinimum && mineR <= rMaximum && mineC >= cMinimum && mineC <= cMaximum) ? DrawBlock(obj[mineR][mineC]->getDrawSequence(), obj[mineR][mineC]->getX(), obj[mineR][mineC]->getY()) : 0;
+                    if (obj2.getX() == mineC && obj2.getY() == mineR)
+                        {
+                            if (typeid(*obj[mineR][mineC]).name() == typeid(Escada).name())
+                                {
+                                    Draw(obj2, c * 5, r * 5, SHOW, 1);
+                                }
+                            else if (typeid(*obj[mineR][mineC]).name() == typeid(Viga).name())
+                                {
+                                    Draw(obj2, c * 5, r * 5, SHOW, 2);
+                                }
+                            else
+                                Draw(obj2, c * 5, r * 5, SHOW, 0);
+                        }
+                    else if (mineR >= rMinimum && mineR <= rMaximum && mineC >= cMinimum && mineC <= cMaximum)
+                        {
+                            DrawBlock(obj[mineR][mineC]->getDrawSequence(), c * 5, r * 5);
+                        }
                 }
         }
 }
 void Drawer::DrawBlock(std::array<std::array<int, 5>, 5> charSequence, int _y, int _x)
 {
-
     for (int x = 0; x < 5; x++)
         {
-            myConsole->gotoxy(_y * 5, _x * 5 + x);
+            myConsole->gotoxy(_y, _x + x);
             for (int y = 0; y < 5; y++)
                 {
                     std::cout << (char)charSequence[x][y];
@@ -190,21 +189,4 @@ void Drawer::DrawPauseMenu()
     std::cout << "Sound";
     myConsole->gotoxy(10, 14);
     std::cout << "Main Menu";
-}
-void Drawer::DrawMainMenu()
-{
-    myConsole->gotoxy(14, 2);
-    myConsole->setTextColor(myConsole->VERDE);
-    std::cout << "Welcome to Gem Miner";
-    myConsole->gotoxy(10, 8);
-    myConsole->setTextColor(myConsole->AMARELO);
-    std::cout << "** Choose an option **";
-    myConsole->gotoxy(10, 10);
-    myConsole->setTextColor(myConsole->VERMELHO);
-    std::cout << "New Game";
-    myConsole->gotoxy(10, 12);
-    std::cout << "Load Game";
-    myConsole->gotoxy(10, 14);
-    std::cout << "Exit";
-    myConsole->setTextColor(myConsole->AZUL_CLARO);
 }

@@ -25,9 +25,6 @@
     <Filter Include="Source Files\Blocks">
       <UniqueIdentifier>{8ac8df81-001d-40a4-a23f-8c158321eb7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\System">
-      <UniqueIdentifier>{18acec94-29a7-4cab-834a-fca3e0592105}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Network">
       <UniqueIdentifier>{fe5d73ec-cf1e-4f00-a588-3662a52b357e}</UniqueIdentifier>
     </Filter>
@@ -46,12 +43,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="ini.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="INIReader.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -128,9 +119,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files\Blocks</Filter>
-    </ClCompile>
     <ClCompile Include="CommunicatorInterface.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
@@ -166,12 +154,6 @@
     </ClCompile>
     <ClCompile Include="Escada.cpp">
       <Filter>Source Files\Blocks</Filter>
-    </ClCompile>
-    <ClCompile Include="ini.c">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="INIReader.cpp">
-      <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="Drawer.cpp">
       <Filter>Source Files</Filter>

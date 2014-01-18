@@ -51,7 +51,7 @@ Miner::Miner(const Miner& Origin)
 }
 Miner::~Miner()
 {
-    delete[] myConsole;
+    //delete[] myConsole;
 }
 const Miner& Miner::operator=(const Miner& Other)
 {

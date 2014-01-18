@@ -1,19 +1,17 @@
 #include "Mine.h"
 #include "Utensilio.h"
-#include "CommunicatorInterface.h"
 
 class Game : public Drawer
 {
 private:
     Consola *myConsole;
-    CommunicatorInterface *myCommunicatorInterface;
-
+    Drawer *myDrawer;
     Mine **minesGrid;
     Utensilio myUtensilios[NUM_UTENSILIOS];
     //Mine *myMine;
     int _currentStatus;
 
-    int vX, vY, pX, pY, offSetX, offSetY, activeMines, currentMine;
+    int activeMines, currentMine;
 
 public:
 
@@ -44,7 +42,7 @@ public:
     void SaveGame(std::string filename);
     void LoadGame(std::string filename);
     void LoadGameMenu();
-    void Play(int _pX, int _pY, int _vX, int _vY);
+    void Play();
 
     /* Menu Interface */
     void Pause();
@@ -53,7 +51,7 @@ public:
     /* Commands */
     void CommandMode();
     void BuyTool(std::string toolName);
-    void CreateBlock(int blockType, int X, int Y);
+    void CreateBlock(std::string blockType, int X, int Y);
     void Teleport(int X, int Y);
 
     /* System Option */

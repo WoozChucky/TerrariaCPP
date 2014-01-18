@@ -28,14 +28,12 @@ Game::Game()
 {
     _currentStatus = ACTIVE;
     myConsole = new Consola();
-    offSetX = -3;
-    offSetY = -3;
+    myDrawer = new Drawer();
     activeMines = 1;
 }
 void Game::Start()
 {
     PlayIntro();
-
     myConsole->setTextColor(myConsole->PRETO);
     myConsole->setBackgroundColor(myConsole->BRANCO_CLARO);
     myConsole->setScreenSize(20, 50);
@@ -47,6 +45,7 @@ void Game::Start()
 
     while (read != "exit")
         {
+            this->myConsole->clrscr();
             myConsole->gotoxy(2, 2);
             std::cout << "[Gem Miner Menu]";
             myConsole->gotoxy(0, 4);
@@ -171,15 +170,15 @@ void Game::NewGame(std::string Name, int Rows, int Columns, int Difficulty)
             break;
         }
 
+
     this->myConsole->clrscr();
-    //myMine =
     currentMine = 0;
     minesGrid = (Mine **)malloc(sizeof(Mine)*activeMines + 1);
     minesGrid[currentMine] = new Mine(Name, Rows, Columns); //Creates new mine with size (rows, columns)
     StopMusic();
     PlayTheme();
 
-    Play(0, 0, 0, 0);
+    Play();
 }
 void Game::LoadGame(std::string filename)
 {
@@ -351,12 +350,10 @@ void Game::LoadGame(std::string filename)
                             minesGrid[currentMine]->myMine[r][c] = new TerraCVeneno(x, y);
                             minesGrid[currentMine]->myMine[r][c]->setTicks(ticks);
                         }
-
-
                 }
         }
 
-    Play(minesGrid[currentMine]->myMiner->getX(), minesGrid[currentMine]->myMiner->getY(), minesGrid[currentMine]->getLinhas() / 2 - 3, minesGrid[currentMine]->getColunas() / 2 - 3);
+    Play();
 
 
 }
@@ -434,46 +431,52 @@ void Game::SaveGame(std::string filename)
     myConsole->getch();
     return;
 }
-void Game::Play(int _pX, int _pY, int _vX, int _vY)
+void Game::Play()
 {
     this->myConsole->setScreenBufferSize(7 * 5 + 10, 7 * 5); //Window buffer size
     this->myConsole->setScreenSize(7 * 5 + 10, 7 * 5); //Windows size
     this->myConsole->setTextColor(this->myConsole->PRETO);
 
     char tecla;
-    pX = _pX, pY = _pY; //Player Start Position
-    vX = _vX, vY = _vY; //Mine Start Writing Position
+
 
 
     /* Miner Start Position */
-    minesGrid[currentMine]->myMiner->setCoordinates(pX, pY);
+    minesGrid[currentMine]->myMiner->setCoordinates(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);
 
     /* Main cycle of Game */
     while (minesGrid[currentMine]->myMiner->hasLives())
         {
             myConsole->clrscr();
-            minesGrid[currentMine]->myDrawer->DrawMine(minesGrid[currentMine]->myMine, *minesGrid[currentMine]->myMiner, vX, vY, minesGrid[currentMine]->getVision(), minesGrid[currentMine]->getColunas(), minesGrid[currentMine]->getLinhas());	//Draws Mine
 
-            if (typeid(*minesGrid[currentMine]->myMine[pY][pX]).name() == typeid(Escada).name())
+            if (minesGrid[currentMine]->getFall())
                 {
-                    minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, SHOW, 1);
-                }
-            else if (typeid(*minesGrid[currentMine]->myMine[pY][pX]).name() == typeid(Viga).name())
-                {
-                    minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, SHOW, 2);
+                    minesGrid[currentMine]->Rockslide();
+                    minesGrid[currentMine]->setFall(false);
                 }
             else
-                minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, SHOW);																							//Draws Miner
-            minesGrid[currentMine]->myDrawer->DrawStats(*minesGrid[currentMine]->myMiner, SHOW);																					//Draw Stats
+                minesGrid[currentMine]->setFall(true);
 
+            ApplyGravity(); //Apply gravity to miner
 
+            myDrawer->DrawMine(minesGrid[currentMine]->myMine, *minesGrid[currentMine]->myMiner, minesGrid[currentMine]->vX, minesGrid[currentMine]->vY, minesGrid[currentMine]->getVision(), minesGrid[currentMine]->getColunas(), minesGrid[currentMine]->getLinhas());	//Draws Mine
 
-            myConsole->gotoxy(14, 36);
+            myDrawer->DrawStats(*minesGrid[currentMine]->myMiner, SHOW); //Draw Stats
+
+            myConsole->gotoxy(14, 35);
             std::cout << "Minas Totais: " << activeMines;
-            myConsole->gotoxy(14, 37);
+            myConsole->gotoxy(14, 36);
             std::cout << "Nome Mina: " << minesGrid[currentMine]->getName();
-            myConsole->gotoxy(14, 38);
+            myConsole->gotoxy(14, 37);
             std::cout << "Mina Activa: " << currentMine;
+            myConsole->gotoxy(14, 38);
+            std::cout << "OffSetX: " << minesGrid[currentMine]->offSetX;
+            myConsole->gotoxy(14, 39);
+            std::cout << "OffSetY: " << minesGrid[currentMine]->offSetY;
+            myConsole->gotoxy(14, 40);
+            std::cout << "MineX: " << minesGrid[currentMine]->vX;
+            myConsole->gotoxy(14, 41);
+            std::cout << "MineY: " << minesGrid[currentMine]->vY;
 
 
 
@@ -482,19 +485,19 @@ void Game::Play(int _pX, int _pY, int _vX, int _vY)
             switch (tecla)
                 {
                 case ESCAPE:
-                    Pause();								//Pauses the game
+                    Pause();												//Pauses the game
                     break;
                 case _C_:
-                    CommandMode();							//Enters Command Mode
+                    CommandMode();											//Enters Command Mode
                     break;
                 case E:
-                    minesGrid[currentMine]->insertLadder(pX, pY);			//Trys to insert Ladder in current position
+                    minesGrid[currentMine]->insertLadder(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);			//Trys to insert Ladder in current position
                     break;
                 case V:
-                    minesGrid[currentMine]->insertBeam(pX, pY);				//Trys to insert Beam in current position
+                    minesGrid[currentMine]->insertBeam(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);				//Trys to insert Beam in current position
                     break;
                 case D:
-                    minesGrid[currentMine]->insertDynamite(pX, pY);			//Trys to insert Dynamite in current position
+                    minesGrid[currentMine]->insertDynamite(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);			//Trys to insert Dynamite in current position
                     break;
                 case _X_:
                     minesGrid[currentMine]->blowDynamite();					//Blows all Dynamite found in the mine
@@ -517,6 +520,7 @@ void Game::Play(int _pX, int _pY, int _vX, int _vY)
                     MoveRight();							//Moves Right
                     break;
                 }
+
             if (minesGrid[currentMine]->myMiner->getCoins() >= 1500)	//Victory Condition
                 {
                     Write("Victory! You have a total of 1500 gold and you won ! :)");
@@ -534,7 +538,7 @@ void Game::Pause()
     myConsole->setTextColor(myConsole->PRETO);
     char tecla;
     myConsole->clrscr();
-    minesGrid[currentMine]->myDrawer->DrawPauseMenu();
+    myDrawer->DrawPauseMenu();
 
     int x = 8, y = 10;
     myConsole->gotoxy(x, y);
@@ -628,7 +632,7 @@ void Game::CommandMode()
 
     myConsole->clrscr();
 
-    if (pY == 0) //If miner is on surface / top of the mine
+    if (minesGrid[currentMine]->pY == 0) //If miner is on surface / top of the mine
         minesGrid[currentMine]->myMiner->ReachSurface(); //Sells all ores and resets energy
 
     while (read != "j")
@@ -721,7 +725,7 @@ void Game::CommandMode()
                                         {
                                             iss >> params[i];
                                         }
-                                    CreateBlock(atoi(params[0].c_str()), atoi(params[1].c_str()), atoi(params[2].c_str()));
+                                    CreateBlock(params[0], atoi(params[1].c_str()), atoi(params[2].c_str()));
                                     std::cout << "Block created successfully!" << std::endl;
                                     break;
                                 }
@@ -787,10 +791,9 @@ void Game::CommandMode()
                                         {
                                             iss >> params[i];
                                         }
-                                    //minesGrid = (Mine **)realloc(minesGrid, sizeof(Mine)* activeMines + 1);
                                     minesGrid[activeMines] = new Mine(*minesGrid[currentMine]);
                                     minesGrid[activeMines]->setName(params[0]);
-                                    std::cout << "Mine created sucssefully! " << minesGrid[activeMines]->getName() << std::endl;
+                                    std::cout << "Mine created sucssefully! -> " << minesGrid[activeMines]->getName() << std::endl;
                                     activeMines++;
                                     break;
                                 }
@@ -933,18 +936,20 @@ void Game::BuyTool(std::string toolName) //TODO: Comments
 {
     bool found = false;
     int i = 0;
-    for (i = 0; i < NUM_UTENSILIOS; i++)
+
+    for (i = 0; i < NUM_UTENSILIOS  - 1; i++)
         {
-            if (myUtensilios[i].getName().compare(toolName.c_str()) == 0)
-                {
-                    break;
-                }
-            if (i < NUM_UTENSILIOS)
+            if (i == NUM_UTENSILIOS - 1)
                 {
                     std::cout << "Tool non-existant!" << std::endl;
                     myConsole->getch();
                     return;
                 }
+            if (myUtensilios[i].getName().compare(toolName.c_str()) == 0)
+                {
+                    break;
+                }
+
         }
 
     if (minesGrid[currentMine]->myMiner->getCoins() >= myUtensilios[i].getCost())
@@ -1022,7 +1027,6 @@ void Game::BuyTool(std::string toolName) //TODO: Comments
                     minesGrid[currentMine]->myMiner->setGoldCount(minesGrid[currentMine]->myMiner->getGoldCount() + myUtensilios[i].getCost());
                     myConsole->getch();
                     return;
-                    break;
                 case 7: //Lanterna
                     switch (minesGrid[currentMine]->myMiner->getLightLevel())
                         {
@@ -1137,53 +1141,71 @@ void Game::BuyTool(std::string toolName) //TODO: Comments
     return;
 
 }
-void Game::CreateBlock(int blockType, int X, int Y)
+void Game::CreateBlock(std::string blockType, int X, int Y)
 {
-    if (blockType > 0 && blockType < 13 && X <= minesGrid[currentMine]->getLinhas() && Y <= minesGrid[currentMine]->getColunas())
+    if (X <= minesGrid[currentMine]->getLinhas() && Y <= minesGrid[currentMine]->getColunas())
         {
-            switch (blockType)
+            if (blockType == "P")
                 {
-                case 1:
                     minesGrid[currentMine]->myMine[Y][X] = new Pedra(X, Y);
-                    break;
-                case 2:
+                }
+            else if (blockType == "TM")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerrenoMole(X, Y);
-                    break;
-                case 3:
+                }
+            else if (blockType == "TD")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerrenoDuro(X, Y);
-                    break;
-                case 4:
+                }
+            else if (blockType == "TCA")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerraCAluminio(X, Y);
-                    break;
-                case 5:
+                }
+            else if (blockType == "TCC")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerraCCarvao(X, Y);
-                    break;
-                case 6:
+                }
+            else if (blockType == "TCF")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerraCFerro(X, Y);
-                    break;
-                case 7:
+                }
+            else if (blockType == "TCO")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerraCOuro(X, Y);
-                    break;
-                case 8:
+                }
+            else if (blockType == "TCD")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerraCDiamante(X, Y);
-                    break;
-                case 9:
+                }
+            else if (blockType == "TCFF")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new TerraCFrango(X, Y);
-                    break;
-                case 10:
+                }
+            else if (blockType == "E")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new Escada(X, Y);
-                    break;
-                case 11:
+                }
+            else if (blockType == "V")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new Viga(X, Y);
-                    break;
-                case 12:
+                }
+            else if (blockType == "TCV")
+                {
+                    minesGrid[currentMine]->myMine[Y][X] = new TerraCVeneno(X, Y);
+                }
+            else if(blockType == "NULL")
+                {
                     minesGrid[currentMine]->myMine[Y][X] = new Vazio(X, Y);
-                    break;
+                }
+            else
+                {
+                    std::cout << "Invalid Block!" << std::endl;
+                    myConsole->getch();
                 }
         }
     else
         {
-            std::cout << "Coordenadas invalidas!" << std::endl;
+            std::cout << "Invalid coordinates!" << std::endl;
             myConsole->getch();
         }
 }
@@ -1193,12 +1215,13 @@ void Game::Teleport(int X, int Y)
         {
             minesGrid[currentMine]->myMine[X][Y] = new Vazio(X, Y);
             minesGrid[currentMine]->myMiner->Move(X, Y);
-            pX = X;
-            pY = Y;
+            minesGrid[currentMine]->pX = X;
+            minesGrid[currentMine]->pY = Y;
+            ApplyGravity();
         }
     else
         {
-            std::cout << "Coordenadas invalidas!" << std::endl;
+            std::cout << "Invalid coordinates!" << std::endl;
             myConsole->getch();
         }
 }
@@ -1228,18 +1251,17 @@ void Game::StopMusic()
 /* Movement Handling*/
 void Game::ApplyGravity()
 {
-    if (typeid(*minesGrid[currentMine]->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
+    if (typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY + 1][minesGrid[currentMine]->pX]).name() == typeid(Vazio).name()) //Falling
         {
-            int t = minesGrid[currentMine]->myMine[pY + 1][pX]->getY();
+            int t = minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY + 1][minesGrid[currentMine]->pX]->getY();
             int count = 0; //num of blocks felt
-            while (typeid(*minesGrid[currentMine]->myMine[pY + 1][pX]).name() == typeid(Vazio).name())
+            while (typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY + 1][minesGrid[currentMine]->pX]).name() == typeid(Vazio).name())
                 {
                     if (t == minesGrid[currentMine]->getLinhas() - 1)
                         break;
-                    pY += 1;
-                    (pY >= minesGrid[currentMine]->getLinhas() - 1 ? pY = minesGrid[currentMine]->getLinhas() - 1 : pY = pY); //Bottom Bounding
-                    minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, REMOVE);
-                    minesGrid[currentMine]->myMiner->setCoordinates(pX, pY);
+                    minesGrid[currentMine]->pY += 1;
+                    (minesGrid[currentMine]->pY >= minesGrid[currentMine]->getLinhas() - 1 ? minesGrid[currentMine]->pY = minesGrid[currentMine]->getLinhas() - 1 : minesGrid[currentMine]->pY = minesGrid[currentMine]->pY); //Bottom Bounding
+                    minesGrid[currentMine]->myMiner->setCoordinates(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);
                     t++;
                     count++;
                 }
@@ -1259,96 +1281,53 @@ void Game::ApplyGravity()
 }
 void Game::MoveUp()
 {
-    minesGrid[currentMine]->Rockslide();
+    if (minesGrid[currentMine]->pY == 0) minesGrid[currentMine]->myMiner->ReachSurface();
 
-    if (pX - 3 > 0) //UP
-        {
-            offSetX--;
-        }
-    else
-        {
-            minesGrid[currentMine]->myMiner->setCoordinates(pX, pY);
-        }
-
-    if ((pY - 1) >= 0) //TopBouding
-        if (typeid(*minesGrid[currentMine]->myMine[pY - 1][pX]).name() == typeid(Escada).name() || (pY - 1) == 0)
+    if (minesGrid[currentMine]->pY - 1 >= 0 && typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY - 1][minesGrid[currentMine]->pX]).name() != typeid(Pedra).name()) //TopBouding
+        if (typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY][minesGrid[currentMine]->pX]).name() == typeid(Escada).name() && typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY][minesGrid[currentMine]->pX]).name() == typeid(Vazio).name() || typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY][minesGrid[currentMine]->pX]).name() == typeid(Escada).name())
             {
-
-                pY -= 1; //Move 1 position UP
-                minesGrid[currentMine]->RemoveBlock(pX, pY, UP);
-                minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, REMOVE);
-                minesGrid[currentMine]->myMiner->Move(pX, pY);
-                minesGrid[currentMine]->myMiner->Move(pX, pY);
+                (minesGrid[currentMine]->vY - 1 >= 0 && minesGrid[currentMine]->offSetY == 0) ? minesGrid[currentMine]->vY-- : minesGrid[currentMine]->offSetY--;
+                minesGrid[currentMine]->pY -= 1; //Move 1 position UP
+                minesGrid[currentMine]->RemoveBlock(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY, UP);
+                minesGrid[currentMine]->myMiner->Move(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);
+                minesGrid[currentMine]->myMiner->setEnergyLevel(minesGrid[currentMine]->myMiner->getEnergyLevel() - 1);
             }
-    if (pY == 0) minesGrid[currentMine]->myMiner->ReachSurface();
 }
 void Game::MoveDown()
 {
-    minesGrid[currentMine]->Rockslide();
-    if (typeid(*minesGrid[currentMine]->myMine[pY + 1][pX]).name() == typeid(Vazio).name()) //Falling
+    if (typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY + 1][minesGrid[currentMine]->pX]).name() != typeid(Vazio).name() && typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY + 1][minesGrid[currentMine]->pX]).name() != typeid(Pedra).name()) //Falling
         {
-            ApplyGravity();
-        }
-    else //Move Down
-        {
-            pY += 1; //Move 1 position DOWN
-            (pY >= minesGrid[currentMine]->getLinhas() - 1 ? pY = minesGrid[currentMine]->getLinhas() - 1 : pY = pY); //Bottom Bounding
-            minesGrid[currentMine]->RemoveBlock(pX, pY, DOWN);
-            minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, REMOVE);
-            minesGrid[currentMine]->myMiner->Move(pX, pY);
-        }
 
+            (minesGrid[currentMine]->vY + 1 <= minesGrid[currentMine]->getLinhas() - 7 && minesGrid[currentMine]->offSetY == 0) ? minesGrid[currentMine]->vY++ : minesGrid[currentMine]->offSetY++;
+
+            minesGrid[currentMine]->pY += 1; //Move 1 position DOWN
+            minesGrid[currentMine]->RemoveBlock(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY, DOWN);
+            minesGrid[currentMine]->myMiner->Move(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);
+        }
 }
 void Game::MoveLeft()
 {
-    minesGrid[currentMine]->Rockslide();
-    pX -= 1; //Move 1 position LEFT
-    if (pX < 0)
+    if (minesGrid[currentMine]->pX > 0 && typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY][minesGrid[currentMine]->pX - 1]).name() != typeid(Pedra).name())
         {
-            pX++;
-            minesGrid[currentMine]->myMiner->Move(pX, pY);
-            minesGrid[currentMine]->myMiner->setEnergyLevel(minesGrid[currentMine]->myMiner->getEnergyLevel() + 1);
-            return;
+
+            (minesGrid[currentMine]->vX - 1 >= 0 && minesGrid[currentMine]->offSetX == 0) ? minesGrid[currentMine]->vX-- : minesGrid[currentMine]->offSetX--;
+
+            minesGrid[currentMine]->pX--;
+            minesGrid[currentMine]->RemoveBlock(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY, LEFT);
+            minesGrid[currentMine]->myMiner->Move(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);
         }
-    else
-        {
-            minesGrid[currentMine]->RemoveBlock(pX, pY, LEFT);
-            minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, REMOVE);
-            minesGrid[currentMine]->myMiner->Move(pX, pY);
-
-        }
-
-    ApplyGravity();
-
 }
 void Game::MoveRight()
 {
-    minesGrid[currentMine]->Rockslide();
-
-    (vX + 1 <= minesGrid[currentMine]->getColunas() - 7 && offSetX == 0) ? vX++ : offSetX++;
-
-    std::cout << "mineX: " << vX;
-    std::cout << " offSetX: " << offSetX;
-
-    myConsole->getch();
-
-    pX += 1; //Move 1 position RIGHT
-    if (pX > minesGrid[currentMine]->getColunas() - 1)
+    if (minesGrid[currentMine]->pX < minesGrid[currentMine]->getColunas() - 1 && typeid(*minesGrid[currentMine]->myMine[minesGrid[currentMine]->pY][minesGrid[currentMine]->pX + 1]).name() != typeid(Pedra).name())
         {
-            pX--;
-            minesGrid[currentMine]->myMiner->Move(pX, pY);
-            minesGrid[currentMine]->myMiner->setEnergyLevel(minesGrid[currentMine]->myMiner->getEnergyLevel() + 1);
-            return;
-        }
-    else
-        {
-            minesGrid[currentMine]->RemoveBlock(pX, pY, LEFT);
-            minesGrid[currentMine]->myDrawer->Draw(*minesGrid[currentMine]->myMiner, REMOVE);
-            minesGrid[currentMine]->myMiner->Move(pX, pY);
-        }
 
-    ApplyGravity();
+            (minesGrid[currentMine]->vX + 1 <= minesGrid[currentMine]->getColunas() - 7 && minesGrid[currentMine]->offSetX == 0) ? minesGrid[currentMine]->vX++ : minesGrid[currentMine]->offSetX++;
 
+            minesGrid[currentMine]->pX++;
+            minesGrid[currentMine]->RemoveBlock(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY, RIGHT);
+            minesGrid[currentMine]->myMiner->Move(minesGrid[currentMine]->pX, minesGrid[currentMine]->pY);
+        }
 }
 
 /* Gets */
